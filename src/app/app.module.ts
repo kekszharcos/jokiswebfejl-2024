@@ -11,11 +11,15 @@ import { getStorage, provideStorage } from '@angular/fire/storage';
 import { MenuComponent } from './shared/menu/menu.component';
 import { MainModule } from './pages/main/main.module';
 import {FormsModule} from "@angular/forms";
+import { LoginComponent } from './pages/login/login.component';
+import { SignupComponent } from './pages/signup/signup.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    MenuComponent
+    MenuComponent,
+    LoginComponent,
+    SignupComponent
   ],
   imports: [
     BrowserModule,
