@@ -17,7 +17,7 @@ export class AppComponent implements OnInit{
   }
 
   pageSelect(selectedPage: string) {
-    this.router.navigateByUrl(selectedPage)
+    this.router.navigateByUrl(selectedPage);
   }
 
   ngOnInit(): void {
