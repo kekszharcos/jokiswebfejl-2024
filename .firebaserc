@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "jokiswebfejl-2024": {
+      "hosting": {
+        "jokiswebfelj-2024": [
+          "jokiswebfejl-2024"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "jokiswebfejl-2024"
+  }
+}
