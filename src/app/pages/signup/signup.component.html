@@ -1,21 +1,21 @@
-<div>
+<div class="main_component">
   <h1>Signup</h1>
-    <form [formGroup]="signUpFrom" (ngSubmit)="onSubmit()">
+    <form [formGroup]="signUpFrom" (ngSubmit)="onSubmit()" autocomplete="off">
+      <mat-form-field>
+        <mat-label>Email:</mat-label>
+        <input matInput type="email" name="email" id="email" formControlName="email">
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Password:</mat-label>
+        <input matInput type="password" name="password" id="password" formControlName="password">
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Password again:</mat-label>
+        <input matInput type="password" name="password_re" id="password_re" formControlName="password_re">
+      </mat-form-field>
       <div>
-        <label for="email">Email:</label>
-        <input type="email" name="email" id="email" formControlName="email">
-      </div>
-      <div>
-        <label for="password">Password:</label>
-        <input type="password" name="password" id="password" formControlName="password">
-      </div>
-      <div>
-        <label for="password_re">Password again:</label>
-        <input type="password" name="password_re" id="password_re" formControlName="password_re">
-      </div>
-      <div>
-        <button type="submit">Signup</button>
-        <button (click)="goBack()">Back</button>
+        <button mat-raised-button color="primary" type="submit">Signup</button>
+        <button mat-raised-button color="primary" (click)="goBack()">Back</button>
       </div>
   </form>
 </div>

@@ -1,8 +1,35 @@
-<select [(ngModel)]="currentPage" (change)="menuSwitch()">
-  <option value="main">main</option>
-  <option value="friends">friends</option>
-  <option value="messages">messages</option>
-  <option value="profile">profile</option>
-  <option value="login">login</option>
-  <option value="signup">signup</option>
-</select>
+<mat-nav-list>
+   <span *ngIf="!(loggedInUser)">
+      <a mat-list-item [routerLink]="'login'" (click)="close()">
+        <mat-icon>login</mat-icon>
+        <span>login</span>
+      </a>
+      <a mat-list-item [routerLink]="'signup'" (click)="close()">
+        <mat-icon>app_registration</mat-icon>
+        <span>signup</span>
+      </a>
+   </span>
+  <span *ngIf="loggedInUser">
+    <a mat-list-item [routerLink]="'login'" (click)="logout(); close()">
+      <mat-icon>exit_to_app</mat-icon>
+      <span>logout</span>
+    </a>
+    <a mat-list-item [routerLink]="'main'" (click)="close()">
+      <mat-icon>home</mat-icon>
+      <span>main</span>
+    </a>
+    <a mat-list-item [routerLink]="'friends'" (click)="close()">
+      <mat-icon>contacts</mat-icon>
+      <span>Friends</span>
+    </a>
+    <a mat-list-item [routerLink]="'messages'" (click)="close()">
+      <mat-icon>message</mat-icon>
+      <span>Messages</span>
+    </a>
+    <a mat-list-item [routerLink]="'profile'" (click)="close()">
+      <mat-icon>face</mat-icon>
+      <span>profile</span>
+      </a>
+
+  </span>
+</mat-nav-list>

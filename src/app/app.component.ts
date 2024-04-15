@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {NavigationEnd, Router} from "@angular/router";
 import {filter} from "rxjs";
+import {AuthService} from "./shared/services/auth.service";
+import {MatSidenav} from "@angular/material/sidenav";
 
 @Component({
   selector: 'app-root',
@@ -10,10 +12,10 @@ import {filter} from "rxjs";
 export class AppComponent implements OnInit{
   title = 'jokiswebfelj-2024';
   page = '';
-  routes : Array<String> = [];
+  routes : Array<string> = [];
+  loggedInUser?: firebase.default.User | null;
 
-  constructor(private router:Router) {
-
+  constructor(private router:Router, private authService:AuthService) {
   }
 
   pageSelect(selectedPage: string) {
@@ -30,5 +32,29 @@ export class AppComponent implements OnInit{
         this.page = currentPage;
       }
     })
+    this.authService.isUserLoggedIn().subscribe(user =>{
+      this.loggedInUser = user
+      localStorage.setItem('user', JSON.stringify(this.loggedInUser))
+    },error => {
+      localStorage.setItem('user', 'null')
+    })
+  }
+
+  logout($event: unknown){
+    this.authService.logout().then( ()=>{} )
+  }
+
+  onToggleSidenav(sidenav: MatSidenav) {
+    sidenav.toggle();
+  }
+
+  changePage($event: string) {
+
+  }
+
+  onClose($event: unknown, sidenav: MatSidenav) {
+    if ($event === true){
+      sidenav.close()
+    }
   }
 }

@@ -1,4 +1,5 @@
 import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {AuthService} from "../services/auth.service";
 
 @Component({
   selector: 'app-menu',
@@ -8,7 +9,10 @@ import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output} from '@an
 export class MenuComponent implements OnInit, AfterViewInit{
   @Output() selectedPage: EventEmitter<string> = new EventEmitter();
   @Input() currentPage!: string;
-  constructor() {
+  @Output() onCloseSidenav = new EventEmitter<unknown>();
+  @Input() loggedInUser!: firebase.default.User | null | undefined;
+  @Output() onLogout = new EventEmitter<unknown>();
+  constructor(private authService : AuthService) {
     console.log("Konstruktor")
   }
 
@@ -22,5 +26,13 @@ export class MenuComponent implements OnInit, AfterViewInit{
 
   menuSwitch() {
     this.selectedPage.emit(this.currentPage)
+  }
+
+  logout() {
+    this.authService.logout()
+  }
+
+  close(){
+    this.onCloseSidenav.emit(true)
   }
 }
