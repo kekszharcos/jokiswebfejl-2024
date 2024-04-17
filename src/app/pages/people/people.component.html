@@ -3,7 +3,7 @@
     <mat-card>
       <mat-card-content>
         <mat-card-header>{{user.username}}</mat-card-header>
-        <mat-card-footer>
+        <mat-card-footer *ngIf="!currentFriends.includes(user.id)">
         <button mat-raised-button color="primary" type="submit" (click)="addFriend(user.id)">Add friend</button>
         </mat-card-footer>
       </mat-card-content>
