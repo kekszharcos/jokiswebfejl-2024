@@ -10,6 +10,7 @@
           <li *ngIf="!(loggedInUser)"><a routerLink="/login">Login</a></li>
           <li *ngIf="!(loggedInUser)"><a routerLink="/signup">Register</a></li>
           <li *ngIf="loggedInUser"><a routerLink="/login" (click)="logout($event)">Logout</a></li>
+          <li *ngIf="loggedInUser"><a routerLink="/people">People</a></li>
           <li *ngIf="loggedInUser"><a routerLink="/main">Main</a></li>
           <li *ngIf="loggedInUser"><a routerLink="/friends">Friends</a></li>
           <li *ngIf="loggedInUser"><a routerLink="/messages">Messages</a></li>

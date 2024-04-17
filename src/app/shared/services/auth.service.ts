@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {AngularFireAuth} from "@angular/fire/compat/auth";
 
 @Injectable({
@@ -6,17 +6,22 @@ import {AngularFireAuth} from "@angular/fire/compat/auth";
 })
 export class AuthService {
 
-  constructor(private  auth:AngularFireAuth) { }
-  login(email:string,password:string){
-    return this.auth.signInWithEmailAndPassword(email,password);
+  constructor(private auth: AngularFireAuth) {
   }
-  signup(email:string, passwrod:string){
-    return this.auth.createUserWithEmailAndPassword(email,passwrod);
+
+  login(email: string, password: string) {
+    return this.auth.signInWithEmailAndPassword(email, password);
   }
-  logout(){
+
+  signup(email: string, passwrod: string) {
+    return this.auth.createUserWithEmailAndPassword(email, passwrod);
+  }
+
+  logout() {
     return this.auth.signOut()
   }
-  isUserLoggedIn(){
+
+  isUserLoggedIn() {
     return this.auth.user
   }
 }

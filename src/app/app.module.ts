@@ -17,11 +17,14 @@ import { MatIconModule} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
 import {FlexLayoutModule} from "@angular/flex-layout";
 import {MatListModule} from "@angular/material/list";
+import { PeopleComponent } from './pages/people/people.component';
+import {MatCard} from "@angular/material/card";
 
 @NgModule({
   declarations: [
     AppComponent,
     MenuComponent,
+    PeopleComponent,
   ],
   imports: [
     BrowserModule,
@@ -45,7 +48,8 @@ import {MatListModule} from "@angular/material/list";
     MatButtonModule,
     MatIconModule,
     FlexLayoutModule,
-    MatListModule
+    MatListModule,
+    MatCard
   ],
   providers: [
     provideAnimationsAsync()

@@ -1,3 +1,13 @@
-<div class="main_component">
-  <p>messages works!</p>
-</div>
+<mat-card class="main_component">
+  <mat-card class="Chats">
+    <div class="Messages">
+
+    </div>
+    <div class="Write">
+      <mat-form-field>
+        <textarea matNativeControl cdkTextareaAutosize [formControl]="messageToSend"></textarea>
+      </mat-form-field>
+      <button mat-raised-button type="submit" (click)="onSend()">Send</button>
+    </div>
+  </mat-card>
+</mat-card>
