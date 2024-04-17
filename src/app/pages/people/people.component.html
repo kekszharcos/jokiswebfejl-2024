@@ -1,5 +1,12 @@
 <div class="main_component">
-  <!--<mat-card *ngFor="everyone">
-
-  </mat-card>-->
+  <mat-card *ngFor="let user of everyone" fxFlex fxLayout >
+    <mat-card>
+      <mat-card-content>
+        <mat-card-header>{{user.username}}</mat-card-header>
+        <mat-card-footer>
+        <button mat-raised-button color="primary" type="submit" (click)="addFriend(user.id)">Add friend</button>
+        </mat-card-footer>
+      </mat-card-content>
+    </mat-card>
+  </mat-card>
 </div>

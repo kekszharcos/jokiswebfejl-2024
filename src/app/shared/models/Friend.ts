@@ -1,4 +1,4 @@
 export interface Friend {
   user: string
-  friends: Object[];
+  friends: string;
 }

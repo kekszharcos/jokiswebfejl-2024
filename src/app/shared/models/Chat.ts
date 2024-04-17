@@ -1,5 +1,5 @@
 export interface Chat {
   id: string;
-  messages: Object[];
-  users: Object[];
+  messages: string;
+  users: string;
 }

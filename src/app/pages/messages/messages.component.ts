@@ -12,10 +12,9 @@ import {AngularFirestore} from "@angular/fire/compat/firestore";
 export class MessagesComponent implements OnInit {
   loggedInUser: any;
   messageToSend: FormControl = new FormControl<any>('');
-  test = ['asd']
   message: Message = {
     id: this.afs.createId(),
-    toWho: '',
+    chatId: '',
     owner: '',
     text: '',
     time: ''
@@ -33,6 +32,6 @@ export class MessagesComponent implements OnInit {
   onSend() {
     this.message.text = this.messageToSend.value
     this.message.time = new Date().toISOString();
-    console.log(JSON.stringify(this.test))
+    console.log(JSON.stringify(this.message))
   }
 }

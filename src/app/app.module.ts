@@ -9,7 +9,7 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getStorage, provideStorage } from '@angular/fire/storage';
 import { MenuComponent } from './shared/menu/menu.component';
 import { MainModule } from './pages/main/main.module';
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {AngularFireModule} from "@angular/fire/compat";
 import { MatSidenavModule} from "@angular/material/sidenav";
 import { MatToolbarModule} from "@angular/material/toolbar";
@@ -18,7 +18,8 @@ import {MatButtonModule} from "@angular/material/button";
 import {FlexLayoutModule} from "@angular/flex-layout";
 import {MatListModule} from "@angular/material/list";
 import { PeopleComponent } from './pages/people/people.component';
-import {MatCard} from "@angular/material/card";
+import {MatCard, MatCardContent, MatCardFooter, MatCardHeader} from "@angular/material/card";
+import {MatInput, MatLabel} from "@angular/material/input";
 
 @NgModule({
   declarations: [
@@ -49,7 +50,13 @@ import {MatCard} from "@angular/material/card";
     MatIconModule,
     FlexLayoutModule,
     MatListModule,
-    MatCard
+    MatCard,
+    MatInput,
+    ReactiveFormsModule,
+    MatLabel,
+    MatCardHeader,
+    MatCardFooter,
+    MatCardContent
   ],
   providers: [
     provideAnimationsAsync()
