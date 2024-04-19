@@ -5,7 +5,10 @@ import { MessagesComponent } from './messages.component';
 const routes: Routes = [{ path: '', component: MessagesComponent }];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+    imports: [RouterModule.forChild(routes)],
+    declarations: [
+
+    ],
+    exports: [RouterModule]
 })
 export class MessagesRoutingModule { }

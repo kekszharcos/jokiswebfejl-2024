@@ -1,10 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {UserService} from "../../shared/services/user.service";
 import {User} from "../../shared/models/User";
-import {FormControl} from "@angular/forms";
 import {FriendService} from "../../shared/services/friend.service";
 import {Friend} from "../../shared/models/Friend";
-import {user} from "@angular/fire/auth";
 
 @Component({
   selector: 'app-people',
@@ -34,24 +32,16 @@ export class PeopleComponent implements OnInit {
       this.everyone = this.everyone.filter(r => this.loggedInUser.uid !== r.id)
       console.log(this.everyone)
     })
-    this.friendService.get().subscribe(value => {
-      for (let i = 0; i < value.length; i++) {
-        if (value[i].user === this.loggedInUser.uid) {
-          this.currentFriends = JSON.parse(value[i].friends)
-        }
-      }
+    this.friendService.getOwnFriends(this.loggedInUser.uid).subscribe(value => {
+      this.currentFriends = JSON.parse(value[0].friends)
     })
   }
 
   addFriend(friendId: string) {
     this.itFriends = []
     if (!this.currentFriends.includes(friendId)) {
-      this.friendService.get().subscribe(value => {
-        for (let i = 0; i < value.length; i++) {
-          if (value[i].user === friendId) {
-            this.itFriends = JSON.parse(value[i].friends)
-          }
-        }
+      this.friendService.getOwnFriends(friendId).subscribe(value => {
+        this.itFriends = JSON.parse(value[0].friends)
       })
       this.otherFriend.user = friendId;
       this.itFriends.push(this.loggedInUser.uid)
@@ -66,6 +56,7 @@ export class PeopleComponent implements OnInit {
         .catch(reason => {
           console.log(reason)
         })
+      localStorage.setItem('friends',JSON.stringify(this.currentFriends))
     }
   }
 }

@@ -21,11 +21,12 @@ import { PeopleComponent } from './pages/people/people.component';
 import {MatCard, MatCardContent, MatCardFooter, MatCardHeader} from "@angular/material/card";
 import {MatInput, MatLabel} from "@angular/material/input";
 
+
 @NgModule({
   declarations: [
     AppComponent,
     MenuComponent,
-    PeopleComponent,
+    PeopleComponent
   ],
   imports: [
     BrowserModule,

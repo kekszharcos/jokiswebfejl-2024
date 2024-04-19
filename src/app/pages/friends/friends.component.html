@@ -1,3 +1,12 @@
 <div class="main_component">
-  <p>friends works!</p>
+  <mat-card *ngFor="let friend of friendUsers" fxFlex fxLayout >
+    <mat-card>
+      <mat-card-content>
+        <mat-card-header>{{friend.name}}</mat-card-header>
+        <mat-card-footer>
+          <button mat-raised-button color="primary" type="submit" [routerLink]="'/messages'" (click)="openChat(friend.id)">Open chat</button>
+        </mat-card-footer>
+      </mat-card-content>
+    </mat-card>
+  </mat-card>
 </div>

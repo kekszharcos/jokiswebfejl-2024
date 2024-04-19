@@ -26,4 +26,7 @@ export class UserService {
   delete(user: User) {
     return this.afs.collection<User>(this.collectionName).doc(user.id).delete()
   }
+  getUserById(userId:string) {
+    return this.afs.collection<User>(this.collectionName,ref => ref.where('id',"==",userId)).valueChanges()
+  }
 }

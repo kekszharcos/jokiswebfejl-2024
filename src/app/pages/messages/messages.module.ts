@@ -7,13 +7,17 @@ import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {ReactiveFormsModule} from "@angular/forms";
-import {MatCard} from "@angular/material/card";
+import {MatCard, MatCardContent, MatCardFooter, MatCardHeader} from "@angular/material/card";
+import {FlexModule} from "@angular/flex-layout";
+import {FromUserIdToNamePipe} from "../../shared/pipes/from-user-id-to-name.pipe";
+import {MatDrawer, MatDrawerContainer} from "@angular/material/sidenav";
 
 
 
 @NgModule({
   declarations: [
-    MessagesComponent
+    MessagesComponent,
+    FromUserIdToNamePipe
   ],
   imports: [
     CommonModule,
@@ -22,7 +26,13 @@ import {MatCard} from "@angular/material/card";
     MatButtonModule,
     MatFormFieldModule,
     ReactiveFormsModule,
-    MatCard
+    MatCard,
+    FlexModule,
+    MatCardContent,
+    MatCardHeader,
+    MatDrawerContainer,
+    MatDrawer,
+    MatCardFooter
   ]
 })
 export class MessagesModule { }
