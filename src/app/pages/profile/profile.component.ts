@@ -31,7 +31,7 @@ export class ProfileComponent implements OnInit {
   }
 
   deleteProfile() {
-    //this.userService.delete(this.loggedInUser.uid).then(_=> this.router.navigate(['/login']))
+    this.userService.delete(this.loggedInUser.uid)//.then(_=> this.router.navigate(['/login']))
   }
 
   updateProfile() {
@@ -44,7 +44,11 @@ export class ProfileComponent implements OnInit {
     if (this.email.value?.trim() !== ''){
       this.newUser.email = (this.email?.value as string).trim();
     }
-    this.userService.update(this.newUser,this.pwToSend)
+    if (this.email.value?.trim() === this.loggedInUser.email){
+      this.userService.update(this.newUser,this.pwToSend, false)
+    }else {
+      this.userService.update(this.newUser,this.pwToSend,true)
+    }
     console.log(this.newUser)
   }
 }
