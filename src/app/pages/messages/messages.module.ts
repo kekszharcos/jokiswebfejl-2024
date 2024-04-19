@@ -19,6 +19,9 @@ import {MatDrawer, MatDrawerContainer} from "@angular/material/sidenav";
     MessagesComponent,
     FromUserIdToNamePipe
   ],
+  exports: [
+    FromUserIdToNamePipe
+  ],
   imports: [
     CommonModule,
     MessagesRoutingModule,

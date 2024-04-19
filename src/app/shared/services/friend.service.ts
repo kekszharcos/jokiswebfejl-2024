@@ -15,6 +15,10 @@ export class FriendService {
     return this.afs.collection<Friend>(this.collectionName).doc(friend.user).set(friend)
   }
 
+  update(friend: Friend) {
+    return this.afs.collection<Friend>(this.collectionName).doc(friend.user).update(friend)
+  }
+
   getOwnFriends(uid:string) {
     return this.afs.collection<Friend>(this.collectionName, ref => ref.where("user","==",uid )).valueChanges()
   }

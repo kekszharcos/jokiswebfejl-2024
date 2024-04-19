@@ -79,4 +79,12 @@ export class MessagesComponent implements OnInit {
   openDrawer() {
     this.drawer?.close()
   }
+
+  addToChat() {
+
+  }
+
+  createNewChat() {
+
+  }
 }

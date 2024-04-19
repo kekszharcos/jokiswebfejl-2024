@@ -32,8 +32,13 @@ export class ChatService {
 
   }
 
+  update(chat: Chat) {
+    return this.afs.collection<Chat>(this.collectionName).doc(chat.id).update(chat)
+  }
+
   delete(id: string) {
     return this.afs.collection<Chat>(this.collectionName).doc(id).delete()
   }
+
 
 }

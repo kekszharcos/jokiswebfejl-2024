@@ -1,9 +1,12 @@
+
 <mat-drawer-container class="main_component" fxFlex fxLayout="row">
   <mat-drawer #drawer mode="side" opened class="Chats" fxLayoutAlign="start center" fxLayoutGap="2" fxLayout="column">
     <mat-card class="ChatsPeople" *ngFor="let friendName of friendChats">
       <mat-card-header (click)="openChatWindow(friendName[1])">{{ friendName[0] }}</mat-card-header>
     </mat-card>
   </mat-drawer>
+  <button (click)="addToChat()">Add friend to group</button>
+  <button (click)="createNewChat()">Create new chat</button>
   <mat-drawer-content fxLayout="column" fxLayoutAlign="center center" *ngIf="hider && chattingWith">
     <mat-card>
       <mat-card fxFlex class="Guy" *ngFor="let message of chatMessages">
@@ -23,3 +26,4 @@
     </mat-card>
   </mat-drawer-content>
 </mat-drawer-container>
+

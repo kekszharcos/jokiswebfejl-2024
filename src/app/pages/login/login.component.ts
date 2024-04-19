@@ -18,7 +18,6 @@ export class LoginComponent {
 
   loggingIn() {
     this.authService.login(this.email.value.trim(),this.password.value)
-      .then(r => {console.log("valid credentials");this.router.navigateByUrl("/main");})
-      .catch(r => console.log("invalid credentials"))
+      .then(r => {this.router.navigateByUrl("/main");})
   }
 }

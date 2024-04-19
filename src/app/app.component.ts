@@ -3,19 +3,20 @@ import {NavigationEnd, Router} from "@angular/router";
 import {filter} from "rxjs";
 import {AuthService} from "./shared/services/auth.service";
 import {MatSidenav} from "@angular/material/sidenav";
+import {FriendService} from "./shared/services/friend.service";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
   title = 'jokiswebfelj-2024';
   page = '';
-  routes : Array<string> = [];
+  routes: Array<string> = [];
   loggedInUser?: firebase.default.User | null;
 
-  constructor(private router:Router, private authService:AuthService) {
+  constructor(private router: Router, private authService: AuthService, private friendService: FriendService) {
   }
 
   pageSelect(selectedPage: string) {
@@ -28,20 +29,22 @@ export class AppComponent implements OnInit{
     //mas
     this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((evts: any) => {
       const currentPage = (evts.urlAfterRedirects as string).split('/')[1] as string;
-      if (this.routes.includes(currentPage)){
+      if (this.routes.includes(currentPage)) {
         this.page = currentPage;
       }
     })
-    this.authService.isUserLoggedIn().subscribe(user =>{
+    this.authService.isUserLoggedIn().subscribe(user => {
       this.loggedInUser = user
       localStorage.setItem('user', JSON.stringify(this.loggedInUser))
-    },error => {
+    }, error => {
       localStorage.setItem('user', 'null')
+      localStorage.setItem('friends', 'null')
     })
   }
 
-  logout($event: unknown){
-    this.authService.logout().then( ()=>{} )
+  logout($event: unknown) {
+    this.authService.logout().then(() => {
+    })
   }
 
   onToggleSidenav(sidenav: MatSidenav) {
@@ -53,7 +56,7 @@ export class AppComponent implements OnInit{
   }
 
   onClose($event: unknown, sidenav: MatSidenav) {
-    if ($event === true){
+    if ($event === true) {
       sidenav.close()
     }
   }
