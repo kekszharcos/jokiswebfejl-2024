@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import { Component, OnInit, ViewChild} from '@angular/core';
 import {FormControl} from "@angular/forms";
 import {MessageService} from "../../shared/services/message.service";
 import {Message} from "../../shared/models/Message";
@@ -7,7 +7,7 @@ import {Chat} from "../../shared/models/Chat";
 import {UserService} from "../../shared/services/user.service";
 import {MatDrawer} from "@angular/material/sidenav";
 import {FriendService} from "../../shared/services/friend.service";
-import {filter} from "rxjs";
+import {filter, window} from "rxjs";
 
 @Component({
   selector: 'app-messages',
@@ -42,19 +42,21 @@ export class MessagesComponent implements OnInit {
 
   ngOnInit(): void {
     this.message.owner = this.loggedInUser.uid;
-    this.ownChats = this.chatService.getOwnChats(this.loggedInUser.uid)
-    //console.log(this.ownChats)
-    this.ownChats.forEach(chat => {
-      let usersBro = JSON.parse(chat.users)
-      usersBro = usersBro.filter((filter: boolean) => filter !== this.loggedInUser.uid)
-      console.log(usersBro)
-      this.userService.getUserById(usersBro[0]).subscribe(value => {
-        if (usersBro.length > 1) {
-          this.friendChats.push([value[0].username + " [Group]", chat.id])
-        } else {
-          this.friendChats.push([value[0].username, chat.id])
-        }
-      })
+    let ss = this.chatService.getOwnChatsObs().subscribe(value => {
+        this.ownChats = value.filter(chat => JSON.parse(chat.users).includes(this.message.owner));
+      for (let i = 0; i < this.ownChats.length; i++) {
+        let usersBro = JSON.parse(this.ownChats[i].users)
+        usersBro = usersBro.filter((filter: boolean) => filter !== this.loggedInUser.uid)
+        let surbs = this.userService.getUserById(usersBro[0]).subscribe(value => {
+          if (usersBro.length > 1) {
+            this.friendChats.push([value[0].username + " [Group]", this.ownChats[i].id])
+          } else {
+            this.friendChats.push([value[0].username, this.ownChats[i].id])
+          }
+          surbs.unsubscribe()
+        })
+      }
+      ss.unsubscribe()
     })
 
   }
@@ -79,9 +81,9 @@ export class MessagesComponent implements OnInit {
 
   }
 
-  refresh() {
+  /*refresh() {
     window.location.reload();
-  }
+  }*/
 
   openDrawer() {
     if (this.drawer?.opened) {
@@ -105,8 +107,6 @@ export class MessagesComponent implements OnInit {
             }
           }
           this.addToChatHider = true
-          console.log(this.friends, currentChatMembers, this.showableFriends);
-
         }
       })
     })
@@ -114,9 +114,10 @@ export class MessagesComponent implements OnInit {
 
   }
 
-  addToChat() {
+  addToChat(currentChatId: string) {
     console.log(this.chosenToAdd.value)
-    this.showableFriends = this.showableFriends.filter((fitler: string) => filter !== this.chosenToAdd.value)
+    console.log(currentChatId)
+    this.showableFriends = this.showableFriends.filter((fitler: string) => fitler !== this.chosenToAdd.value)
 
     this.addToChatHider = true
   }

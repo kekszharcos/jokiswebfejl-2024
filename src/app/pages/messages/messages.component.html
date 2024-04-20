@@ -1,20 +1,27 @@
 <mat-drawer-container class="main_component" fxFlex fxLayout="row">
-  <mat-drawer #drawer mode="side" opened class="Chats" fxLayoutAlign="start center" fxLayoutGap="2" fxLayout="column" *ngIf="friendChats.length>0">
-    <mat-card class="ChatsPeople" *ngFor="let friendName of friendChats">
-      <mat-card-header (click)="openChatWindow(friendName[1],friendName[0]);openDrawer()"><button mat-button>{{ friendName[0] }}</button></mat-card-header>
-      <button mat-raised-button (click)="addToChatOpen(friendName[1]);openChatWindow(friendName[1],friendName[0])">Add friend to group</button><br>
-    </mat-card>
-
-    <button mat-raised-button (click)="createNewChat()">Create new chat</button>
+  <mat-drawer #drawer mode="side" opened class="Chats" fxLayoutAlign="start center" fxLayoutGap="2" fxLayout="column" >
+    <ng-container *ngIf="friendChats.length > 0; else loading">
+      <mat-card class="ChatsPeople" *ngFor="let friendName of friendChats">
+        <mat-card-header (click)="openChatWindow(friendName[1],friendName[0]);openDrawer()"><button mat-button>{{ friendName[0] }}</button></mat-card-header>
+        <button mat-raised-button (click)="addToChatOpen(friendName[1]);openChatWindow(friendName[1],friendName[0])">Add friend to group</button><br>
+      </mat-card>
+      <button mat-raised-button (click)="createNewChat()">Create new chat</button>
+    </ng-container>
+      <ng-template #loading>
+        <div>Loading...</div>
+      </ng-template>
   </mat-drawer>
+
   <mat-card id="buttons">
     <button mat-raised-button (click)="openDrawer()"><mat-icon>menu</mat-icon></button>
   </mat-card>
+
   <mat-drawer-content fxLayout="column" fxLayoutAlign="center center" *ngIf="contentHider && chattingChatId">
     <div *ngIf="addToChatHider">
       <mat-form-field>
         <mat-label>Pick a friend to add:</mat-label>
-        <mat-select (selectionChange)="addToChat()" [formControl]="chosenToAdd">
+        <mat-select (selectionChange)="addToChat(chattingChatId)" [formControl]="chosenToAdd">
+          <mat-option *ngIf="showableFriends.length === 0">No avaliable friends to add</mat-option>
           <mat-option *ngFor="let show of showableFriends" [value]="show">
             {{show | fromUserIdToName | async}}
           </mat-option>

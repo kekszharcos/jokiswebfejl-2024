@@ -19,12 +19,12 @@ export class ChatService {
   getOwnChats(uid: string) {
     this.afs.collection<Chat>(this.collectionName).valueChanges().subscribe(value => {
       this.chats = value.filter(chat => JSON.parse(chat.users).includes(uid));
+
     });
     return this.chats;
   }
   getOwnChatsObs() {
     return this.afs.collection<Chat>(this.collectionName).valueChanges()
-
   }
 
   getChatsById(id:string) {
