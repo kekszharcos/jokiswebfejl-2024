@@ -115,7 +115,7 @@ export class MessagesComponent implements OnInit {
     if (this.chosenToAdd.value.trim() !== '' && currentChatId) {
       this.showableFriends = this.showableFriends.filter((fitler: string) => fitler !== this.chosenToAdd.value)
       let modifyableChat;
-      this.chatService.getChatsById(currentChatId).subscribe(value => {
+      let iratkozlexd = this.chatService.getChatsById(currentChatId).subscribe(value => {
         modifyableChat = value[0]
         let pastUsers = JSON.parse(modifyableChat.users)
         pastUsers.push(this.chosenToAdd.value)
@@ -123,6 +123,7 @@ export class MessagesComponent implements OnInit {
 
         this.chatService.update(modifyableChat)
         this.chosenToAdd = new FormControl('');
+        iratkozlexd.unsubscribe()
       })
     }
     this.addToChatHider = true
@@ -135,9 +136,17 @@ export class MessagesComponent implements OnInit {
       users:'["'+this.loggedInUser.uid+'"]'
     }
     console.log(chat)
-    location.reload()
-    this.chatService.create(chat)
+
+    this.chatService.create(chat).then(value => {
+      location.reload()
+    })
   }
 
 
+  deleteChat(chatId: string) {
+    this.chatService.delete(chatId).then(value => {
+      location.reload()
+    })
+
+  }
 }
