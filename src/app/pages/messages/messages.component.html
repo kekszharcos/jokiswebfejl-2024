@@ -1,16 +1,19 @@
-
 <mat-drawer-container class="main_component" fxFlex fxLayout="row">
-  <mat-drawer #drawer mode="side" opened class="Chats" fxLayoutAlign="start center" fxLayoutGap="2" fxLayout="column">
+  <mat-drawer #drawer mode="side" opened class="Chats" fxLayoutAlign="start center" fxLayoutGap="2" fxLayout="column" *ngIf="friendChats.length>0">
     <mat-card class="ChatsPeople" *ngFor="let friendName of friendChats">
-      <mat-card-header (click)="openChatWindow(friendName[1])">{{ friendName[0] }}</mat-card-header>
+      <mat-card-header (click)="openChatWindow(friendName[1],friendName[0]);openDrawer()">{{ friendName[0] }}</mat-card-header>
     </mat-card>
+    <button mat-raised-button (click)="addToChat()">Add friend to group</button><br>
+    <button mat-raised-button (click)="createNewChat()">Create new chat</button>
   </mat-drawer>
-  <button (click)="addToChat()">Add friend to group</button>
-  <button (click)="createNewChat()">Create new chat</button>
-  <mat-drawer-content fxLayout="column" fxLayoutAlign="center center" *ngIf="hider && chattingWith">
+  <mat-card id="buttons">
+    <button mat-raised-button (click)="openDrawer()"><mat-icon>menu</mat-icon></button>
+  </mat-card>
+  <mat-drawer-content fxLayout="column" fxLayoutAlign="center center" *ngIf="contentHider && chattingWith">
     <mat-card>
+      <mat-card-header id="current">You are chatting with: {{ currentChatName }}</mat-card-header>
       <mat-card fxFlex class="Guy" *ngFor="let message of chatMessages">
-        <mat-card-header>From:{{ message.owner | fromUserIdToName | async }}</mat-card-header>
+        <mat-card-header>From: {{ message.owner | fromUserIdToName | async }}</mat-card-header>
         <mat-card-content fxLayoutAlign="center center">
           {{ message.text }}
         </mat-card-content>

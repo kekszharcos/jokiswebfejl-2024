@@ -11,6 +11,7 @@ import {MatCard, MatCardContent, MatCardFooter, MatCardHeader} from "@angular/ma
 import {FlexModule} from "@angular/flex-layout";
 import {FromUserIdToNamePipe} from "../../shared/pipes/from-user-id-to-name.pipe";
 import {MatDrawer, MatDrawerContainer} from "@angular/material/sidenav";
+import {MatIcon} from "@angular/material/icon";
 
 
 
@@ -22,20 +23,21 @@ import {MatDrawer, MatDrawerContainer} from "@angular/material/sidenav";
   exports: [
     FromUserIdToNamePipe
   ],
-  imports: [
-    CommonModule,
-    MessagesRoutingModule,
-    MatInputModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    ReactiveFormsModule,
-    MatCard,
-    FlexModule,
-    MatCardContent,
-    MatCardHeader,
-    MatDrawerContainer,
-    MatDrawer,
-    MatCardFooter
-  ]
+    imports: [
+        CommonModule,
+        MessagesRoutingModule,
+        MatInputModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        ReactiveFormsModule,
+        MatCard,
+        FlexModule,
+        MatCardContent,
+        MatCardHeader,
+        MatDrawerContainer,
+        MatDrawer,
+        MatCardFooter,
+        MatIcon
+    ]
 })
 export class MessagesModule { }

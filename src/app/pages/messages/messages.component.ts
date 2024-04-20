@@ -14,7 +14,7 @@ import {MatDrawer} from "@angular/material/sidenav";
 })
 export class MessagesComponent implements OnInit {
   @ViewChild('drawer') drawer: MatDrawer | undefined;
-  hider = false;
+  contentHider = false;
   loggedInUser = JSON.parse(localStorage.getItem('user') as string);
   messageToSend: FormControl = new FormControl<any>('');
   ownChats: Chat[] = []
@@ -28,6 +28,8 @@ export class MessagesComponent implements OnInit {
   }
   chatMessages: Message[] = [];
   chattingWith: string ='';
+  currentChatName : string = '';
+
 
 
   constructor(private messageService: MessageService, private chatService: ChatService, private userService:UserService) {
@@ -59,20 +61,28 @@ export class MessagesComponent implements OnInit {
     this.messageToSend = new FormControl('')
   }
 
-  openChatWindow(string: string) {
-    this.chattingWith = string;
-    this.hider = true
-    this.messageService.getMessageByChatId(string).subscribe(value => {
+  openChatWindow(chatId: string, chatName: string) {
+    this.chattingWith = chatId;
+    this.contentHider = true
+    this.messageService.getMessageByChatId(chatId).subscribe(value => {
       this.chatMessages = value
     })
     this.messageToSend = new FormControl('')
+    this.currentChatName = chatName
+
   }
 
   // refresh(){
   //   window.location.reload();
   // }
+
   openDrawer() {
-    this.drawer?.close()
+    if (this.drawer?.opened){
+      this.drawer?.close()
+    }else {
+      this.drawer?.open()
+    }
+
   }
 
   addToChat() {
