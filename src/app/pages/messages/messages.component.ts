@@ -29,30 +29,25 @@ export class MessagesComponent implements OnInit {
   chatMessages: Message[] = [];
   chattingWith: string ='';
 
-  constructor(private messageService: MessageService, private chatService: ChatService, private userService:UserService) {
 
+  constructor(private messageService: MessageService, private chatService: ChatService, private userService:UserService) {
   }
 
   ngOnInit(): void {
     this.message.owner = this.loggedInUser.uid;
     this.ownChats = this.chatService.getOwnChats(this.loggedInUser.uid)
-    this.chatService.getOwnChatsObs().subscribe(value => {
-      this.ownChats = value.filter(chat => JSON.parse(chat.users).includes(this.loggedInUser.uid));
-    })
     //console.log(this.ownChats)
     this.ownChats.forEach(chat => {
       let usersBro = JSON.parse(chat.users)
-      if (usersBro.includes(this.loggedInUser.uid)){
-        for (let i = 0; i < usersBro.length; i++) {
-          if (usersBro[i] !== this.loggedInUser.uid){
-            this.userService.getUserById(usersBro[i]).subscribe(value => {
-              this.friendChats.push([value[0].username,chat.id])
-
-            })
-          }
+      usersBro = usersBro.filter((filter:boolean)=> filter !== this.loggedInUser.uid)
+      console.log(usersBro)
+      this.userService.getUserById(usersBro[0]).subscribe(value => {
+        if (usersBro.length > 1){
+          this.friendChats.push([value[0].username+" [Group]",chat.id])
+        }else {
+          this.friendChats.push([value[0].username,chat.id])
         }
-
-      }
+      })
     })
   }
 
@@ -61,16 +56,16 @@ export class MessagesComponent implements OnInit {
     this.message.chatId = chatId
     this.message.time = new Date().toISOString();
     this.messageService.create(this.message)
+    this.messageToSend = new FormControl('')
   }
 
   openChatWindow(string: string) {
     this.chattingWith = string;
-    this.hider = !this.hider
+    this.hider = true
     this.messageService.getMessageByChatId(string).subscribe(value => {
       this.chatMessages = value
-      console.log(this.chatMessages)
     })
-
+    this.messageToSend = new FormControl('')
   }
 
   // refresh(){
@@ -81,7 +76,8 @@ export class MessagesComponent implements OnInit {
   }
 
   addToChat() {
-
+    console.log(this.chatMessages)
+    console.log(this.friendChats)
   }
 
   createNewChat() {
