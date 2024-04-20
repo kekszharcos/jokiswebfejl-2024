@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormControl} from "@angular/forms";
 import {MessageService} from "../../shared/services/message.service";
 import {Message} from "../../shared/models/Message";
@@ -43,7 +43,7 @@ export class MessagesComponent implements OnInit {
   ngOnInit(): void {
     this.message.owner = this.loggedInUser.uid;
     let ss = this.chatService.getOwnChatsObs().subscribe(value => {
-        this.ownChats = value.filter(chat => JSON.parse(chat.users).includes(this.message.owner));
+      this.ownChats = value.filter(chat => JSON.parse(chat.users).includes(this.message.owner));
       for (let i = 0; i < this.ownChats.length; i++) {
         let usersBro = JSON.parse(this.ownChats[i].users)
         usersBro = usersBro.filter((filter: boolean) => filter !== this.loggedInUser.uid)
@@ -58,7 +58,6 @@ export class MessagesComponent implements OnInit {
       }
       ss.unsubscribe()
     })
-
   }
 
   onSend(chatId: string) {
@@ -78,7 +77,6 @@ export class MessagesComponent implements OnInit {
     })
     this.messageToSend = new FormControl('')
     this.currentChatName = chatName
-
   }
 
   /*refresh() {
@@ -91,7 +89,6 @@ export class MessagesComponent implements OnInit {
     } else {
       this.drawer?.open()
     }
-
   }
 
   addToChatOpen(chatId: string) {
@@ -110,19 +107,23 @@ export class MessagesComponent implements OnInit {
         }
       })
     })
-
-
   }
 
   addToChat(currentChatId: string) {
     console.log(this.chosenToAdd.value)
     console.log(currentChatId)
-    this.showableFriends = this.showableFriends.filter((fitler: string) => fitler !== this.chosenToAdd.value)
-
+    if (this.chosenToAdd.value.trim() !== '') {
+      this.showableFriends = this.showableFriends.filter((fitler: string) => fitler !== this.chosenToAdd.value)
+    }
     this.addToChatHider = true
   }
 
   createNewChat() {
-
+    let chat ={
+      id: '',
+      messages:'[]',
+      users:'['+this.loggedInUser.uid+']'
+    }
+    this.chatService.create(chat)
   }
 }

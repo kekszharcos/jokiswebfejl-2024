@@ -15,7 +15,7 @@ export class FriendsComponent implements OnInit{
   loggedInUser = JSON.parse(localStorage.getItem('user') as string) ;
   friendUsers: Array<any> =[];
   chat: Chat ={
-    id:this.afs.createId(),
+    id:'',
     users:'',
     messages:''
   }

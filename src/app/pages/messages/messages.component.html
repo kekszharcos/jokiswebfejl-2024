@@ -21,7 +21,7 @@
       <mat-form-field>
         <mat-label>Pick a friend to add:</mat-label>
         <mat-select (selectionChange)="addToChat(chattingChatId)" [formControl]="chosenToAdd">
-          <mat-option *ngIf="showableFriends.length === 0">No avaliable friends to add</mat-option>
+          <mat-option value="" *ngIf="showableFriends.length === 0">No avaliable friends to add</mat-option>
           <mat-option *ngFor="let show of showableFriends" [value]="show">
             {{show | fromUserIdToName | async}}
           </mat-option>
