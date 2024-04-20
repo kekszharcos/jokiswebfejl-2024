@@ -12,6 +12,7 @@ import {FlexModule} from "@angular/flex-layout";
 import {FromUserIdToNamePipe} from "../../shared/pipes/from-user-id-to-name.pipe";
 import {MatDrawer, MatDrawerContainer} from "@angular/material/sidenav";
 import {MatIcon} from "@angular/material/icon";
+import {MatOption, MatSelect} from "@angular/material/select";
 
 
 
@@ -23,21 +24,23 @@ import {MatIcon} from "@angular/material/icon";
   exports: [
     FromUserIdToNamePipe
   ],
-    imports: [
-        CommonModule,
-        MessagesRoutingModule,
-        MatInputModule,
-        MatButtonModule,
-        MatFormFieldModule,
-        ReactiveFormsModule,
-        MatCard,
-        FlexModule,
-        MatCardContent,
-        MatCardHeader,
-        MatDrawerContainer,
-        MatDrawer,
-        MatCardFooter,
-        MatIcon
-    ]
+  imports: [
+    CommonModule,
+    MessagesRoutingModule,
+    MatInputModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    ReactiveFormsModule,
+    MatCard,
+    FlexModule,
+    MatCardContent,
+    MatCardHeader,
+    MatDrawerContainer,
+    MatDrawer,
+    MatCardFooter,
+    MatIcon,
+    MatSelect,
+    MatOption
+  ]
 })
 export class MessagesModule { }

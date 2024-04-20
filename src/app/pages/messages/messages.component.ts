@@ -6,6 +6,8 @@ import {ChatService} from "../../shared/services/chat.service";
 import {Chat} from "../../shared/models/Chat";
 import {UserService} from "../../shared/services/user.service";
 import {MatDrawer} from "@angular/material/sidenav";
+import {FriendService} from "../../shared/services/friend.service";
+import {filter} from "rxjs";
 
 @Component({
   selector: 'app-messages',
@@ -18,7 +20,7 @@ export class MessagesComponent implements OnInit {
   loggedInUser = JSON.parse(localStorage.getItem('user') as string);
   messageToSend: FormControl = new FormControl<any>('');
   ownChats: Chat[] = []
-  friendChats:Array<string[]> = []
+  friendChats: Array<string[]> = []
   message: Message = {
     id: '',
     chatId: '',
@@ -27,12 +29,15 @@ export class MessagesComponent implements OnInit {
     time: ''
   }
   chatMessages: Message[] = [];
-  chattingWith: string ='';
-  currentChatName : string = '';
+  chattingChatId: string = '';
+  currentChatName: string = '';
+  addToChatHider: boolean = false;
+  friends: string = '';
+  showableFriends: Array<string> = []
+  chosenToAdd: FormControl = new FormControl('');
 
 
-
-  constructor(private messageService: MessageService, private chatService: ChatService, private userService:UserService) {
+  constructor(private messageService: MessageService, private chatService: ChatService, private userService: UserService, private friendService: FriendService) {
   }
 
   ngOnInit(): void {
@@ -41,19 +46,20 @@ export class MessagesComponent implements OnInit {
     //console.log(this.ownChats)
     this.ownChats.forEach(chat => {
       let usersBro = JSON.parse(chat.users)
-      usersBro = usersBro.filter((filter:boolean)=> filter !== this.loggedInUser.uid)
+      usersBro = usersBro.filter((filter: boolean) => filter !== this.loggedInUser.uid)
       console.log(usersBro)
       this.userService.getUserById(usersBro[0]).subscribe(value => {
-        if (usersBro.length > 1){
-          this.friendChats.push([value[0].username+" [Group]",chat.id])
-        }else {
-          this.friendChats.push([value[0].username,chat.id])
+        if (usersBro.length > 1) {
+          this.friendChats.push([value[0].username + " [Group]", chat.id])
+        } else {
+          this.friendChats.push([value[0].username, chat.id])
         }
       })
     })
+
   }
 
-  onSend(chatId:string) {
+  onSend(chatId: string) {
     this.message.text = this.messageToSend.value
     this.message.chatId = chatId
     this.message.time = new Date().toISOString();
@@ -62,7 +68,8 @@ export class MessagesComponent implements OnInit {
   }
 
   openChatWindow(chatId: string, chatName: string) {
-    this.chattingWith = chatId;
+    this.addToChatHider = false
+    this.chattingChatId = chatId;
     this.contentHider = true
     this.messageService.getMessageByChatId(chatId).subscribe(value => {
       this.chatMessages = value
@@ -72,22 +79,46 @@ export class MessagesComponent implements OnInit {
 
   }
 
-  // refresh(){
-  //   window.location.reload();
-  // }
+  refresh() {
+    window.location.reload();
+  }
 
   openDrawer() {
-    if (this.drawer?.opened){
+    if (this.drawer?.opened) {
       this.drawer?.close()
-    }else {
+    } else {
       this.drawer?.open()
     }
 
   }
 
+  addToChatOpen(chatId: string) {
+    this.showableFriends = []
+    this.friendService.getOwnFriends(this.loggedInUser.uid).subscribe(value => {
+      this.friends = JSON.parse(value[0].friends)
+      this.ownChats.forEach(value1 => {
+        if (value1.id === chatId) {
+          let currentChatMembers = JSON.parse(value1.users);
+          for (let i = 0; i < this.friends.length; i++) {
+            if (!currentChatMembers.includes(this.friends[i])) {
+              this.showableFriends.push(this.friends[i])
+            }
+          }
+          this.addToChatHider = true
+          console.log(this.friends, currentChatMembers, this.showableFriends);
+
+        }
+      })
+    })
+
+
+  }
+
   addToChat() {
-    console.log(this.chatMessages)
-    console.log(this.friendChats)
+    console.log(this.chosenToAdd.value)
+    this.showableFriends = this.showableFriends.filter((fitler: string) => filter !== this.chosenToAdd.value)
+
+    this.addToChatHider = true
   }
 
   createNewChat() {
