@@ -20,7 +20,6 @@ export class ChatService {
   getOwnChats(uid: string) {
     this.afs.collection<Chat>(this.collectionName).valueChanges().subscribe(value => {
       this.chats = value.filter(chat => JSON.parse(chat.users).includes(uid));
-
     });
     return this.chats;
   }
@@ -29,6 +28,7 @@ export class ChatService {
   }
 
   getChatsById(id:string) {
+    console.log(id)
     return this.afs.collection<Chat>(this.collectionName, ref => ref.where('id',"==",id )).valueChanges()
   }
 

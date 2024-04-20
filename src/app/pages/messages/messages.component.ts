@@ -7,7 +7,7 @@ import {Chat} from "../../shared/models/Chat";
 import {UserService} from "../../shared/services/user.service";
 import {MatDrawer} from "@angular/material/sidenav";
 import {FriendService} from "../../shared/services/friend.service";
-import {filter, window} from "rxjs";
+import {Location} from "@angular/common";
 
 @Component({
   selector: 'app-messages',
@@ -37,7 +37,7 @@ export class MessagesComponent implements OnInit {
   chosenToAdd: FormControl = new FormControl('');
 
 
-  constructor(private messageService: MessageService, private chatService: ChatService, private userService: UserService, private friendService: FriendService) {
+  constructor(private messageService: MessageService, private chatService: ChatService, private userService: UserService, private friendService: FriendService, private location:Location) {
   }
 
   ngOnInit(): void {
@@ -46,7 +46,9 @@ export class MessagesComponent implements OnInit {
       this.ownChats = value.filter(chat => JSON.parse(chat.users).includes(this.message.owner));
       for (let i = 0; i < this.ownChats.length; i++) {
         let usersBro = JSON.parse(this.ownChats[i].users)
-        usersBro = usersBro.filter((filter: boolean) => filter !== this.loggedInUser.uid)
+        if (usersBro.length > 1){
+          usersBro = usersBro.filter((filter: boolean) => filter !== this.loggedInUser.uid)
+        }
         let surbs = this.userService.getUserById(usersBro[0]).subscribe(value => {
           if (usersBro.length > 1) {
             this.friendChats.push([value[0].username + " [Group]", this.ownChats[i].id])
@@ -80,7 +82,7 @@ export class MessagesComponent implements OnInit {
   }
 
   /*refresh() {
-    window.location.reload();
+    window.location.reload()
   }*/
 
   openDrawer() {
@@ -110,10 +112,18 @@ export class MessagesComponent implements OnInit {
   }
 
   addToChat(currentChatId: string) {
-    console.log(this.chosenToAdd.value)
-    console.log(currentChatId)
-    if (this.chosenToAdd.value.trim() !== '') {
+    if (this.chosenToAdd.value.trim() !== '' && currentChatId) {
       this.showableFriends = this.showableFriends.filter((fitler: string) => fitler !== this.chosenToAdd.value)
+      let modifyableChat;
+      this.chatService.getChatsById(currentChatId).subscribe(value => {
+        modifyableChat = value[0]
+        let pastUsers = JSON.parse(modifyableChat.users)
+        pastUsers.push(this.chosenToAdd.value)
+        modifyableChat.users = JSON.stringify(pastUsers)
+
+        this.chatService.update(modifyableChat)
+        this.chosenToAdd = new FormControl('');
+      })
     }
     this.addToChatHider = true
   }
@@ -121,9 +131,13 @@ export class MessagesComponent implements OnInit {
   createNewChat() {
     let chat ={
       id: '',
-      messages:'[]',
-      users:'['+this.loggedInUser.uid+']'
+      messages:'',
+      users:'["'+this.loggedInUser.uid+'"]'
     }
+    console.log(chat)
+    location.reload()
     this.chatService.create(chat)
   }
+
+
 }

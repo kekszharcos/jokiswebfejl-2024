@@ -5,7 +5,7 @@
         <mat-card-header (click)="openChatWindow(friendName[1],friendName[0]);openDrawer()"><button mat-button>{{ friendName[0] }}</button></mat-card-header>
         <button mat-raised-button (click)="addToChatOpen(friendName[1]);openChatWindow(friendName[1],friendName[0])">Add friend to group</button><br>
       </mat-card>
-      <button mat-raised-button (click)="createNewChat()">Create new chat</button>
+      <button mat-raised-button (click)="createNewChat();">Create new chat</button>
     </ng-container>
       <ng-template #loading>
         <div>Loading...</div>
