@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, DoCheck, IterableDiffer, IterableDiffers, OnInit, ViewChild} from '@angular/core';
 import {FormControl} from "@angular/forms";
 import {MessageService} from "../../shared/services/message.service";
 import {Message} from "../../shared/models/Message";
@@ -14,13 +14,16 @@ import {Location} from "@angular/common";
   templateUrl: './messages.component.html',
   styleUrl: './messages.component.scss'
 })
-export class MessagesComponent implements OnInit {
+export class MessagesComponent implements OnInit, DoCheck {
   @ViewChild('drawer') drawer: MatDrawer | undefined;
-  contentHider = false;
+  @ViewChild('openButton') openButton: any;
   loggedInUser = JSON.parse(localStorage.getItem('user') as string);
-  messageToSend: FormControl = new FormControl<any>('');
+  messageToSend: FormControl = new FormControl('');
+  chosenToAction: FormControl = new FormControl('');
+  chosenAction: FormControl = new FormControl('');
   ownChats: Chat[] = []
   friendChats: Array<string[]> = []
+  showableFriends: Array<string> = []
   message: Message = {
     id: '',
     chatId: '',
@@ -32,12 +35,20 @@ export class MessagesComponent implements OnInit {
   chattingChatId: string = '';
   currentChatName: string = '';
   addToChatHider: boolean = false;
+  removeFromChatHider: boolean = false
+  changeRoleHider: boolean = false
+  addOrChangeNicknameHider: boolean = false
+  contentHider: boolean = false;
+  firstRound: boolean = true;
   friends: string = '';
-  showableFriends: Array<string> = []
-  chosenToAdd: FormControl = new FormControl('');
 
 
-  constructor(private messageService: MessageService, private chatService: ChatService, private userService: UserService, private friendService: FriendService, private location:Location) {
+  private differ: IterableDiffer<any>;
+
+
+  constructor(private differs: IterableDiffers, private messageService: MessageService, private chatService: ChatService, private userService: UserService, private friendService: FriendService, private location: Location) {
+    //differ és differs ahhoz hogy a drawer gombja kb hamarabb töltsönbe, minthogy a drawer kinyílna, különben rácsúszik a gombra x-x
+    this.differ = this.differs.find([]).create();
   }
 
   ngOnInit(): void {
@@ -46,7 +57,7 @@ export class MessagesComponent implements OnInit {
       this.ownChats = value.filter(chat => JSON.parse(chat.users).includes(this.message.owner));
       for (let i = 0; i < this.ownChats.length; i++) {
         let usersBro = JSON.parse(this.ownChats[i].users)
-        if (usersBro.length > 1){
+        if (usersBro.length > 1) {
           usersBro = usersBro.filter((filter: boolean) => filter !== this.loggedInUser.uid)
         }
         let surbs = this.userService.getUserById(usersBro[0]).subscribe(value => {
@@ -85,6 +96,7 @@ export class MessagesComponent implements OnInit {
     window.location.reload()
   }*/
 
+
   openDrawer() {
     if (this.drawer?.opened) {
       this.drawer?.close()
@@ -95,34 +107,52 @@ export class MessagesComponent implements OnInit {
 
   addToChatOpen(chatId: string) {
     this.showableFriends = []
-    this.friendService.getOwnFriends(this.loggedInUser.uid).subscribe(value => {
-      this.friends = JSON.parse(value[0].friends)
-      this.ownChats.forEach(value1 => {
-        if (value1.id === chatId) {
-          let currentChatMembers = JSON.parse(value1.users);
-          for (let i = 0; i < this.friends.length; i++) {
-            if (!currentChatMembers.includes(this.friends[i])) {
-              this.showableFriends.push(this.friends[i])
+    switch (this.chosenAction.value) {
+      case 'add':
+        this.friendService.getOwnFriends(this.loggedInUser.uid).subscribe(value => {
+          this.friends = JSON.parse(value[0].friends)
+          this.ownChats.forEach(value1 => {
+            if (value1.id === chatId) {
+              let currentChatMembers = JSON.parse(value1.users);
+              for (let i = 0; i < this.friends.length; i++) {
+                if (!currentChatMembers.includes(this.friends[i])) {
+                  this.showableFriends.push(this.friends[i])
+                }
+              }
+              this.addToChatHider = true
             }
-          }
-          this.addToChatHider = true
-        }
-      })
-    })
+          })
+        })
+
+        break
+      case 'remove':
+
+
+        break
+      case 'role':
+
+
+        break
+      case 'nickname':
+
+
+        break
+    }
+    this.chosenAction = new FormControl('')
   }
 
   addToChat(currentChatId: string) {
-    if (this.chosenToAdd.value.trim() !== '' && currentChatId) {
-      this.showableFriends = this.showableFriends.filter((fitler: string) => fitler !== this.chosenToAdd.value)
+    if (this.chosenToAction.value.trim() !== '' && currentChatId) {
+      this.showableFriends = this.showableFriends.filter((fitler: string) => fitler !== this.chosenToAction.value)
       let modifyableChat;
       let iratkozlexd = this.chatService.getChatsById(currentChatId).subscribe(value => {
         modifyableChat = value[0]
         let pastUsers = JSON.parse(modifyableChat.users)
-        pastUsers.push(this.chosenToAdd.value)
+        pastUsers.push(this.chosenToAction.value)
         modifyableChat.users = JSON.stringify(pastUsers)
 
         this.chatService.update(modifyableChat)
-        this.chosenToAdd = new FormControl('');
+        this.chosenToAction = new FormControl('');
         iratkozlexd.unsubscribe()
       })
     }
@@ -130,10 +160,10 @@ export class MessagesComponent implements OnInit {
   }
 
   createNewChat() {
-    let chat ={
+    let chat = {
       id: '',
-      messages:'',
-      users:'["'+this.loggedInUser.uid+'"]'
+      messages: '',
+      users: '["' + this.loggedInUser.uid + '"]'
     }
     console.log(chat)
 
@@ -147,6 +177,26 @@ export class MessagesComponent implements OnInit {
     this.chatService.delete(chatId).then(value => {
       location.reload()
     })
+
+  }
+
+  removeUserFromChat(chattingChatId: string) {
+
+  }
+
+  changeRole(chattingChatId: string) {
+
+  }
+
+  addOrChangeNickname(chattingChatId: string) {
+
+  }
+
+  ngDoCheck(): void {
+    const changes = this.differ.diff(this.friendChats);
+    if (this.firstRound && changes) {
+      this.drawer?.open()
+    }
 
   }
 }

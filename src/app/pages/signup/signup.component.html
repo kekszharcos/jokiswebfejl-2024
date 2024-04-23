@@ -2,15 +2,15 @@
   <h1>Signup</h1>
     <form [formGroup]="signUpFrom" (ngSubmit)="onSubmit()" autocomplete="off">
       <mat-form-field>
-        <mat-label>Email:</mat-label>
+        <mat-label for="email">Email:</mat-label>
         <input matInput type="email" name="email" id="email" formControlName="email">
       </mat-form-field>
       <mat-form-field>
-        <mat-label>Password:</mat-label>
+        <mat-label for="password">Password:</mat-label>
         <input matInput type="password" name="password" id="password" formControlName="password">
       </mat-form-field>
       <mat-form-field>
-        <mat-label>Password again:</mat-label>
+        <mat-label for="password_re">Password again:</mat-label>
         <input matInput type="password" name="password_re" id="password_re" formControlName="password_re">
       </mat-form-field>
       <div>

@@ -13,6 +13,7 @@ import {FromUserIdToNamePipe} from "../../shared/pipes/from-user-id-to-name.pipe
 import {MatDrawer, MatDrawerContainer} from "@angular/material/sidenav";
 import {MatIcon} from "@angular/material/icon";
 import {MatOption, MatSelect} from "@angular/material/select";
+import {MatCheckbox} from "@angular/material/checkbox";
 
 
 
@@ -24,23 +25,24 @@ import {MatOption, MatSelect} from "@angular/material/select";
   exports: [
     FromUserIdToNamePipe
   ],
-  imports: [
-    CommonModule,
-    MessagesRoutingModule,
-    MatInputModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    ReactiveFormsModule,
-    MatCard,
-    FlexModule,
-    MatCardContent,
-    MatCardHeader,
-    MatDrawerContainer,
-    MatDrawer,
-    MatCardFooter,
-    MatIcon,
-    MatSelect,
-    MatOption
-  ]
+    imports: [
+        CommonModule,
+        MessagesRoutingModule,
+        MatInputModule,
+        MatButtonModule,
+        MatFormFieldModule,
+        ReactiveFormsModule,
+        MatCard,
+        FlexModule,
+        MatCardContent,
+        MatCardHeader,
+        MatDrawerContainer,
+        MatDrawer,
+        MatCardFooter,
+        MatIcon,
+        MatSelect,
+        MatOption,
+        MatCheckbox
+    ]
 })
 export class MessagesModule { }
