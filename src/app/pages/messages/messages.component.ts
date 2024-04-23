@@ -120,29 +120,37 @@ export class MessagesComponent implements OnInit, DoCheck {
                 }
               }
               this.addToChatHider = true
+              this.addOrChangeNicknameHider = this.changeRoleHider = this.removeFromChatHider = false
             }
           })
         })
 
         break
       case 'remove':
-
+        this.removeFromChatHider = true
+        this.addOrChangeNicknameHider = this.changeRoleHider = false
 
         break
       case 'role':
-
-
+        this.changeRoleHider = true
+        this.addOrChangeNicknameHider = this.removeFromChatHider = false
         break
       case 'nickname':
-
-
+        this.addOrChangeNicknameHider = true
+        this.changeRoleHider = this.removeFromChatHider = false
         break
     }
+
     this.chosenAction = new FormControl('')
   }
 
+  chosActionAndExists(currentChatId:string) {
+    return this.chosenToAction.value.trim() !== '' && currentChatId
+
+  }
+
   addToChat(currentChatId: string) {
-    if (this.chosenToAction.value.trim() !== '' && currentChatId) {
+    if (this.chosActionAndExists(currentChatId)) {
       this.showableFriends = this.showableFriends.filter((fitler: string) => fitler !== this.chosenToAction.value)
       let modifyableChat;
       let iratkozlexd = this.chatService.getChatsById(currentChatId).subscribe(value => {
@@ -156,6 +164,7 @@ export class MessagesComponent implements OnInit, DoCheck {
         iratkozlexd.unsubscribe()
       })
     }
+    this.changeRoleHider = this.removeFromChatHider = this.addOrChangeNicknameHider = false
     this.addToChatHider = true
   }
 
@@ -180,16 +189,27 @@ export class MessagesComponent implements OnInit, DoCheck {
 
   }
 
-  removeUserFromChat(chattingChatId: string) {
+  usersOfChat: Array<string> = [];
+  removeUserFromChat(currentChatId: string) {
+    console.log("remove")
+    if (this.chosActionAndExists(currentChatId)) {
 
+    }
+    this.addToChatHider = true
   }
 
-  changeRole(chattingChatId: string) {
+  changeRole(currentChatId: string) {
+    console.log("rol")
+    if (this.chosActionAndExists(currentChatId)) {
 
+    }
   }
 
-  addOrChangeNickname(chattingChatId: string) {
+  addOrChangeNickname(currentChatId: string) {
+    console.log("name")
+    if (this.chosActionAndExists(currentChatId)) {
 
+    }
   }
 
   ngDoCheck(): void {

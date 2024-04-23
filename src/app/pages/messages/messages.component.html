@@ -76,7 +76,7 @@
     </div>
     <div *ngIf="changeRoleHider">
       <mat-form-field>
-        <mat-label>Pick a friend to add:</mat-label>
+        <mat-label>Modify role of:</mat-label>
         <mat-select (selectionChange)="changeRole(chattingChatId)" [formControl]="chosenToAction">
           <mat-option value="" *ngIf="showableFriends.length === 0">No available users</mat-option>
           <mat-option *ngFor="let show of showableFriends" [value]="show">
@@ -87,7 +87,7 @@
     </div>
     <div *ngIf="addOrChangeNicknameHider">
       <mat-form-field>
-        <mat-label>Pick a friend to add:</mat-label>
+        <mat-label>Modify nickname of:</mat-label>
         <mat-select (selectionChange)="addOrChangeNickname(chattingChatId)" [formControl]="chosenToAction">
           <mat-option value="" *ngIf="showableFriends.length === 0">No available users</mat-option>
           <mat-option *ngFor="let show of showableFriends" [value]="show">
