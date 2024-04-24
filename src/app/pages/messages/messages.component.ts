@@ -39,10 +39,13 @@ export class MessagesComponent implements OnInit, DoCheck {
   changeRoleHider: boolean = false
   addOrChangeNicknameHider: boolean = false
   contentHider: boolean = false;
+  loggedInOwnerInGroup: boolean = false;
+  loggedInModInGroup: boolean = false;
   firstRound: boolean = true;
   friends: string = '';
 
   private differ: IterableDiffer<any>;
+
 
 
   constructor(private differs: IterableDiffers, private messageService: MessageService, private chatService: ChatService, private userService: UserService, private friendService: FriendService, private location: Location) {
@@ -69,7 +72,7 @@ export class MessagesComponent implements OnInit, DoCheck {
           if (diffBro.length > 1) {
             this.friendChats.push([diffBro[0].name + " [Group]", this.ownChats[i].id,diffBro[0].id])
           } else {
-            this.friendChats.push([diffBro[0].name, this.ownChats[i].id,diffBro[0].id])
+            this.friendChats.push([diffBro[0].name, this.ownChats[i].id,diffBro[0].id,diffBro[0].role])
           }
         }
         console.log(this.friendChats)
@@ -81,10 +84,12 @@ export class MessagesComponent implements OnInit, DoCheck {
 
   onSend(chatId: string) {
     this.message.text = this.messageToSend.value
-    this.message.chatId = chatId
-    this.message.time = new Date().toISOString();
-    this.messageService.create(this.message)
-    this.messageToSend = new FormControl('')
+    if (this.messageToSend.value.trim() !== ""){
+      this.message.chatId = chatId
+      this.message.time = new Date().toISOString();
+      this.messageService.create(this.message)
+      this.messageToSend = new FormControl('')
+    }
   }
 
   openChatWindow(chatId: string, chatName: string, id: string) {
@@ -92,24 +97,41 @@ export class MessagesComponent implements OnInit, DoCheck {
     this.addToChatHider = false
     this.chattingChatId = chatId;
     this.contentHider = true
-    console.log(chatName)
+    this.loggedInOwnerInGroup = false;
+    this.loggedInModInGroup = false;
+
+    for (let i = 0; i < this.ownChats.length; i++) {
+      if (this.ownChats[i].id === chatId){
+        let users = JSON.parse(this.ownChats[i].users)
+        for (let j = 0; j < users.length; j++) {
+          if (users[j].role === "owner" && users[j].id === this.loggedInUser.uid){
+            this.loggedInOwnerInGroup = true;
+            break
+          }else if (users[j].role === "moderator" && users[j].id === this.loggedInUser.uid){
+            this.loggedInModInGroup = true
+            break
+          }
+        }
+        break
+      }
+    }
     this.messageService.getMessageByChatId(chatId).subscribe(value => {
-      console.log(this.ownChats)
+      this.chatMessages = []
+      //console.log(this.ownChats)
 /*/UNDERCONSSTTRUCTION/*/
       for (let k = 0; k < value.length; k++) {
         let xd = value[k]
+        //console.log(k+"-ad k", xd)
         for (let i = 0; i < this.ownChats.length; i++) {
           if (this.ownChats[i].id === chatId) {
+            // console.log(i+"-ed e", this.ownChats[i].id,chatId)
             let chatUsers = JSON.parse(this.ownChats[i].users)
             for (let j = 0; j < chatUsers.length; j++) {
-
-              if (chatUsers[j].id !== xd.owner) {
+              if (chatUsers[j].id === xd.owner) {
                 xd.owner = chatUsers[j].name
                 break
               }
-
             }
-
             break
           }
         }
@@ -119,7 +141,6 @@ export class MessagesComponent implements OnInit, DoCheck {
     })
 
 
-    this.messageToSend = new FormControl('')
     this.currentChatName = chatName
   }
 
@@ -287,5 +308,9 @@ export class MessagesComponent implements OnInit, DoCheck {
       //console.log(this.loggedInUser.email.split('@')[0])
     }
 
+  }
+
+  deleteMessageFromChat(id: string) {
+    this.messageService.delete(id)
   }
 }

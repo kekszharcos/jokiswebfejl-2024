@@ -2,8 +2,8 @@
   <mat-drawer #drawer mode="side" class="Chats" fxLayoutAlign="start center" fxLayoutGap="2" fxLayout="column">
     <ng-container>
       <mat-card class="ChatsPeople" *ngFor="let friendName of friendChats">
-        <mat-card-header (click)="openChatWindow(friendName[1],friendName[0],friendName[2]);openDrawer()">
-          <button mat-button>{{ friendName[0] }}</button>
+        <mat-card-header>
+          <button (click)="openChatWindow(friendName[1],friendName[0],friendName[2]);openDrawer()" mat-button>{{ friendName[0] }}</button>
         </mat-card-header>
         <mat-card-content fxFlex fxLayout="row">
           <mat-form-field>
@@ -21,10 +21,8 @@
       <button mat-raised-button (click)="createNewChat();">Create new chat</button>
     </ng-container>
   </mat-drawer>
-  <button id="buttonss" #openButton mat-raised-button (click)="openDrawer()">
-    <mat-icon *ngIf="!drawer.opened">arrow_forward_ios</mat-icon>
-    <mat-icon *ngIf="drawer.opened">arrow_back_ios</mat-icon>
-  </button>
+    <mat-icon class="poniter"  (click)="openDrawer()" *ngIf="!drawer.opened">arrow_forward_ios</mat-icon>
+    <mat-icon class="poniter" (click)="openDrawer()" *ngIf="drawer.opened">arrow_back_ios</mat-icon>
   <mat-drawer-content fxLayout="column" fxLayoutAlign="center center" *ngIf="contentHider && chattingChatId">
     <div *ngIf="addToChatHider">
       <mat-form-field>
@@ -73,11 +71,12 @@
 
     <mat-card fxFlex>
       <mat-card-header id="current">You are chatting with: {{ currentChatName }}</mat-card-header>
-      <mat-card fxFlex *ngFor="let message of chatMessages">
+      <mat-card fxFlex fxLayout="column" fxLayoutGap="5pt" *ngFor="let message of chatMessages">
         <mat-card-header>From: {{ message.owner }}</mat-card-header>
         <mat-card-content style="text-justify: auto; word-break: break-word">
           {{ message.text }}
         </mat-card-content>
+        <mat-icon class="danger" fxLayoutAlign="end end" (click)="deleteMessageFromChat(message.id)" *ngIf="loggedInOwnerInGroup || loggedInModInGroup">delete_forever</mat-icon>
       </mat-card>
       <mat-card-footer>
         <div class="Write" fxLayoutAlign="end">
@@ -87,7 +86,7 @@
           <button mat-raised-button type="submit" (click)="onSend(chattingChatId)">Send</button>
         </div>
       </mat-card-footer>
-      <button class="danger" mat-button (click)="deleteChat(chattingChatId)">DELETE CHAT</button>
+      <button class="danger" mat-button (click)="deleteChat(chattingChatId)" *ngIf="loggedInOwnerInGroup">DELETE CHAT</button>
     </mat-card>
   </mat-drawer-content>
 </mat-drawer-container>
