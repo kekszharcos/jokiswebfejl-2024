@@ -4,7 +4,7 @@
       <mat-card-content>
         <mat-card-header>{{friend.name}}</mat-card-header>
         <mat-card-footer>
-          <button mat-raised-button color="primary" type="submit" [routerLink]="'/messages'" (click)="openChat(friend.id)">Open chat</button>
+          <button mat-raised-button color="primary" type="submit" (click)="openChat(friend.id)">Open chat</button>
         </mat-card-footer>
       </mat-card-content>
     </mat-card>

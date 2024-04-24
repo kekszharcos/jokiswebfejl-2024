@@ -3,7 +3,7 @@ import {FriendService} from "../../shared/services/friend.service";
 import {UserService} from "../../shared/services/user.service";
 import {ChatService} from "../../shared/services/chat.service";
 import {Chat} from "../../shared/models/Chat";
-import {AngularFirestore} from "@angular/fire/compat/firestore";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-friends',
@@ -20,7 +20,7 @@ export class FriendsComponent implements OnInit{
     messages:''
   }
   ownChats: Array<Chat> = [];
-  constructor(private friendService: FriendService, private userService : UserService, private chatService:ChatService, private afs: AngularFirestore) {
+  constructor(private friendService: FriendService, private userService : UserService, private chatService:ChatService, private router: Router) {
 
   }
 
@@ -47,16 +47,28 @@ export class FriendsComponent implements OnInit{
 
   openChat(friendId:string) {
     let breaker = true;
-    this.chat.users = JSON.stringify([this.loggedInUser.uid,friendId])
-    this.ownChats.forEach(chat =>{
-      if (chat.users.includes(this.loggedInUser.uid) && chat.users.includes(friendId)){
-        breaker = false
-      }
+    let lep = this.userService.getUserById(friendId).subscribe(value => {
+      let t2 = this.userService.getUserById(this.loggedInUser.uid).subscribe(value2 => {
+        this.chat.users = JSON.stringify([{id:this.loggedInUser.uid,name:value2[0].username,role:"owner"},{id:friendId,name:value[0].username,role:"user"}])
+        this.ownChats.forEach(chat =>{
+          if (chat.users.includes(this.loggedInUser.uid) && chat.users.includes(friendId)){
+            console.log("ye")
+            breaker = false
+          }
+        })
+        if (breaker){
+          //console.log(this.ownChats)
+          this.chatService.create(this.chat).then(_=>{
+            this.router.navigateByUrl("/messages")
+          })
+        }
+        t2.unsubscribe()
+        lep.unsubscribe()
+      })
+
+
     })
-    if (breaker){
-      //console.log(this.ownChats)
-      this.chatService.create(this.chat)
-    }/*else {
+    /*else {
       console.log("vanmar teee")
     }*/
   }
