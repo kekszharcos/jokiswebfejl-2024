@@ -60,21 +60,35 @@ export class MessagesComponent implements OnInit, DoCheck {
       for (let i = 0; i < this.ownChats.length; i++) {
         let usersBro = JSON.parse(this.ownChats[i].users)
         let diffBro = [];
-        if (usersBro.length > 1) {
+        //console.log(usersBro,usersBro.length)
+
+        //the beggining of problems start here
+        if (usersBro.length === 1) {
           for (let j = 0; j < usersBro.length; j++) {
-            if (usersBro[j].id !== this.loggedInUser.uid) {
+            console.log(usersBro[j])
+            if (usersBro[j].id === this.loggedInUser.uid) {
               diffBro.push(usersBro[j]);
             }
           }
-        }
-        if (diffBro.length > 0) {
-          if (diffBro.length > 0) {
-            this.friendChats.push([diffBro[0].name + " [Group]", this.ownChats[i].id, diffBro[0].id])
-          } else {
-            this.friendChats.push([diffBro[0].name, this.ownChats[i].id, diffBro[0].id, diffBro[0].role])
+        }else if (usersBro.length > 1) {
+          for (let j = 0; j < usersBro.length; j++) {
+            console.log(usersBro[j])
+            if (usersBro[j].id !== this.loggedInUser.uid) {
+            diffBro.push(usersBro[j]);
+            }
           }
         }
+       // console.log(diffBro)
+        if (diffBro.length === 1) {
+          this.friendChats.push([diffBro[0].name, this.ownChats[i].id + " [Solo chat]", diffBro[0].id, diffBro[0].role])
+        }
+        if (diffBro.length > 2) {
+          this.friendChats.push([diffBro[0].name + " [Group]", this.ownChats[i].id, diffBro[0].id,diffBro[0].role])
+        } else {
+          this.friendChats.push([diffBro[0].name, this.ownChats[i].id, diffBro[0].id, diffBro[0].role])
+        }
       }
+      //console.log(this.friendChats)
       ss.unsubscribe()
     })
   }
