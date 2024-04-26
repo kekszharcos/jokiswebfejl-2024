@@ -59,7 +59,6 @@ export class UserService {
       } else {
         chot = chot.filter((filter: string) => filter !== id)
         temp[i].users = JSON.stringify(chot)
-        //console.log(temp[i].users)
         this.chatService.update(temp[i])
       }
       this.messageService.getMessageByChatId(temp[i].id).subscribe(value => {

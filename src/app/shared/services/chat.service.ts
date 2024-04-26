@@ -14,7 +14,6 @@ export class ChatService {
 
   create(chat: Chat) {
     chat.id = this.afs.createId()
-    console.log(chat)
     return this.afs.collection<Chat>(this.collectionName).doc(chat.id).set(chat)
   }
 
@@ -29,7 +28,6 @@ export class ChatService {
   }
 
   getChatsById(id:string) {
-    console.log(id)
     return this.afs.collection<Chat>(this.collectionName, ref => ref.where('id',"==",id )).valueChanges()
   }
 

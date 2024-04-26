@@ -49,6 +49,5 @@ export class ProfileComponent implements OnInit {
     }else {
       this.userService.update(this.newUser,this.pwToSend,true)
     }
-    console.log(this.newUser)
   }
 }

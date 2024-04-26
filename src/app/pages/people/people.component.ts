@@ -30,7 +30,6 @@ export class PeopleComponent implements OnInit {
     let una =this.userService.get().subscribe(value => {
       this.everyone = value
       this.everyone = this.everyone.filter(r => this.loggedInUser.uid !== r.id)
-      console.log(this.everyone)
       una.unsubscribe()
     })
     let un = this.friendService.getOwnFriends(this.loggedInUser.uid).subscribe(value => {
@@ -47,7 +46,6 @@ export class PeopleComponent implements OnInit {
         if (typeof value[0] === "undefined"){
           this.itFriends = []
         }else {
-          console.log(value[0])
           this.itFriends = JSON.parse(value[0].friends)
         }
 
@@ -57,13 +55,13 @@ export class PeopleComponent implements OnInit {
         this.otherFriend.friends = JSON.stringify(this.itFriends)
         this.friendService.create(this.otherFriend)
           .catch(reason => {
-            console.log(reason)
+
           })
         this.currentFriends.push(friendId)
         this.friend.friends = JSON.stringify(this.currentFriends)
         this.friendService.create(this.friend)
           .catch(reason => {
-            console.log(reason)
+
           })
         localStorage.setItem('friends', JSON.stringify(this.currentFriends))
         uns.unsubscribe()

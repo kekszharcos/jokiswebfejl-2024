@@ -31,7 +31,7 @@ export class SignupComponent {
       this.userService.create(user).then(_=>{
         this.router.navigateByUrl('main')
       }).catch(err => {
-        console.log(err)
+
       })
     })
   }

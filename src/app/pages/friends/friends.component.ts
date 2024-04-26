@@ -53,12 +53,10 @@ export class FriendsComponent implements OnInit{
         this.chat.users = JSON.stringify([{id:this.loggedInUser.uid,name:value2[0].username,role:"owner"},{id:friendId,name:value[0].username,role:"user"}])
         this.ownChats.forEach(chat =>{
           if (chat.users.includes(this.loggedInUser.uid) && chat.users.includes(friendId)){
-            console.log("ye")
             breaker = false
           }
         })
         if (breaker){
-          //console.log(this.ownChats)
           this.chatService.create(this.chat).then(_=>{
             this.router.navigateByUrl("/messages")
           })
@@ -69,8 +67,5 @@ export class FriendsComponent implements OnInit{
 
 
     })
-    /*else {
-      console.log("vanmar teee")
-    }*/
   }
 }
