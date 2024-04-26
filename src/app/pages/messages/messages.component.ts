@@ -21,6 +21,7 @@ export class MessagesComponent implements OnInit, DoCheck {
   messageToSend: FormControl = new FormControl('');
   chosenToAction: FormControl = new FormControl('');
   chosenAction: FormControl = new FormControl('');
+  willYou: FormControl = new FormControl('');
   ownChats: Chat[] = []
   friendChats: Array<string[]> = []
   showableFriends: Array<string> = []
@@ -32,7 +33,12 @@ export class MessagesComponent implements OnInit, DoCheck {
     text: '',
     time: ''
   }
-  chattingChatId: string = '';
+  usersOfChat = [{
+    id: '',
+    name: '',
+    role: ''
+  }];
+  chattingChatId: any = '';
   currentChatName: string = '';
   addToChatHider: boolean = false;
   removeFromChatHider: boolean = false
@@ -71,7 +77,6 @@ export class MessagesComponent implements OnInit, DoCheck {
           }
         }else if (usersBro.length > 1) {
           for (let j = 0; j < usersBro.length; j++) {
-            console.log('j-ed',usersBro[j])
             if (usersBro[j].id !== this.loggedInUser.uid) {
               diffBro.push(usersBro[j]);
             }
@@ -84,6 +89,13 @@ export class MessagesComponent implements OnInit, DoCheck {
         } else {
           this.friendChats.push([diffBro[0].name, this.ownChats[i].id, diffBro[0].id, diffBro[0].role])
         }
+      }
+      if (localStorage.getItem('currentChat')){
+        let theChat =  JSON.parse(localStorage.getItem('currentChat') as string)
+        this.openChatWindow(theChat.chatId,theChat.name,'')
+        this.chosenAction = new FormControl(theChat.what)
+        this.addToChatOpen(theChat.chatId)
+
       }
       ss.unsubscribe()
     })
@@ -107,8 +119,28 @@ export class MessagesComponent implements OnInit, DoCheck {
     this.contentHider = true
     this.loggedInOwnerInGroup = false;
     this.loggedInModInGroup = false;
+    let pastC = JSON.parse(localStorage.getItem('currentChat') as string)
+    let theChat : any ={
+      chatId: chatId,
+      name: chatName,
+      what: pastC ? pastC.what : ''
+    }
+    localStorage.setItem('currentChat',JSON.stringify(theChat))
+    this.usersOfChat = []
+    for (let i = 0; i < this.ownChats.length; i++) {
+      if (this.ownChats[i].id === chatId) {
+        let itUsers = JSON.parse(this.ownChats[i].users)
+        for (let j = 0; j < itUsers.length; j++) {
+          if (itUsers[j].id !== this.loggedInUser.uid) {
+            this.usersOfChat.push(itUsers[j])
+          }
+        }
+        break
+      }
+    }
 
     for (let i = 0; i < this.ownChats.length; i++) {
+
       if (this.ownChats[i].id === chatId) {
         let users = JSON.parse(this.ownChats[i].users)
         for (let j = 0; j < users.length; j++) {
@@ -160,25 +192,8 @@ export class MessagesComponent implements OnInit, DoCheck {
     }
   }
 
-  usersOfChat = [{
-    id: '',
-    name: '',
-    role: ''
-  }];
-
   addToChatOpen(chatId: string) {
     this.showableFriends = []
-    this.usersOfChat = []
-    for (let i = 0; i < this.ownChats.length; i++) {
-      if (this.ownChats[i].id === chatId) {
-        let itUsers = JSON.parse(this.ownChats[i].users)
-        for (let j = 0; j < itUsers.length; j++) {
-          if (itUsers[j].id !== this.loggedInUser.uid) {
-            this.usersOfChat.push(itUsers[j])
-          }
-        }
-      }
-    }
     switch (this.chosenAction.value) {
       case 'add':
         let sub = this.friendService.getOwnFriends(this.loggedInUser.uid).subscribe(value => {
@@ -210,6 +225,7 @@ export class MessagesComponent implements OnInit, DoCheck {
 
         break
       case 'remove':
+
         this.removeFromChatHider = true
         this.addOrChangeNicknameHider = this.changeRoleHider = false
 
@@ -228,7 +244,15 @@ export class MessagesComponent implements OnInit, DoCheck {
 
         break
     }
-
+    let pastC = JSON.parse(localStorage.getItem('currentChat') as string)
+    let theChat : any ={
+      chatId: pastC.chatId,
+      name: pastC.name,
+      what: pastC.what
+    }
+    theChat.what = this.chosenAction.value
+    console.log(theChat)
+    localStorage.setItem('currentChat',JSON.stringify(theChat))
     this.chosenAction = new FormControl('')
   }
 
@@ -252,14 +276,17 @@ export class MessagesComponent implements OnInit, DoCheck {
 
           this.chatService.update(modifyableChat).then(_ => {
             this.chosenToAction = new FormControl('');
+
             nele.unsubscribe()
           })
         })
         iratkozlexd.unsubscribe()
+        location.reload()
       })
     }
     this.changeRoleHider = this.removeFromChatHider = this.addOrChangeNicknameHider = false
     this.addToChatHider = true
+
   }
 
   createNewChat() {
@@ -290,7 +317,6 @@ export class MessagesComponent implements OnInit, DoCheck {
     this.chatService.delete(chatId).then(value => {
       location.reload()
     })
-
   }
 
 
@@ -306,6 +332,7 @@ export class MessagesComponent implements OnInit, DoCheck {
         if (this.ownChats[i].id === currentChatId) {
           updatable.id = currentChatId;
           let curr = JSON.parse(this.ownChats[i].users)
+          console.log('current-users',curr)
           curr = curr.filter((item: any) => item.id !== this.chosenToAction.value)
           updatable.users = JSON.stringify(curr)
           console.log(updatable)
@@ -314,9 +341,12 @@ export class MessagesComponent implements OnInit, DoCheck {
           break
         }
       }
-      this.chatService.update(updatable).then(_ => this.chosenToAction = new FormControl(''))
+      this.chatService.update(updatable).then(_ => {
+        this.chosenToAction = new FormControl('')
+        location.reload()
+      })
     }
-    this.addToChatHider = true
+    this.addToChatHider = false
   }
 
   changeRole(currentChatId: string) {

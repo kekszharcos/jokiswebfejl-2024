@@ -6,13 +6,13 @@
           <button (click)="openChatWindow(friendName[1],friendName[0],friendName[2]);openDrawer()" mat-button>{{ friendName[0] }}</button>
         </mat-card-header>
         <mat-card-content fxFlex fxLayout="row">
-          <mat-form-field>
+          <mat-form-field *ngIf="loggedInModInGroup || loggedInOwnerInGroup && chattingChatId === friendName[1]">
             <mat-label>Pick action:</mat-label>
             <mat-select (selectionChange)="addToChatOpen(friendName[1]);openChatWindow(friendName[1],friendName[0],friendName[2])"
                         [formControl]="chosenAction">
               <mat-option value="add">Add</mat-option>
               <mat-option value="remove">Remove</mat-option>
-              <mat-option value="role">Change roles</mat-option>
+              <mat-option *ngIf="loggedInOwnerInGroup" value="role">Change roles</mat-option>
               <mat-option value="nickname">Change nicknames</mat-option>
             </mat-select>
           </mat-form-field>
@@ -21,8 +21,8 @@
       <button mat-raised-button (click)="createNewChat();">Create new chat</button>
     </ng-container>
   </mat-drawer>
-    <mat-icon class="poniter"  (click)="openDrawer()" *ngIf="!drawer.opened">arrow_forward_ios</mat-icon>
-    <mat-icon class="poniter" (click)="openDrawer()" *ngIf="drawer.opened">arrow_back_ios</mat-icon>
+    <mat-icon class="poniter"  (click)="openDrawer()">{{drawer.opened ? 'arrow_back_ios': 'arrow_forward_ios'}}</mat-icon>
+
   <mat-drawer-content fxLayout="column" fxLayoutAlign="center center" *ngIf="contentHider && chattingChatId">
     <div *ngIf="addToChatHider">
       <mat-form-field>
@@ -46,7 +46,9 @@
         </mat-select>
       </mat-form-field>
     </div>
-    <div *ngIf="changeRoleHider">
+    <div fxFlex fxLayout="column" *ngIf="changeRoleHider">
+      <div fxFlex="50">
+        <div>
       <mat-form-field>
         <mat-label>Modify role of:</mat-label>
         <mat-select (selectionChange)="changeRole(chattingChatId)" [formControl]="chosenToAction">
@@ -56,6 +58,12 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
+        </div>
+        <div fxFlex="50" fxLayout="column">
+          <mat-checkbox>Mod</mat-checkbox>
+          <mat-checkbox>User</mat-checkbox>
+        </div>
+    </div>
     </div>
     <div *ngIf="addOrChangeNicknameHider">
       <mat-form-field>
