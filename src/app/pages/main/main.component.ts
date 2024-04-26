@@ -16,7 +16,12 @@ export class MainComponent implements OnInit{
 
   ngOnInit(): void {
     this.friendService.getOwnFriends(this.loggedInUser.uid as string).subscribe(friends => {
-      localStorage.setItem('friends', JSON.stringify(friends[0].friends))
+      if (typeof friends[0] !== "undefined"){
+        localStorage.setItem('friends', JSON.stringify(friends[0].friends))
+      }else {
+        localStorage.setItem('friends', "null")
+      }
+
     })
   }
 

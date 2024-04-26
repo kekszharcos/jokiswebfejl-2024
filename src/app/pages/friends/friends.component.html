@@ -1,4 +1,5 @@
 <div class="main_component">
+  <h1 *ngIf="friendUsers.length === 0">You don't have friends yet</h1>
   <mat-card *ngFor="let friend of friendUsers" fxFlex fxLayout >
     <mat-card>
       <mat-card-content>

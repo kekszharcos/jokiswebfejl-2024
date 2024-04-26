@@ -33,7 +33,12 @@ export class PeopleComponent implements OnInit {
       una.unsubscribe()
     })
     let un = this.friendService.getOwnFriends(this.loggedInUser.uid).subscribe(value => {
-      this.currentFriends = JSON.parse(value[0].friends)
+      if (typeof value[0] !== "undefined"){
+        this.currentFriends = JSON.parse(value[0].friends)
+      }else {
+        this.currentFriends = []
+      }
+
       un.unsubscribe()
     })
   }

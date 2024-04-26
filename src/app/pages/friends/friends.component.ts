@@ -26,7 +26,12 @@ export class FriendsComponent implements OnInit{
 
   ngOnInit(): void {
     this.friendService.getOwnFriends(this.loggedInUser.uid).subscribe(value => {
-      this.friends = JSON.parse(value[0].friends)
+      if (typeof value[0] !== "undefined"){
+        this.friends = JSON.parse(value[0].friends)
+      }else {
+        this.friends = []
+      }
+
       for (let i = 0; i < this.friends.length; i++) {
         let uns = this.userService.getUserById(this.friends[i]).subscribe(value => {
           let breaker = true;
