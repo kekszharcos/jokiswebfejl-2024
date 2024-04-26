@@ -3,13 +3,16 @@
     <ng-container>
       <mat-card class="ChatsPeople" *ngFor="let friendName of friendChats">
         <mat-card-header>
-          <button (click)="openChatWindow(friendName[1],friendName[0],friendName[2]);openDrawer()" mat-button>{{ friendName[0] }}</button>
+          <button (click)="openChatWindow(friendName[1],friendName[0],friendName[2]);openDrawer()"
+                  mat-button>{{ friendName[0] }}
+          </button>
         </mat-card-header>
         <mat-card-content fxFlex fxLayout="row">
           <mat-form-field *ngIf="loggedInModInGroup || loggedInOwnerInGroup && chattingChatId === friendName[1]">
             <mat-label>Pick action:</mat-label>
-            <mat-select (selectionChange)="addToChatOpen(friendName[1]);openChatWindow(friendName[1],friendName[0],friendName[2])"
-                        [formControl]="chosenAction">
+            <mat-select
+              (selectionChange)="addToChatOpen(friendName[1]);openChatWindow(friendName[1],friendName[0],friendName[2])"
+              [formControl]="chosenAction">
               <mat-option value="add">Add</mat-option>
               <mat-option value="remove">Remove</mat-option>
               <mat-option *ngIf="loggedInOwnerInGroup" value="role">Change roles</mat-option>
@@ -21,9 +24,11 @@
       <button mat-raised-button (click)="createNewChat();">Create new chat</button>
     </ng-container>
   </mat-drawer>
-    <mat-icon class="poniter"  (click)="openDrawer()">{{drawer.opened ? 'arrow_back_ios': 'arrow_forward_ios'}}</mat-icon>
+  <mat-icon class="poniter" (click)="openDrawer()">{{ drawer.opened ? 'arrow_back_ios' : 'arrow_forward_ios' }}
+  </mat-icon>
 
-  <mat-drawer-content fxLayout="column" fxLayoutAlign="center center" *ngIf="contentHider && chattingChatId">
+  <mat-drawer-content fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="30pt"
+                      *ngIf="contentHider && chattingChatId">
     <div *ngIf="addToChatHider">
       <mat-form-field>
         <mat-label>Pick a friend to add:</mat-label>
@@ -33,6 +38,7 @@
             {{ show | fromUserIdToName | async }}
           </mat-option>
         </mat-select>
+        <mat-hint>Click on user to add</mat-hint>
       </mat-form-field>
     </div>
     <div *ngIf="removeFromChatHider">
@@ -44,37 +50,52 @@
             {{ user.name }}
           </mat-option>
         </mat-select>
+        <mat-hint>Click on user to remove</mat-hint>
       </mat-form-field>
     </div>
     <div fxFlex fxLayout="column" *ngIf="changeRoleHider">
       <div fxFlex="50">
         <div>
-      <mat-form-field>
-        <mat-label>Modify role of:</mat-label>
-        <mat-select (selectionChange)="changeRole(chattingChatId)" [formControl]="chosenToAction">
-          <mat-option value="" *ngIf="usersOfChat.length === 0">No available users</mat-option>
-          <mat-option *ngFor="let user of usersOfChat" [value]="user.id">
-            {{ user.name }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+          <mat-form-field>
+            <mat-label>Modify role of:</mat-label>
+            <mat-select (selectionChange)="changeRole(chattingChatId)" [formControl]="chosenToAction">
+              <mat-option value="" *ngIf="usersOfChat.length === 0">No available users</mat-option>
+              <mat-option value="">Click here and back to the user if nothing happens</mat-option>
+              <mat-option *ngFor="let user of usersOfChat" [value]="user.id">
+                {{ user.name }}
+              </mat-option>
+            </mat-select>
+            <mat-hint>First check the box and then choose</mat-hint>
+          </mat-form-field>
         </div>
         <div fxFlex="50" fxLayout="column">
-          <mat-checkbox>Mod</mat-checkbox>
-          <mat-checkbox>User</mat-checkbox>
+          <mat-checkbox #modBox (change)="userBox.checked=false">Mod</mat-checkbox>
+          <mat-checkbox #userBox (change)="modBox.checked=false">User</mat-checkbox>
         </div>
+      </div>
+
     </div>
-    </div>
-    <div *ngIf="addOrChangeNicknameHider">
-      <mat-form-field>
-        <mat-label>Modify nickname of:</mat-label>
-        <mat-select (selectionChange)="addOrChangeNickname(chattingChatId)" [formControl]="chosenToAction">
-          <mat-option value="" *ngIf="usersOfChat.length === 0">No available users</mat-option>
-          <mat-option *ngFor="let user of usersOfChat" [value]="user.id">
-            {{ user.name }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+    <div fxFlex fxLayout="column" *ngIf="addOrChangeNicknameHider">
+      <div fxFlex="50">
+        <div>
+          <mat-form-field>
+            <mat-label>Modify nickname of:</mat-label>
+            <mat-select (selectionChange)="addOrChangeNickname(chattingChatId)" [formControl]="chosenToAction">
+              <mat-option value="" *ngIf="usersOfChat.length === 0">No available users</mat-option>
+              <mat-option *ngFor="let user of usersOfChat" [value]="user.id">
+                {{ user.name }}
+              </mat-option>
+            </mat-select>
+            <mat-hint>First write the nickname and then choose</mat-hint>
+          </mat-form-field>
+        </div>
+        <div fxFlex="50" fxLayout="column">
+          <mat-form-field>
+            <mat-label for="nick">The new nickname:</mat-label>
+            <input matInput type="text" id="nick" [formControl]="nick">
+          </mat-form-field>
+        </div>
+      </div>
     </div>
 
     <mat-card fxFlex>
@@ -84,7 +105,9 @@
         <mat-card-content style="text-justify: auto; word-break: break-word">
           {{ message.text }}
         </mat-card-content>
-        <mat-icon class="danger" fxLayoutAlign="end end" (click)="deleteMessageFromChat(message.id)" *ngIf="loggedInOwnerInGroup || loggedInModInGroup">delete_forever</mat-icon>
+        <mat-icon class="danger" fxLayoutAlign="end end" (click)="deleteMessageFromChat(message.id)"
+                  *ngIf="loggedInOwnerInGroup || loggedInModInGroup">delete_forever
+        </mat-icon>
       </mat-card>
       <mat-card-footer>
         <div class="Write" fxLayoutAlign="end">
@@ -94,7 +117,8 @@
           <button mat-raised-button type="submit" (click)="onSend(chattingChatId)">Send</button>
         </div>
       </mat-card-footer>
-      <button class="danger" mat-button (click)="deleteChat(chattingChatId)" *ngIf="loggedInOwnerInGroup">DELETE CHAT</button>
+      <button class="danger" mat-button (click)="deleteChat(chattingChatId)" *ngIf="loggedInOwnerInGroup">DELETE CHAT
+      </button>
     </mat-card>
   </mat-drawer-content>
 </mat-drawer-container>

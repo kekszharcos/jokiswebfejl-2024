@@ -8,6 +8,7 @@ import {UserService} from "../../shared/services/user.service";
 import {MatDrawer} from "@angular/material/sidenav";
 import {FriendService} from "../../shared/services/friend.service";
 import {Location} from "@angular/common";
+import {MatCheckboxChange} from "@angular/material/checkbox";
 
 @Component({
   selector: 'app-messages',
@@ -17,11 +18,13 @@ import {Location} from "@angular/common";
 export class MessagesComponent implements OnInit, DoCheck {
   @ViewChild('drawer') drawer: MatDrawer | undefined;
   @ViewChild('openButton') openButton: any;
+  @ViewChild('modBox') modBox: any;
+  @ViewChild('userBox') userBox: any;
   loggedInUser = JSON.parse(localStorage.getItem('user') as string);
   messageToSend: FormControl = new FormControl('');
   chosenToAction: FormControl = new FormControl('');
   chosenAction: FormControl = new FormControl('');
-  willYou: FormControl = new FormControl('');
+  nick: FormControl = new FormControl('');
   ownChats: Chat[] = []
   friendChats: Array<string[]> = []
   showableFriends: Array<string> = []
@@ -49,25 +52,19 @@ export class MessagesComponent implements OnInit, DoCheck {
   loggedInModInGroup: boolean = false;
   firstRound: boolean = true;
   friends: string = '';
-
   private differ: IterableDiffer<any>;
 
-
   constructor(private differs: IterableDiffers, private messageService: MessageService, private chatService: ChatService, private userService: UserService, private friendService: FriendService, private location: Location) {
-    //differ és differs ahhoz hogy a drawer gombja kb hamarabb töltsönbe, minthogy a drawer kinyílna, különben rácsúszik a gombra x-x
     this.differ = this.differs.find([]).create();
   }
 
   ngOnInit(): void {
     this.message.owner = this.loggedInUser.uid;
     let ss = this.chatService.getOwnChatsObs().subscribe(value => {
-
       this.ownChats = value.filter(chat => JSON.parse(chat.users).id !== this.message.owner);
       for (let i = 0; i < this.ownChats.length; i++) {
         let usersBro = JSON.parse(this.ownChats[i].users)
-        let diffBro:any = [];
-
-        //the beggining of problems start here
+        let diffBro: any = [];
         if (usersBro.length === 1) {
           for (let j = 0; j < usersBro.length; j++) {
             if (usersBro[j].id === this.loggedInUser.uid) {
@@ -75,7 +72,7 @@ export class MessagesComponent implements OnInit, DoCheck {
               break
             }
           }
-        }else if (usersBro.length > 1) {
+        } else if (usersBro.length > 1) {
           for (let j = 0; j < usersBro.length; j++) {
             if (usersBro[j].id !== this.loggedInUser.uid) {
               diffBro.push(usersBro[j]);
@@ -83,19 +80,18 @@ export class MessagesComponent implements OnInit, DoCheck {
           }
         }
         if (diffBro.length === 1 && diffBro[0].id === this.loggedInUser.uid) {
-          this.friendChats.push([diffBro[0].name+ " [Solo chat]", this.ownChats[i].id , diffBro[0].id, diffBro[0].role])
-        }else if (diffBro.length > 1) {
-          this.friendChats.push([diffBro[0].name + " [Group]", this.ownChats[i].id, diffBro[0].id,diffBro[0].role])
+          this.friendChats.push([diffBro[0].name + " [Solo chat]", this.ownChats[i].id, diffBro[0].id, diffBro[0].role])
+        } else if (diffBro.length > 1) {
+          this.friendChats.push([diffBro[0].name + " [Group]", this.ownChats[i].id, diffBro[0].id, diffBro[0].role])
         } else {
           this.friendChats.push([diffBro[0].name, this.ownChats[i].id, diffBro[0].id, diffBro[0].role])
         }
       }
-      if (localStorage.getItem('currentChat')){
-        let theChat =  JSON.parse(localStorage.getItem('currentChat') as string)
-        this.openChatWindow(theChat.chatId,theChat.name,'')
+      if (localStorage.getItem('currentChat')) {
+        let theChat = JSON.parse(localStorage.getItem('currentChat') as string)
+        this.openChatWindow(theChat.chatId, theChat.name, '')
         this.chosenAction = new FormControl(theChat.what)
         this.addToChatOpen(theChat.chatId)
-
       }
       ss.unsubscribe()
     })
@@ -120,12 +116,12 @@ export class MessagesComponent implements OnInit, DoCheck {
     this.loggedInOwnerInGroup = false;
     this.loggedInModInGroup = false;
     let pastC = JSON.parse(localStorage.getItem('currentChat') as string)
-    let theChat : any ={
+    let theChat: any = {
       chatId: chatId,
       name: chatName,
       what: pastC ? pastC.what : ''
     }
-    localStorage.setItem('currentChat',JSON.stringify(theChat))
+    localStorage.setItem('currentChat', JSON.stringify(theChat))
     this.usersOfChat = []
     for (let i = 0; i < this.ownChats.length; i++) {
       if (this.ownChats[i].id === chatId) {
@@ -140,7 +136,6 @@ export class MessagesComponent implements OnInit, DoCheck {
     }
 
     for (let i = 0; i < this.ownChats.length; i++) {
-
       if (this.ownChats[i].id === chatId) {
         let users = JSON.parse(this.ownChats[i].users)
         for (let j = 0; j < users.length; j++) {
@@ -157,14 +152,10 @@ export class MessagesComponent implements OnInit, DoCheck {
     }
     this.messageService.getMessageByChatId(chatId).subscribe(value => {
       this.chatMessages = []
-      //console.log(this.ownChats)
-      /*/UNDERCONSSTTRUCTION/*/
       for (let k = 0; k < value.length; k++) {
         let xd = value[k]
-        //console.log(k+"-ad k", xd)
         for (let i = 0; i < this.ownChats.length; i++) {
           if (this.ownChats[i].id === chatId) {
-            // console.log(i+"-ed e", this.ownChats[i].id,chatId)
             let chatUsers = JSON.parse(this.ownChats[i].users)
             for (let j = 0; j < chatUsers.length; j++) {
               if (chatUsers[j].id === xd.owner) {
@@ -175,12 +166,9 @@ export class MessagesComponent implements OnInit, DoCheck {
             break
           }
         }
-
         this.chatMessages.push(xd)
       }
     })
-
-
     this.currentChatName = chatName
   }
 
@@ -212,47 +200,35 @@ export class MessagesComponent implements OnInit, DoCheck {
                 if (!includ) {
                   this.showableFriends.push(this.friends[i])
                 }
-
               }
-
-
               this.addToChatHider = true
               this.addOrChangeNicknameHider = this.changeRoleHider = this.removeFromChatHider = false
               sub.unsubscribe()
             }
           })
         })
-
         break
       case 'remove':
-
         this.removeFromChatHider = true
         this.addOrChangeNicknameHider = this.changeRoleHider = false
-
-
         break
       case 'role':
         this.changeRoleHider = true
         this.addOrChangeNicknameHider = this.removeFromChatHider = false
-
-
         break
       case 'nickname':
         this.addOrChangeNicknameHider = true
         this.changeRoleHider = this.removeFromChatHider = false
-
-
         break
     }
     let pastC = JSON.parse(localStorage.getItem('currentChat') as string)
-    let theChat : any ={
+    let theChat: any = {
       chatId: pastC.chatId,
       name: pastC.name,
       what: pastC.what
     }
     theChat.what = this.chosenAction.value
-    console.log(theChat)
-    localStorage.setItem('currentChat',JSON.stringify(theChat))
+    localStorage.setItem('currentChat', JSON.stringify(theChat))
     this.chosenAction = new FormControl('')
   }
 
@@ -273,10 +249,8 @@ export class MessagesComponent implements OnInit, DoCheck {
             role: 'user'
           })
           modifyableChat.users = JSON.stringify(pastUsers)
-
           this.chatService.update(modifyableChat).then(_ => {
             this.chosenToAction = new FormControl('');
-
             nele.unsubscribe()
           })
         })
@@ -308,17 +282,13 @@ export class MessagesComponent implements OnInit, DoCheck {
         descri.unsubscribe()
       })
     })
-
-
   }
-
 
   deleteChat(chatId: string) {
     this.chatService.delete(chatId).then(value => {
       location.reload()
     })
   }
-
 
   removeUserFromChat(currentChatId: string) {
     if (this.chosActionAndExists(currentChatId)) {
@@ -327,15 +297,12 @@ export class MessagesComponent implements OnInit, DoCheck {
         users: '',
         messages: ''
       };
-      console.log("remove")
       for (let i = 0; i < this.ownChats.length; i++) {
         if (this.ownChats[i].id === currentChatId) {
           updatable.id = currentChatId;
           let curr = JSON.parse(this.ownChats[i].users)
-          console.log('current-users',curr)
           curr = curr.filter((item: any) => item.id !== this.chosenToAction.value)
           updatable.users = JSON.stringify(curr)
-          console.log(updatable)
           this.ownChats[i].users = JSON.stringify(curr)
           console.log(this.ownChats[i].users)
           break
@@ -350,29 +317,28 @@ export class MessagesComponent implements OnInit, DoCheck {
   }
 
   changeRole(currentChatId: string) {
-    console.log("rol")
     if (this.chosActionAndExists(currentChatId)) {
+      if (this.modBox.checked || this.userBox.checked) {
+        let uns = this.chatService.getChatsById(currentChatId).subscribe(value => {
+          let chat = value[0]
+          let curr = JSON.parse(chat.users)
+          for (let i = 0; i < curr.length; i++) {
+            if (this.chosenToAction.value === curr[i].id) {
+              if (this.modBox.checked) {
+                curr[i].role = "moderator"
+              } else if (this.userBox.checked) {
+                curr[i].role = "user"
+              }
+              chat.users = JSON.stringify(curr)
+              uns.unsubscribe()
+              this.chatService.update(chat).then(_ => location.reload())
+              break
+            }}})}}}
 
-    }
-  }
+  addOrChangeNickname(currentChatId: string) {if (this.chosActionAndExists(currentChatId)) {let uns = this.chatService.getChatsById(currentChatId).subscribe(value => {
+        let chat = value[0];let curr = JSON.parse(chat.users);for (let i = 0; i < curr.length; i++) {if (this.chosenToAction.value === curr[i].id) {if (this.nick.value.trim() !== "") {curr[i].name = this.nick.value.trim();chat.users = JSON.stringify(curr);uns.unsubscribe();this.chatService.update(chat).then(_ => location.reload())}break;}}})}}
+  //Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a
+  ngDoCheck(): void {const changes = this.differ.diff(this.friendChats);if (this.firstRound && changes) {this.drawer?.open()}}
 
-  addOrChangeNickname(currentChatId: string) {
-    console.log("name")
-    if (this.chosActionAndExists(currentChatId)) {
-
-    }
-  }
-
-  ngDoCheck(): void {
-    const changes = this.differ.diff(this.friendChats);
-    if (this.firstRound && changes) {
-      this.drawer?.open()
-      //console.log(this.loggedInUser.email.split('@')[0])
-    }
-
-  }
-
-  deleteMessageFromChat(id: string) {
-    this.messageService.delete(id)
-  }
+  deleteMessageFromChat(id: string) {this.messageService.delete(id)}
 }
