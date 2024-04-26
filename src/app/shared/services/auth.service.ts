@@ -18,6 +18,7 @@ export class AuthService {
   }
 
   logout() {
+    localStorage.setItem("currentChat","null")
     return this.auth.signOut()
   }
 

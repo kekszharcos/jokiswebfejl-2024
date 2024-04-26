@@ -14,6 +14,7 @@ export class ChatService {
 
   create(chat: Chat) {
     chat.id = this.afs.createId()
+    console.log(chat)
     return this.afs.collection<Chat>(this.collectionName).doc(chat.id).set(chat)
   }
 

@@ -3,18 +3,18 @@
     <ng-container>
       <mat-card class="ChatsPeople" *ngFor="let friendName of friendChats">
         <mat-card-header>
-          <button (click)="openChatWindow(friendName[1],friendName[0],friendName[2]);openDrawer()"
+          <button (click)="openChatWindow(friendName[1],friendName[0],friendName[2]);"
                   mat-button>{{ friendName[0] }}
           </button>
         </mat-card-header>
         <mat-card-content fxFlex fxLayout="row">
-          <mat-form-field *ngIf="loggedInModInGroup || loggedInOwnerInGroup && chattingChatId === friendName[1]">
+          <mat-form-field *ngIf="(loggedInModInGroup || loggedInOwnerInGroup) && chattingChatId === friendName[1]">
             <mat-label>Pick action:</mat-label>
             <mat-select
               (selectionChange)="addToChatOpen(friendName[1]);openChatWindow(friendName[1],friendName[0],friendName[2])"
               [formControl]="chosenAction">
               <mat-option value="add">Add</mat-option>
-              <mat-option value="remove">Remove</mat-option>
+              <mat-option *ngIf="loggedInOwnerInGroup" value="remove">Remove</mat-option>
               <mat-option *ngIf="loggedInOwnerInGroup" value="role">Change roles</mat-option>
               <mat-option value="nickname">Change nicknames</mat-option>
             </mat-select>

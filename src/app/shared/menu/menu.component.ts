@@ -13,15 +13,15 @@ export class MenuComponent implements OnInit, AfterViewInit{
   @Input() loggedInUser!: firebase.default.User | null | undefined;
   @Output() onLogout = new EventEmitter<unknown>();
   constructor(private authService : AuthService) {
-    console.log("Konstruktor")
+
   }
 
   ngOnInit(): void {
-    console.log("on Init")
+
   }
 
   ngAfterViewInit(): void {
-    console.log("after view")
+
   }
 
   menuSwitch() {

@@ -28,7 +28,7 @@ export class FriendsComponent implements OnInit{
     this.friendService.getOwnFriends(this.loggedInUser.uid).subscribe(value => {
       this.friends = JSON.parse(value[0].friends)
       for (let i = 0; i < this.friends.length; i++) {
-        this.userService.getUserById(this.friends[i]).subscribe(value => {
+        let uns = this.userService.getUserById(this.friends[i]).subscribe(value => {
           let breaker = true;
           for (let j = 0; j < this.friendUsers.length; j++) {
             if (this.friendUsers[j].id === value[0].id){
@@ -38,6 +38,7 @@ export class FriendsComponent implements OnInit{
           if (breaker){
             this.friendUsers.push({id:value[0].id,name:value[0].username})
           }
+          uns.unsubscribe()
         })
       }
 
