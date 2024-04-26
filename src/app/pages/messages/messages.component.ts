@@ -92,9 +92,11 @@ export class MessagesComponent implements OnInit, DoCheck {
       }
       if (localStorage.getItem('currentChat')) {
         let theChat = JSON.parse(localStorage.getItem('currentChat') as string)
-        this.openChatWindow(theChat.chatId, theChat.name, '')
-        this.chosenAction = new FormControl(theChat.what)
-        this.addToChatOpen(theChat.chatId)
+        if (theChat !== null){
+          this.openChatWindow(theChat.chatId, theChat.name, '')
+          this.chosenAction = new FormControl(theChat.what)
+          this.addToChatOpen(theChat.chatId)
+        }
       }
       ss.unsubscribe()
     })
