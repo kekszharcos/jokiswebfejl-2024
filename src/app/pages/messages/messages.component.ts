@@ -42,7 +42,7 @@ export class MessagesComponent implements OnInit, DoCheck {
   loggedInModInGroup: boolean = false;
   firstRound: boolean = true;
   friends: string = '';
-  currentChatSaved:any ;
+  currentChatSaved:any = {chatId: '', name:'', what: ''};
   private differ: IterableDiffer<any>;
 
   constructor(private differs: IterableDiffers, private messageService: MessageService, private chatService: ChatService, private userService: UserService, private friendService: FriendService, private location: Location) {
@@ -123,35 +123,36 @@ export class MessagesComponent implements OnInit, DoCheck {
     this.currentChatSaved = JSON.parse(localStorage.getItem('currentChat') as string);
     let pastC = JSON.parse(localStorage.getItem('currentChat') as string);
     let theChat: any = {chatId: chatId, name: chatName, what: pastC ? pastC.what : ''};
-    if (chatId !== pastC.chatId){
+    if (pastC !== null && chatId !== pastC.chatId){
       theChat.what =''
-    }
-    switch (pastC.what){
-      case "add":
-        this.changeRoleHider = false;
-        this.removeFromChatHider = false;
-        this.addOrChangeNicknameHider = false;
-        break
-      case "remove":
-        this.addToChatHider = false;
-        this.changeRoleHider = false;
-        this.addOrChangeNicknameHider = false;
-        break
-      case "role":
-        this.addOrChangeNicknameHider = false;
-        this.addToChatHider = false;
-        this.removeFromChatHider = false;
-        break
-      case "nickname":
-        this.addToChatHider = false;
-        this.removeFromChatHider = false;
-        this.changeRoleHider = false;
-        break
-      default:
-        this.addOrChangeNicknameHider = false;
-        this.addToChatHider = false;
-        this.removeFromChatHider = false;
-        this.changeRoleHider = false;
+
+      switch (pastC.what){
+        case "add":
+          this.changeRoleHider = false;
+          this.removeFromChatHider = false;
+          this.addOrChangeNicknameHider = false;
+          break
+        case "remove":
+          this.addToChatHider = false;
+          this.changeRoleHider = false;
+          this.addOrChangeNicknameHider = false;
+          break
+        case "role":
+          this.addOrChangeNicknameHider = false;
+          this.addToChatHider = false;
+          this.removeFromChatHider = false;
+          break
+        case "nickname":
+          this.addToChatHider = false;
+          this.removeFromChatHider = false;
+          this.changeRoleHider = false;
+          break
+        default:
+          this.addOrChangeNicknameHider = false;
+          this.addToChatHider = false;
+          this.removeFromChatHider = false;
+          this.changeRoleHider = false;
+      }
     }
     localStorage.setItem('currentChat', JSON.stringify(theChat));
 

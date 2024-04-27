@@ -29,7 +29,7 @@
 
   <mat-drawer-content fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="30pt"
                       *ngIf="contentHider && chattingChatId">
-    <div *ngIf="chattingChatId === currentChatSaved.chatId">
+    <div *ngIf="chattingChatId">
       <div *ngIf="addToChatHider">
         <mat-form-field>
           <mat-label>Pick a friend to add:</mat-label>
