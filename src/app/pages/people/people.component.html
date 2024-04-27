@@ -1,6 +1,6 @@
 <div class="main_component">
   <mat-card *ngFor="let user of everyone" fxFlex fxLayout >
-    <mat-card>
+    <mat-card fxFlex>
       <mat-card-content>
         <mat-card-header>{{user.username}}</mat-card-header>
         <mat-card-footer *ngIf="!currentFriends.includes(user.id)">

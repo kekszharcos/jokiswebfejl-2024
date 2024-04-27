@@ -1,12 +1,12 @@
 <div class="main_component">
   <h1 *ngIf="friendUsers.length === 0">You don't have friends yet</h1>
   <mat-card *ngFor="let friend of friendUsers" fxFlex fxLayout >
-    <mat-card>
+    <mat-card fxFlex>
       <mat-card-content>
         <mat-card-header>{{friend.name}}</mat-card-header>
-        <mat-card-footer>
+        <mat-card-content>
           <button mat-raised-button color="primary" type="submit" (click)="openChat(friend.id)">Open chat</button>
-        </mat-card-footer>
+        </mat-card-content>
       </mat-card-content>
     </mat-card>
   </mat-card>

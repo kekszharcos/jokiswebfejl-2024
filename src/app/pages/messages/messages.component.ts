@@ -42,6 +42,7 @@ export class MessagesComponent implements OnInit, DoCheck {
   loggedInModInGroup: boolean = false;
   firstRound: boolean = true;
   friends: string = '';
+  currentChatSaved:any ;
   private differ: IterableDiffer<any>;
 
   constructor(private differs: IterableDiffers, private messageService: MessageService, private chatService: ChatService, private userService: UserService, private friendService: FriendService, private location: Location) {
@@ -115,13 +116,43 @@ export class MessagesComponent implements OnInit, DoCheck {
   openChatWindow(chatId: string, chatName: string, id: string) {
     this.chatMessages = [];
     this.usersOfChat = [];
-    this.addToChatHider = false;
     this.chattingChatId = chatId;
     this.contentHider = true;
     this.loggedInOwnerInGroup = false;
     this.loggedInModInGroup = false;
+    this.currentChatSaved = JSON.parse(localStorage.getItem('currentChat') as string);
     let pastC = JSON.parse(localStorage.getItem('currentChat') as string);
     let theChat: any = {chatId: chatId, name: chatName, what: pastC ? pastC.what : ''};
+    if (chatId !== pastC.chatId){
+      theChat.what =''
+    }
+    switch (pastC.what){
+      case "add":
+        this.changeRoleHider = false;
+        this.removeFromChatHider = false;
+        this.addOrChangeNicknameHider = false;
+        break
+      case "remove":
+        this.addToChatHider = false;
+        this.changeRoleHider = false;
+        this.addOrChangeNicknameHider = false;
+        break
+      case "role":
+        this.addOrChangeNicknameHider = false;
+        this.addToChatHider = false;
+        this.removeFromChatHider = false;
+        break
+      case "nickname":
+        this.addToChatHider = false;
+        this.removeFromChatHider = false;
+        this.changeRoleHider = false;
+        break
+      default:
+        this.addOrChangeNicknameHider = false;
+        this.addToChatHider = false;
+        this.removeFromChatHider = false;
+        this.changeRoleHider = false;
+    }
     localStorage.setItem('currentChat', JSON.stringify(theChat));
 
     for (let i = 0; i < this.ownChats.length; i++) {
@@ -166,10 +197,10 @@ export class MessagesComponent implements OnInit, DoCheck {
   openDrawer() {if (this.drawer?.opened) {this.drawer?.close()} else {this.drawer?.open()}}
 
   addToChatOpen(chatId: string) {this.showableFriends = [];switch (this.chosenAction.value) {case 'add':
-    let sub = this.friendService.getOwnFriends(this.loggedInUser.uid).subscribe(value => {this.friends = JSON.parse(value[0].friends);this.ownChats.forEach(value1 => {if (value1.id === chatId) {let currentChatMembers = JSON.parse(value1.users);for (let i = 0; i < this.friends.length; i++) {
-      let includ = false;for (let j = 0; j < currentChatMembers.length; j++) {if (currentChatMembers[j].id === this.friends[i]) {includ = true;break}}if (!includ) {this.showableFriends.push(this.friends[i])}}this.addToChatHider = true;this.addOrChangeNicknameHider = this.changeRoleHider = this.removeFromChatHider = false;sub.unsubscribe()
-    }})});break;case 'remove':this.removeFromChatHider = true;this.addOrChangeNicknameHider = this.changeRoleHider = false;break;case 'role':this.changeRoleHider = true;this.addOrChangeNicknameHider = this.removeFromChatHider = false;break;case 'nickname':this.addOrChangeNicknameHider = true;this.changeRoleHider = this.removeFromChatHider = false;break
-    }let pastC = JSON.parse(localStorage.getItem('currentChat') as string);let theChat: any = {chatId: pastC.chatId, name: pastC.name, what: pastC.what};theChat.what = this.chosenAction.value;localStorage.setItem('currentChat', JSON.stringify(theChat));this.chosenAction = new FormControl('')}
+    let sub = this.friendService.getOwnFriends(this.loggedInUser.uid).subscribe(value => {this.friends = JSON.parse(value[0].friends);this.ownChats.forEach(value1 => {if (value1.id === chatId) {let currentChatMembers = JSON.parse(value1.users);for (let i = 0; i < this.friends.length; i++) {let includ = false;
+      for (let j = 0; j < currentChatMembers.length; j++) {if (currentChatMembers[j].id === this.friends[i]) {includ = true;break}}if (!includ) {this.showableFriends.push(this.friends[i])}}this.addToChatHider = true;this.addOrChangeNicknameHider = this.changeRoleHider = this.removeFromChatHider = false;
+      sub.unsubscribe()}})});break;case 'remove':this.removeFromChatHider = true;this.addOrChangeNicknameHider = this.changeRoleHider = false;break;case 'role':this.changeRoleHider = true;this.addOrChangeNicknameHider = this.removeFromChatHider = false;break;case 'nickname':this.addOrChangeNicknameHider = true;this.changeRoleHider = this.removeFromChatHider = false;break}
+    let pastC = JSON.parse(localStorage.getItem('currentChat') as string);let theChat: any = {chatId: pastC.chatId, name: pastC.name, what: pastC.what};theChat.what = this.chosenAction.value;localStorage.setItem('currentChat', JSON.stringify(theChat));this.chosenAction = new FormControl('')}
 
   chosActionAndExists(currentChatId: string) {return this.chosenToAction.value.trim() !== '' && currentChatId}
 

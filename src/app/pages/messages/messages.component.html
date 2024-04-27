@@ -29,75 +29,76 @@
 
   <mat-drawer-content fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="30pt"
                       *ngIf="contentHider && chattingChatId">
-    <div *ngIf="addToChatHider">
-      <mat-form-field>
-        <mat-label>Pick a friend to add:</mat-label>
-        <mat-select (selectionChange)="addToChat(chattingChatId)" [formControl]="chosenToAction">
-          <mat-option value="" *ngIf="showableFriends.length === 0">No available friends to add</mat-option>
-          <mat-option *ngFor="let show of showableFriends" [value]="show">
-            {{ show | fromUserIdToName | async }}
-          </mat-option>
-        </mat-select>
-        <mat-hint>Click on user to add</mat-hint>
-      </mat-form-field>
-    </div>
-    <div *ngIf="removeFromChatHider">
-      <mat-form-field>
-        <mat-label>Pick a user to remove:</mat-label>
-        <mat-select (selectionChange)="removeUserFromChat(chattingChatId)" [formControl]="chosenToAction">
-          <mat-option value="" *ngIf="usersOfChat.length === 0">No available user to remove</mat-option>
-          <mat-option *ngFor="let user of usersOfChat" [value]="user.id">
-            {{ user.name }}
-          </mat-option>
-        </mat-select>
-        <mat-hint>Click on user to remove</mat-hint>
-      </mat-form-field>
-    </div>
-    <div fxFlex fxLayout="column" *ngIf="changeRoleHider">
-      <div fxFlex="50">
-        <div>
-          <mat-form-field>
-            <mat-label>Modify role of:</mat-label>
-            <mat-select (selectionChange)="changeRole(chattingChatId)" [formControl]="chosenToAction">
-              <mat-option value="" *ngIf="usersOfChat.length === 0">No available users</mat-option>
-              <mat-option value="">Click here and back to the user if nothing happens</mat-option>
-              <mat-option *ngFor="let user of usersOfChat" [value]="user.id">
-                {{ user.name }}
-              </mat-option>
-            </mat-select>
-            <mat-hint>First check the box and then choose</mat-hint>
-          </mat-form-field>
+    <div *ngIf="chattingChatId === currentChatSaved.chatId">
+      <div *ngIf="addToChatHider">
+        <mat-form-field>
+          <mat-label>Pick a friend to add:</mat-label>
+          <mat-select (selectionChange)="addToChat(chattingChatId)" [formControl]="chosenToAction">
+            <mat-option value="" *ngIf="showableFriends.length === 0">No available friends to add</mat-option>
+            <mat-option *ngFor="let show of showableFriends" [value]="show">
+              {{ show | fromUserIdToName | async }}
+            </mat-option>
+          </mat-select>
+          <mat-hint>Click on user to add</mat-hint>
+        </mat-form-field>
+      </div>
+      <div *ngIf="removeFromChatHider">
+        <mat-form-field>
+          <mat-label>Pick a user to remove:</mat-label>
+          <mat-select (selectionChange)="removeUserFromChat(chattingChatId)" [formControl]="chosenToAction">
+            <mat-option value="" *ngIf="usersOfChat.length === 0">No available user to remove</mat-option>
+            <mat-option *ngFor="let user of usersOfChat" [value]="user.id">
+              {{ user.name }}
+            </mat-option>
+          </mat-select>
+          <mat-hint>Click on user to remove</mat-hint>
+        </mat-form-field>
+      </div>
+      <div fxFlex fxLayout="column" *ngIf="changeRoleHider">
+        <div fxFlex="50">
+          <div>
+            <mat-form-field>
+              <mat-label>Modify role of:</mat-label>
+              <mat-select (selectionChange)="changeRole(chattingChatId)" [formControl]="chosenToAction">
+                <mat-option value="" *ngIf="usersOfChat.length === 0">No available users</mat-option>
+                <mat-option value="">Click here and back to the user if nothing happens</mat-option>
+                <mat-option *ngFor="let user of usersOfChat" [value]="user.id">
+                  {{ user.name }}
+                </mat-option>
+              </mat-select>
+              <mat-hint>First check the box and then choose</mat-hint>
+            </mat-form-field>
+          </div>
+          <div fxFlex="50" fxLayout="column">
+            <mat-checkbox #modBox (change)="userBox.checked=false">Mod</mat-checkbox>
+            <mat-checkbox #userBox (change)="modBox.checked=false">User</mat-checkbox>
+          </div>
         </div>
-        <div fxFlex="50" fxLayout="column">
-          <mat-checkbox #modBox (change)="userBox.checked=false">Mod</mat-checkbox>
-          <mat-checkbox #userBox (change)="modBox.checked=false">User</mat-checkbox>
+
+      </div>
+      <div fxFlex fxLayout="column" *ngIf="addOrChangeNicknameHider">
+        <div fxFlex="50">
+          <div>
+            <mat-form-field>
+              <mat-label>Modify nickname of:</mat-label>
+              <mat-select (selectionChange)="addOrChangeNickname(chattingChatId)" [formControl]="chosenToAction">
+                <mat-option value="" *ngIf="usersOfChat.length === 0">No available users</mat-option>
+                <mat-option *ngFor="let user of usersOfChat" [value]="user.id">
+                  {{ user.name }}
+                </mat-option>
+              </mat-select>
+              <mat-hint>First write the nickname and then choose</mat-hint>
+            </mat-form-field>
+          </div>
+          <div fxFlex="50" fxLayout="column">
+            <mat-form-field>
+              <mat-label for="nick">The new nickname:</mat-label>
+              <input matInput type="text" id="nick" [formControl]="nick">
+            </mat-form-field>
+          </div>
         </div>
       </div>
-
     </div>
-    <div fxFlex fxLayout="column" *ngIf="addOrChangeNicknameHider">
-      <div fxFlex="50">
-        <div>
-          <mat-form-field>
-            <mat-label>Modify nickname of:</mat-label>
-            <mat-select (selectionChange)="addOrChangeNickname(chattingChatId)" [formControl]="chosenToAction">
-              <mat-option value="" *ngIf="usersOfChat.length === 0">No available users</mat-option>
-              <mat-option *ngFor="let user of usersOfChat" [value]="user.id">
-                {{ user.name }}
-              </mat-option>
-            </mat-select>
-            <mat-hint>First write the nickname and then choose</mat-hint>
-          </mat-form-field>
-        </div>
-        <div fxFlex="50" fxLayout="column">
-          <mat-form-field>
-            <mat-label for="nick">The new nickname:</mat-label>
-            <input matInput type="text" id="nick" [formControl]="nick">
-          </mat-form-field>
-        </div>
-      </div>
-    </div>
-
     <mat-card fxFlex>
       <mat-card-header id="current">You are chatting with: {{ currentChatName }}</mat-card-header>
       <mat-card fxFlex fxLayout="column" fxLayoutGap="5pt" *ngFor="let message of chatMessages">
