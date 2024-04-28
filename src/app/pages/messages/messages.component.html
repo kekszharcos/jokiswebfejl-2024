@@ -1,5 +1,5 @@
-<mat-drawer-container class="main_component" fxFlex fxLayout="row">
-  <mat-drawer #drawer mode="side" class="Chats" fxLayoutAlign="start center" fxLayoutGap="2" fxLayout="column">
+<mat-drawer-container class="main_component" fxFlex fxLayout="row" (click)="drawer.close()">
+  <mat-drawer #drawer mode="side" class="Chats" fxLayoutAlign="start center" fxLayoutGap="2" fxLayout="column" (click)="$event.stopPropagation()">
     <ng-container>
       <mat-card class="ChatsPeople" *ngFor="let friendName of friendChats">
         <mat-card-header>
@@ -23,8 +23,10 @@
       </mat-card>
       <button mat-raised-button (click)="createNewChat();">Create new chat</button>
     </ng-container>
+
   </mat-drawer>
-  <mat-icon class="poniter" (click)="openDrawer()">{{ drawer.opened ? 'arrow_back_ios' : 'arrow_forward_ios' }}
+
+  <mat-icon class="poniter" (click)="openDrawer();$event.stopPropagation()">{{ drawer.opened ? 'arrow_back_ios' : 'arrow_forward_ios' }}
   </mat-icon>
 
   <mat-drawer-content fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="30pt"
@@ -101,7 +103,7 @@
         </div>
       </div>
     </div>
-    <mat-card fxFlex>
+    <mat-card fxFlex >
       <mat-card-header id="current">You are chatting with: {{ currentChatName }}</mat-card-header>
       <mat-card fxFlex fxLayout="column" fxLayoutGap="5pt" *ngFor="let message of chatMessages">
         <mat-card-header>From: {{ message.owner }}</mat-card-header>

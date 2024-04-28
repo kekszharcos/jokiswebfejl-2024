@@ -17,7 +17,10 @@ export class LoginComponent {
   }
 
   loggingIn() {
-    this.authService.login(this.email.value.trim(),this.password.value)
-      .then(r => {this.router.navigateByUrl("/main");})
+    if (this.email.valid && this.password.valid){
+      this.authService.login(this.email.value.trim(),this.password.value)
+        .then(r => {this.router.navigateByUrl("/main");})
+    }
+
   }
 }
