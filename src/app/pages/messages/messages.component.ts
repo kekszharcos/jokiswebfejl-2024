@@ -127,33 +127,9 @@ export class MessagesComponent implements OnInit, DoCheck {
       theChat.what =''
 
       switch (pastC.what){
-        case "add":
-          this.changeRoleHider = false;
-          this.removeFromChatHider = false;
-          this.addOrChangeNicknameHider = false;
-          break
-        case "remove":
-          this.addToChatHider = false;
-          this.changeRoleHider = false;
-          this.addOrChangeNicknameHider = false;
-          break
-        case "role":
-          this.addOrChangeNicknameHider = false;
-          this.addToChatHider = false;
-          this.removeFromChatHider = false;
-          break
-        case "nickname":
-          this.addToChatHider = false;
-          this.removeFromChatHider = false;
-          this.changeRoleHider = false;
-          break
-        default:
-          this.addOrChangeNicknameHider = false;
-          this.addToChatHider = false;
-          this.removeFromChatHider = false;
-          this.changeRoleHider = false;
-      }
-    }
+        case "add":this.changeRoleHider = false;this.removeFromChatHider = false;this.addOrChangeNicknameHider = false;break
+        case "remove":this.addToChatHider = false;this.changeRoleHider = false;this.addOrChangeNicknameHider = false;break;case "role":this.addOrChangeNicknameHider = false;this.addToChatHider = false;this.removeFromChatHider = false;
+          break;case "nickname":this.addToChatHider = false;this.removeFromChatHider = false;this.changeRoleHider = false;break;default:this.addOrChangeNicknameHider = false;this.addToChatHider = false;this.removeFromChatHider = false;this.changeRoleHider = false;}}
     localStorage.setItem('currentChat', JSON.stringify(theChat));
 
     for (let i = 0; i < this.ownChats.length; i++) {
@@ -170,36 +146,16 @@ export class MessagesComponent implements OnInit, DoCheck {
     for (let i = 0; i < this.ownChats.length; i++) {
       if (this.ownChats[i].id === chatId) {
         let users = JSON.parse(this.ownChats[i].users);
-        for (let j = 0; j < users.length; j++) {
-          if (users[j].role === "owner" && users[j].id === this.loggedInUser.uid) {
-            this.loggedInOwnerInGroup = true;
-            break
-          } else if (users[j].role === "moderator" && users[j].id === this.loggedInUser.uid) {
-            this.loggedInModInGroup = true;
-            break
-          }
-        }
-        break
-      }
-    }
-    let un = this.messageService.getMessageByChatId(chatId).subscribe(value => {
-      this.chatMessages = [];
-      for (let k = 0; k < value.length; k++) {
-        let xd = value[k];
-        for (let i = 0; i < this.ownChats.length; i++) {
-          if (this.ownChats[i].id === chatId) {
-            let chatUsers = JSON.parse(this.ownChats[i].users);
-            for (let j = 0; j < chatUsers.length; j++) {
-              if (chatUsers[j].id === xd.owner) {
-                xd.owner = chatUsers[j].name;
-                break}}break}}this.chatMessages.push(xd)}});this.currentChatName = chatName}
+        for (let j = 0; j < users.length; j++) {if (users[j].role === "owner" && users[j].id === this.loggedInUser.uid) {this.loggedInOwnerInGroup = true;break
+          } else if (users[j].role === "moderator" && users[j].id === this.loggedInUser.uid) {this.loggedInModInGroup = true;break}}break}}let un = this.messageService.getMessageByChatId(chatId).subscribe(value => {this.chatMessages = [];for (let k = 0; k < value.length; k++) {let xd = value[k];
+        for (let i = 0; i < this.ownChats.length; i++) {if (this.ownChats[i].id === chatId) {let chatUsers = JSON.parse(this.ownChats[i].users);for (let j = 0; j < chatUsers.length; j++) {if (chatUsers[j].id === xd.owner) {xd.owner = chatUsers[j].name;break}}break}}this.chatMessages.push(xd)}});this.currentChatName = chatName}
 //csakhogynelegyentöbbmint250SRmeg400CHAR
 //Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut
   openDrawer() {if (this.drawer?.opened) {this.drawer?.close()} else {this.drawer?.open()}}
 
   addToChatOpen(chatId: string) {this.showableFriends = [];switch (this.chosenAction.value) {case 'add':
     let sub = this.friendService.getOwnFriends(this.loggedInUser.uid).subscribe(value => {this.friends = JSON.parse(value[0].friends);this.ownChats.forEach(value1 => {if (value1.id === chatId) {let currentChatMembers = JSON.parse(value1.users);for (let i = 0; i < this.friends.length; i++) {let includ = false;
-      for (let j = 0; j < currentChatMembers.length; j++) {if (currentChatMembers[j].id === this.friends[i]) {includ = true;break}}if (!includ) {this.showableFriends.push(this.friends[i])}}this.addToChatHider = true;this.addOrChangeNicknameHider = this.changeRoleHider = this.removeFromChatHider = false;
+      for (let j = 0; j < currentChatMembers.length; j++) {if (currentChatMembers[j].id === this.friends[i]) {includ = true;break}}if (!includ) {this.showableFriends.push(this.friends[i])}}this.addToChatHider = false;this.addOrChangeNicknameHider = this.changeRoleHider = this.removeFromChatHider = false;
       sub.unsubscribe()}})});break;case 'remove':this.removeFromChatHider = true;this.addOrChangeNicknameHider = this.changeRoleHider = false;break;case 'role':this.changeRoleHider = true;this.addOrChangeNicknameHider = this.removeFromChatHider = false;break;case 'nickname':this.addOrChangeNicknameHider = true;this.changeRoleHider = this.removeFromChatHider = false;break}
     let pastC = JSON.parse(localStorage.getItem('currentChat') as string);let theChat: any = {chatId: pastC.chatId, name: pastC.name, what: pastC.what};theChat.what = this.chosenAction.value;localStorage.setItem('currentChat', JSON.stringify(theChat));this.chosenAction = new FormControl('')}
 
@@ -213,7 +169,7 @@ export class MessagesComponent implements OnInit, DoCheck {
   createNewChat() {
     let chat: Chat;let descri = this.userService.getUserById(this.loggedInUser.uid).subscribe(value => {chat = {id: '', messages: '', users: JSON.stringify([{id: this.loggedInUser.uid, name: value[0].username, role: "owner"}])};this.chatService.create(chat).then(value => {descri.unsubscribe();location.reload();})})}
 
-  deleteChat(chatId: string) {this.chatService.delete(chatId).then(value => {location.reload()})}
+  deleteChat(chatId: string) {this.chatService.delete(chatId).then(value => {localStorage.setItem('currentChat','null');location.reload()})}
 
   removeUserFromChat(currentChatId: string) {if (this.chosActionAndExists(currentChatId)) {let updatable: Chat = {id: '', users: '', messages: ''};for (let i = 0; i < this.ownChats.length; i++) {if (this.ownChats[i].id === currentChatId) {updatable.id = currentChatId;let curr = JSON.parse(this.ownChats[i].users)
     curr = curr.filter((item: any) => item.id !== this.chosenToAction.value);updatable.users = JSON.stringify(curr);this.ownChats[i].users = JSON.stringify(curr);break}}this.chatService.update(updatable).then(_ => {this.chosenToAction = new FormControl('');location.reload()})}this.addToChatHider = false}

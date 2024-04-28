@@ -3,7 +3,7 @@ import {UserService} from "../../shared/services/user.service";
 import {Router} from "@angular/router";
 import {AuthService} from "../../shared/services/auth.service";
 import {User} from "../../shared/models/User";
-import {FormControl} from "@angular/forms";
+import {FormControl, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-profile',
@@ -18,10 +18,10 @@ export class ProfileComponent implements OnInit {
     email: this.loggedInUser.email,
   }
   pwToSend = ''
-  username = new FormControl('')
-  email = new FormControl('')
-  password = new FormControl('')
-  re_password = new FormControl('')
+  username = new FormControl('',[Validators.minLength(3)])
+  email = new FormControl('',[Validators.email])
+  password = new FormControl('',[Validators.minLength(6)])
+  re_password = new FormControl('',[Validators.minLength(6)])
 
   constructor(private userService: UserService, private router: Router, private authService: AuthService) {
   }

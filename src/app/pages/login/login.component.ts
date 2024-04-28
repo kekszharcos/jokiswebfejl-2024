@@ -10,7 +10,7 @@ import {AuthService} from "../../shared/services/auth.service";
 })
 export class LoginComponent {
   email: FormControl = new FormControl('', Validators.required);
-  password: FormControl = new FormControl('', Validators.required);
+  password: FormControl = new FormControl('', [Validators.required,Validators.minLength(6)]);
 
   constructor(private router:Router, private authService:AuthService) {
 
