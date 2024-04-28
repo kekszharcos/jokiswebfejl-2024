@@ -73,8 +73,8 @@
               </mat-form-field>
             </div>
             <div fxFlex="50" fxLayout="column">
-              <mat-checkbox #modBox (change)="userBox.checked=false">Mod</mat-checkbox>
-              <mat-checkbox #userBox (change)="modBox.checked=false">User</mat-checkbox>
+              <mat-checkbox (click)="changeRole(chattingChatId)" #modBox (change)="userBox.checked=false">Mod</mat-checkbox>
+              <mat-checkbox (click)="changeRole(chattingChatId)" #userBox (change)="modBox.checked=false">User</mat-checkbox>
             </div>
           </div>
 
@@ -98,6 +98,7 @@
                 <mat-label for="nick">The new nickname:</mat-label>
                 <input matInput type="text" id="nick" [formControl]="nick">
               </mat-form-field>
+              <button mat-raised-button color="primary" (click)="addOrChangeNickname(chattingChatId)"> Submit change</button>
             </div>
           </div>
         </div>
