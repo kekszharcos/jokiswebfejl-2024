@@ -61,4 +61,6 @@ export class AppComponent implements OnInit {
       sidenav.close()
     }
   }
+
+    protected readonly location = location;
 }

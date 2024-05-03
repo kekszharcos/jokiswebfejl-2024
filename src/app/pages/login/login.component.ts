@@ -11,7 +11,7 @@ import {AuthService} from "../../shared/services/auth.service";
 export class LoginComponent {
   email: FormControl = new FormControl('', Validators.required);
   password: FormControl = new FormControl('', [Validators.required,Validators.minLength(6)]);
-
+  isActive = true;
   constructor(private router:Router, private authService:AuthService) {
 
   }
@@ -21,6 +21,9 @@ export class LoginComponent {
       this.authService.login(this.email.value.trim(),this.password.value)
         .then(r => {this.router.navigateByUrl("/main");})
     }
+  }
 
+  cluck(){
+    this.isActive = !this.isActive
   }
 }

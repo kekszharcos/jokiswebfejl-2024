@@ -1,6 +1,6 @@
 <div class="main_component">
   <h1>Signup</h1>
-    <form [formGroup]="signUpFrom" (ngSubmit)="onSubmit()" autocomplete="off">
+    <form [ngStyle]="{ 'width.px': '9'}" [formGroup]="signUpFrom" (ngSubmit)="onSubmit()" autocomplete="off">
       <mat-form-field>
         <mat-label for="email">Email:</mat-label>
         <input matInput type="email" name="email" id="email" formControlName="email">
