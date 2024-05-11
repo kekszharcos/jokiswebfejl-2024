@@ -12,4 +12,4 @@ The website is available to the public at `https://jokiswebfejl-2024.web.app/`
 
 ## Developer note
 
-It might be problematic under incognito anyway, you have to rate it under a normal browser environment so please do so. The functions may not be fully user-friendly but it has everything to serve its purpose.
+The functions may not be fully user-friendly but it has everything to serve its purpose.
