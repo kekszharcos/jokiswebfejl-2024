@@ -17,8 +17,7 @@ export class SignupComponent {
   loginEmail: FormControl = new FormControl('', Validators.required);
   loginPassword: FormControl = new FormControl('', [Validators.required,Validators.minLength(6)]);
   isActive = true;
-  signupContainer: any ;
-  loginContainer: any ;
+  isSignupVisible = false;
   //signup
   signUpFrom = new FormGroup({
     email:new FormControl('',[Validators.email, Validators.required]),
@@ -27,9 +26,6 @@ export class SignupComponent {
   })
 
   constructor(private location:Location, private authService: AuthService, private userService: UserService, private router:Router) {
-
-    this.signupContainer = document.getElementById('signup-container');
-    this.loginContainer =  document.getElementById('login-container');
 
   }
   onSubmit() {
@@ -54,25 +50,19 @@ export class SignupComponent {
   }
 
   goToLogin(){
-    this.signupContainer.style.display = 'none';
-    this.loginContainer.style.display = 'block';
+    this.isSignupVisible = false
   }
   goToSignup() {
-    console.log(this.signupContainer)
-    this.loginContainer!.style.display = 'none';
-    this.signupContainer!.style.display = 'block';
+    this.isSignupVisible = true
   }
 
   loggingIn() {
-    console.log(this.loginEmail,this.loginPassword)
+    console.log(this.loginEmail.value,this.loginPassword.value)
+
     if (this.loginEmail.valid && this.loginPassword.valid){
       this.authService.login(this.loginEmail.value.trim(),this.loginPassword.value)
-        //.then(r => {this.router.navigateByUrl("/main");})
+        .then(r => {this.router.navigateByUrl("/main");})
     }
-  }
-
-  cluck(){
-    //this.isActive = !this.isActive
   }
 
 }
