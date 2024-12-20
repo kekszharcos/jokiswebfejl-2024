@@ -5,9 +5,10 @@ import {FriendService} from "../../shared/services/friend.service";
 import {Friend} from "../../shared/models/Friend";
 
 @Component({
-  selector: 'app-people',
-  templateUrl: './people.component.html',
-  styleUrl: './people.component.scss'
+    selector: 'app-people',
+    templateUrl: './people.component.html',
+    styleUrl: './people.component.scss',
+    standalone: false
 })
 export class PeopleComponent implements OnInit {
   everyone: User[] = [];

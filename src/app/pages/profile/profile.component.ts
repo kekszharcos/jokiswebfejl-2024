@@ -6,9 +6,10 @@ import {User} from "../../shared/models/User";
 import {FormControl, Validators} from "@angular/forms";
 
 @Component({
-  selector: 'app-profile',
-  templateUrl: './profile.component.html',
-  styleUrl: './profile.component.scss'
+    selector: 'app-profile',
+    templateUrl: './profile.component.html',
+    styleUrl: './profile.component.scss',
+    standalone: false
 })
 export class ProfileComponent implements OnInit {
   loggedInUser = JSON.parse(localStorage.getItem('user') as string)

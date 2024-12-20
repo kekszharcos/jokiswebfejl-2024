@@ -3,9 +3,10 @@ import {ChatService} from "../../shared/services/chat.service";
 import {FriendService} from "../../shared/services/friend.service";
 
 @Component({
-  selector: 'app-main',
-  templateUrl: './main.component.html',
-  styleUrl: './main.component.scss'
+    selector: 'app-main',
+    templateUrl: './main.component.html',
+    styleUrl: './main.component.scss',
+    standalone: false
 })
 export class MainComponent implements OnInit{
   loggedInUser = JSON.parse(localStorage.getItem('user') as string)

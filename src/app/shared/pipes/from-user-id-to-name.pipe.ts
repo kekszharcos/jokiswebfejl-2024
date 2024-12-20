@@ -4,7 +4,8 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Pipe({
-  name: 'fromUserIdToName'
+    name: 'fromUserIdToName',
+    standalone: false
 })
 export class FromUserIdToNamePipe implements PipeTransform {
   constructor(private userService: UserService) { }

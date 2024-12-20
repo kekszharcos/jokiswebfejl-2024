@@ -2,9 +2,10 @@ import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output} from '@an
 import {AuthService} from "../services/auth.service";
 
 @Component({
-  selector: 'app-menu',
-  templateUrl: './menu.component.html',
-  styleUrl: './menu.component.scss'
+    selector: 'app-menu',
+    templateUrl: './menu.component.html',
+    styleUrl: './menu.component.scss',
+    standalone: false
 })
 export class MenuComponent implements OnInit, AfterViewInit{
   @Output() selectedPage: EventEmitter<string> = new EventEmitter();

@@ -7,9 +7,10 @@ import {UserService} from "../../shared/services/user.service";
 import {Router} from "@angular/router";
 
 @Component({
-  selector: 'app-signup',
-  templateUrl: './signup.component.html',
-  styleUrl: './signup.component.scss'
+    selector: 'app-signup',
+    templateUrl: './signup.component.html',
+    styleUrl: './signup.component.scss',
+    standalone: false
 })
 export class SignupComponent {
   //login

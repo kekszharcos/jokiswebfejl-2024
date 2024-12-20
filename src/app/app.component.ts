@@ -6,9 +6,10 @@ import {MatSidenav} from "@angular/material/sidenav";
 import {FriendService} from "./shared/services/friend.service";
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrl: './app.component.scss',
+    standalone: false
 })
 export class AppComponent implements OnInit {
   title = 'jokiswebfelj-2024';
