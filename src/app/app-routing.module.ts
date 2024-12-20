@@ -29,9 +29,8 @@ const routes: Routes = [
     loadChildren: () => import('./pages/people/people.module').then(m => m.PeopleModule),
     canActivate: [authGuard]
   },
-  {path: 'login', loadChildren: () => import('./pages/login/login.module').then(m => m.LoginModule)},
   {path: 'signup', loadChildren: () => import('./pages/signup/signup.module').then(m => m.SignupModule)},
-  {path: '', redirectTo: '/login', pathMatch: 'full'},
+  {path: '', redirectTo: '/signup', pathMatch: 'full'},
   {path: '**', redirectTo: '/not-found'}
 ];
 

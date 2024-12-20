@@ -14,11 +14,10 @@
       <div fxFlex fxLayout fxLayoutAlign="flex-end" class="navigation-wrapper" fxHide.lt-sm>
         <ul fxLayout fxLayoutGap="5px" class="navigation-items" [ngSwitch]="loggedInUser === null">
           <ng-container *ngSwitchCase="true">
-            <li><a routerLink="/login">Login</a></li>
-            <li><a routerLink="/signup">Register</a></li>
+            <li><a routerLink="/signup">Login</a></li>
           </ng-container>
           <ng-container *ngSwitchDefault >
-            <li><a routerLink="/login" (click)="logout($event)">Logout</a></li>
+            <li><a routerLink="/signup" (click)="logout($event)">Logout</a></li>
             <li><a routerLink="/people">People</a></li>
             <li><a routerLink="/main">Main</a></li>
             <li><a routerLink="/friends">Friends</a></li>

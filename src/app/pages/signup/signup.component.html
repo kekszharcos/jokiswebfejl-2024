@@ -1,21 +1,37 @@
 <div class="main_component">
-  <h1>Signup</h1>
-    <form [ngStyle]="{ 'width.px': '9'}" [formGroup]="signUpFrom" (ngSubmit)="onSubmit()" autocomplete="off">
-      <mat-form-field>
-        <mat-label for="email">Email:</mat-label>
-        <input matInput type="email" name="email" id="email" formControlName="email">
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label for="password">Password:</mat-label>
-        <input matInput type="password" name="password" id="password" formControlName="password">
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label for="password_re">Password again:</mat-label>
-        <input matInput type="password" name="password_re" id="password_re" formControlName="password_re">
-      </mat-form-field>
-      <div>
-        <button mat-raised-button color="primary" type="submit">Signup</button>
-        <button mat-raised-button color="primary" (click)="goBack()">Back</button>
+    <div id="app-root">
+      <div class="container" id="login-container">
+        <h2>Login</h2>
+        <form>
+          <mat-form-field>
+            <mat-label for="loginEmail">Email:</mat-label>
+            <input matInput type="email" id="loginEmail" [formControl]="loginEmail"></mat-form-field>
+          <mat-form-field>
+            <mat-label for="loginPassword">Password:</mat-label>
+            <input matInput type="password" id="loginPassword" [formControl]="loginPassword"></mat-form-field>
+          <button mat-raised-button color="primary" [ngClass]="{'active': !isActive}"  (click)="loggingIn();cluck()">Login</button>
+          <button type="button" class="secondary" (click)="goToSignup()">Signup</button>
+        </form>
       </div>
-  </form>
-</div>
+
+      <div class="container" id="signup-container" style="display: none;">
+        <h2>Signup</h2>
+        <form [ngStyle]="{ 'width.px': '9'}" [formGroup]="signUpFrom" (ngSubmit)="onSubmit()" autocomplete="off">
+          <mat-form-field>
+            <mat-label for="email">Email:</mat-label>
+            <input matInput type="email" name="email" id="email" formControlName="email">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label for="password">Password:</mat-label>
+            <input matInput type="password" name="password" id="password" formControlName="password">
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label for="password_re">Password again:</mat-label>
+            <input matInput type="password" name="password_re" id="password_re" formControlName="password_re">
+          </mat-form-field>
+          <button type="submit">SignUp</button>
+          <button type="button" class="secondary" (click)="goToLogin()">Back</button>
+        </form>
+      </div>
+    </div>
+  </div>
