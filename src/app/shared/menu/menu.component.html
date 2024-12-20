@@ -1,0 +1,35 @@
+<mat-nav-list>
+   <span *ngIf="!(loggedInUser)">
+      <a mat-list-item [routerLink]="'signup'" (click)="close()">
+        <mat-icon>app_registration</mat-icon>
+        <span>login</span>
+      </a>
+   </span>
+  <span *ngIf="loggedInUser">
+    <a mat-list-item [routerLink]="'signup'" (click)="logout(); close()">
+      <mat-icon>exit_to_app</mat-icon>
+      <span>logout</span>
+    </a>
+    <a mat-list-item [routerLink]="'people'" (click)="close()">
+      <mat-icon>people</mat-icon>
+      <span>people</span>
+    </a>
+    <a mat-list-item [routerLink]="'main'" (click)="close()">
+      <mat-icon>home</mat-icon>
+      <span>main</span>
+    </a>
+    <a mat-list-item [routerLink]="'friends'" (click)="close()">
+      <mat-icon>contacts</mat-icon>
+      <span>Friends</span>
+    </a>
+    <a mat-list-item [routerLink]="'messages'" (click)="close()">
+      <mat-icon>message</mat-icon>
+      <span>Messages</span>
+    </a>
+    <a mat-list-item [routerLink]="'profile'" (click)="close()">
+      <mat-icon>face</mat-icon>
+      <span>profile</span>
+      </a>
+
+  </span>
+</mat-nav-list>

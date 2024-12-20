@@ -1,0 +1,23 @@
+.main_component {
+  height: 100vh;
+  align-items: center;
+}
+#delete button{
+  background-color: red;
+
+  color: white;
+}
+#delete{
+  width: 30%;
+  left: 70%;
+}
+#main{
+  position: relative;
+  text-align: center;
+}
+#main mat-card-header div{
+  left: 22%;
+  position: relative;
+  text-align: left;
+
+}
