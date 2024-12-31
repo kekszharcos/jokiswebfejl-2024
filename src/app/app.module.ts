@@ -16,7 +16,14 @@ import {MatButtonModule} from "@angular/material/button";
 import {FlexLayoutModule} from "@angular/flex-layout";
 import {MatListModule} from "@angular/material/list";
 import { PeopleComponent } from './pages/people/people.component';
-import {MatCard, MatCardContent, MatCardFooter, MatCardHeader} from "@angular/material/card";
+import {
+  MatCard,
+  MatCardActions,
+  MatCardContent,
+  MatCardFooter,
+  MatCardHeader,
+  MatCardTitle
+} from "@angular/material/card";
 import {MatInput, MatLabel} from "@angular/material/input";
 import { environment } from '../environments/environment';
 
@@ -45,7 +52,9 @@ import { environment } from '../environments/environment';
     MatCardHeader,
     MatCardFooter,
     MatCardContent,
-    MatIcon
+    MatIcon,
+    MatCardActions,
+    MatCardTitle
   ],
   providers: [
     provideAnimationsAsync()

@@ -12,7 +12,7 @@ export class FriendService {
   }
 
   create(friend: Friend) {
-    return this.afs.collection<Friend>(this.collectionName).doc(friend.user).set(friend)
+    return this.afs.collection<Friend>(this.collectionName).doc(friend.user).set(friend)//.then(r=> location.reload())
   }
 
   update(friend: Friend) {

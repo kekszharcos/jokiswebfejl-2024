@@ -3,7 +3,7 @@
       <div *ngIf="!isSignupVisible" class="container" id="login-container">
         <h2>Login</h2>
         <form (ngSubmit)="loggingIn()" >
-          <mat-form-field>
+          <mat-form-field >
             <mat-label for="loginEmail">Email:</mat-label>
             <input matInput type="email" id="loginEmail" [formControl]="loginEmail"></mat-form-field>
           <mat-form-field>

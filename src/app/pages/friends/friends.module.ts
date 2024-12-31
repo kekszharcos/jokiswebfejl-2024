@@ -5,7 +5,7 @@ import { FriendsRoutingModule } from './friends-routing.module';
 import { FriendsComponent } from './friends.component';
 import {FlexModule} from "@angular/flex-layout";
 import {MatButton} from "@angular/material/button";
-import {MatCard, MatCardContent, MatCardFooter, MatCardHeader} from "@angular/material/card";
+import {MatCard, MatCardContent, MatCardFooter, MatCardHeader, MatCardTitle} from "@angular/material/card";
 
 
 @NgModule({
@@ -20,7 +20,8 @@ import {MatCard, MatCardContent, MatCardFooter, MatCardHeader} from "@angular/ma
         MatCard,
         MatCardContent,
         MatCardFooter,
-        MatCardHeader
+        MatCardHeader,
+        MatCardTitle
     ]
 })
 export class FriendsModule { }
