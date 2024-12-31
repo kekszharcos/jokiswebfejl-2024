@@ -1,9 +1,12 @@
 <div class="main_component" fxLayout="row wrap" fxLayoutAlign="space-around start">
   <mat-card *ngFor="let user of everyone" fxFlex="calc(25%)" class="user-card">
-    <mat-card-title>{{ user.username }}
-      <mat-icon color="primary" type="submit" (click)="addFriend(user.id)">person_add</mat-icon>
-    </mat-card-title>
-
-
+    <mat-card-header>{{ user.username }}</mat-card-header>
+    <mat-card-content>
+      <mat-card-actions>
+        <button mat-icon-button aria-label="Add friend" matTooltip="Add friend" color="primary" type="submit" (click)="addFriend(user.id)">
+          <mat-icon>person_add</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card-content>
   </mat-card>
 </div>

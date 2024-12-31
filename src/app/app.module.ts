@@ -26,6 +26,7 @@ import {
 } from "@angular/material/card";
 import {MatInput, MatLabel} from "@angular/material/input";
 import { environment } from '../environments/environment';
+import {MatTooltip} from "@angular/material/tooltip";
 
 @NgModule({
   declarations: [
@@ -33,29 +34,30 @@ import { environment } from '../environments/environment';
     MenuComponent,
     PeopleComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    MainModule,
-    FormsModule,
-    AngularFireModule.initializeApp(environment.firebaseConfig),
-    MatSidenavModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatIconModule,
-    FlexLayoutModule,
-    MatListModule,
-    MatCard,
-    MatInput,
-    ReactiveFormsModule,
-    MatLabel,
-    MatCardHeader,
-    MatCardFooter,
-    MatCardContent,
-    MatIcon,
-    MatCardActions,
-    MatCardTitle
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        MainModule,
+        FormsModule,
+        AngularFireModule.initializeApp(environment.firebaseConfig),
+        MatSidenavModule,
+        MatToolbarModule,
+        MatButtonModule,
+        MatIconModule,
+        FlexLayoutModule,
+        MatListModule,
+        MatCard,
+        MatInput,
+        ReactiveFormsModule,
+        MatLabel,
+        MatCardHeader,
+        MatCardFooter,
+        MatCardContent,
+        MatIcon,
+        MatCardActions,
+        MatCardTitle,
+        MatTooltip
+    ],
   providers: [
     provideAnimationsAsync()
   ],
