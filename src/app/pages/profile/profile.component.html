@@ -1,37 +1,51 @@
-<div class="main_component">
-  <mat-card id="main" >
+<div class="main_component" fxLayout="column" fxLayoutAlign="center center">
+  <mat-card id="main" fxFlex="90%" fxFlex.xs="100%">
     <mat-card-header>
-      <div>
-        <br>
-          Username: {{ loggedInUser.uid | fromUserIdToName | async }}
-        <br>
-          Email: {{ loggedInUser.email }}
+      <div class="inner-card-container" fxLayout="row" fxLayoutAlign="center start">
+        <mat-card class="inner-card">
+          <mat-card-header>
+            <mat-card-title>
+              Profile Information
+            </mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="user-info" matTooltip="You can change your information below">
+              <p>Username: <strong>{{ loggedInUser.uid | fromUserIdToName | async }}</strong></p>
+              <p>Email: <strong>{{ loggedInUser.email }}</strong></p>
+            </div>
+          </mat-card-content>
+        </mat-card>
       </div>
     </mat-card-header>
+
     <mat-card-content>
-      <mat-form-field>
-        <mat-label>Username:</mat-label>
-        <input matInput type="text" name="username" id="username" [formControl]="username"
-               placeholder="{{loggedInUser.uid | fromUserIdToName | async}}">
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>E-mail:</mat-label>
-        <input matInput type="email" name="email" id="email" [formControl]="email" placeholder="{{loggedInUser.email}}">
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Password:</mat-label>
-        <input matInput type="password" name="password" id="password" [formControl]="password" placeholder="******">
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Password again:</mat-label>
-        <input matInput type="password" name="re_password" id="re_password" [formControl]="re_password" placeholder="******">
-      </mat-form-field>
+      <form>
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Username:</mat-label>
+          <input matInput type="text" [formControl]="username" placeholder="{{loggedInUser.uid | fromUserIdToName | async}}">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>E-mail:</mat-label>
+          <input matInput type="email" [formControl]="email" placeholder="{{loggedInUser.email}}">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Password:</mat-label>
+          <input matInput type="password" [formControl]="password" placeholder="******">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Password again:</mat-label>
+          <input matInput type="password" [formControl]="re_password" placeholder="******">
+        </mat-form-field>
+      </form>
     </mat-card-content>
-    <mat-card-footer>
-      <button mat-raised-button color="primary" type="submit" (click)="updateProfile()">Save changes</button>
+
+    <mat-card-footer fxLayout="row" fxLayoutAlign="space-between center">
+      <button mat-raised-button color="primary" (click)="updateProfile()">Save Changes</button>
+      <button mat-raised-button color="warn" (click)="deleteProfile()">DELETE ACCOUNT</button>
     </mat-card-footer>
-    <mat-card id="delete">
-      <button mat-raised-button [routerLink]="'/logout'" (click)="deleteProfile()">DELETE ACCOUNT</button>
-    </mat-card>
   </mat-card>
+
 </div>
