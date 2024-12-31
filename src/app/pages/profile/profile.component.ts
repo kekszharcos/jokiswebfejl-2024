@@ -23,6 +23,7 @@ export class ProfileComponent implements OnInit {
   email = new FormControl('',[Validators.email])
   password = new FormControl('',[Validators.minLength(6)])
   re_password = new FormControl('',[Validators.minLength(6)])
+  changeIsToggled: boolean = false;
 
   constructor(private userService: UserService, private router: Router, private authService: AuthService) {
   }
@@ -50,5 +51,9 @@ export class ProfileComponent implements OnInit {
     }else {
       this.userService.update(this.newUser,this.pwToSend,true)
     }
+  }
+
+  openChanges() {
+    this.changeIsToggled = !this.changeIsToggled
   }
 }

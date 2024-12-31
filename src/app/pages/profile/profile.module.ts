@@ -5,12 +5,13 @@ import { ProfileRoutingModule } from './profile-routing.module';
 import { ProfileComponent } from './profile.component';
 import {MatCard, MatCardContent, MatCardFooter, MatCardHeader, MatCardTitle} from "@angular/material/card";
 import {MessagesModule} from "../messages/messages.module";
-import {MatButton} from "@angular/material/button";
+import {MatButton, MatIconButton} from "@angular/material/button";
 import {MatFormField, MatLabel} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {ReactiveFormsModule} from "@angular/forms";
 import {FlexModule} from "@angular/flex-layout";
 import {MatTooltip} from "@angular/material/tooltip";
+import {MatIcon} from "@angular/material/icon";
 
 
 @NgModule({
@@ -32,7 +33,9 @@ import {MatTooltip} from "@angular/material/tooltip";
     ReactiveFormsModule,
     FlexModule,
     MatCardTitle,
-    MatTooltip
+    MatTooltip,
+    MatIcon,
+    MatIconButton
   ]
 })
 export class ProfileModule { }

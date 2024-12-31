@@ -1,51 +1,58 @@
 <div class="main_component" fxLayout="column" fxLayoutAlign="center center">
-  <mat-card id="main" fxFlex="90%" fxFlex.xs="100%">
+  <mat-card id="main">
     <mat-card-header>
       <div class="inner-card-container" fxLayout="row" fxLayoutAlign="center start">
-        <mat-card class="inner-card">
+        <mat-card>
           <mat-card-header>
             <mat-card-title>
               Profile Information
             </mat-card-title>
           </mat-card-header>
           <mat-card-content>
-            <div class="user-info" matTooltip="You can change your information below">
+            <div class="user-info">
               <p>Username: <strong>{{ loggedInUser.uid | fromUserIdToName | async }}</strong></p>
               <p>Email: <strong>{{ loggedInUser.email }}</strong></p>
             </div>
           </mat-card-content>
+          <mat-card-footer>
+            <button mat-icon-button aria-label="Change your information" matTooltip="Change your information" (click)="openChanges()" >
+              <mat-icon>settings</mat-icon>
+            </button>
+          </mat-card-footer>
         </mat-card>
       </div>
     </mat-card-header>
 
-    <mat-card-content>
-      <form>
-        <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Username:</mat-label>
-          <input matInput type="text" [formControl]="username" placeholder="{{loggedInUser.uid | fromUserIdToName | async}}">
-        </mat-form-field>
+    <div *ngIf="changeIsToggled">
+      <mat-card-content>
+        <form>
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Username:</mat-label>
+            <input matInput type="text" [formControl]="username" placeholder="{{loggedInUser.uid | fromUserIdToName | async}}">
+          </mat-form-field>
 
-        <mat-form-field appearance="outline">
-          <mat-label>E-mail:</mat-label>
-          <input matInput type="email" [formControl]="email" placeholder="{{loggedInUser.email}}">
-        </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>E-mail:</mat-label>
+            <input matInput type="email" [formControl]="email" placeholder="{{loggedInUser.email}}">
+          </mat-form-field>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Password:</mat-label>
-          <input matInput type="password" [formControl]="password" placeholder="******">
-        </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Password:</mat-label>
+            <input matInput type="password" [formControl]="password" placeholder="******">
+          </mat-form-field>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Password again:</mat-label>
-          <input matInput type="password" [formControl]="re_password" placeholder="******">
-        </mat-form-field>
-      </form>
-    </mat-card-content>
+          <mat-form-field appearance="outline">
+            <mat-label>Password again:</mat-label>
+            <input matInput type="password" [formControl]="re_password" placeholder="******">
+          </mat-form-field>
+        </form>
+      </mat-card-content>
 
-    <mat-card-footer fxLayout="row" fxLayoutAlign="space-between center">
-      <button mat-raised-button color="primary" (click)="updateProfile()">Save Changes</button>
-      <button mat-raised-button color="warn" (click)="deleteProfile()">DELETE ACCOUNT</button>
-    </mat-card-footer>
+      <mat-card-footer fxLayout="row" fxLayoutAlign="space-between center">
+        <button mat-raised-button color="primary" (click)="updateProfile()">Save Changes</button>
+        <button mat-raised-button color="warn" (click)="deleteProfile()">DELETE ACCOUNT</button>
+      </mat-card-footer>
+    </div>
   </mat-card>
 
 </div>
