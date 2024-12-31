@@ -4,6 +4,7 @@ import {UserService} from "../../shared/services/user.service";
 import {ChatService} from "../../shared/services/chat.service";
 import {Chat} from "../../shared/models/Chat";
 import {Router} from "@angular/router";
+import {Friend} from "../../shared/models/Friend";
 
 @Component({
     selector: 'app-friends',
@@ -32,22 +33,7 @@ export class FriendsComponent implements OnInit{
       }else {
         this.friends = []
       }
-
-      for (let i = 0; i < this.friends.length; i++) {
-        let uns = this.userService.getUserById(this.friends[i]).subscribe(value => {
-          let breaker = true;
-          for (let j = 0; j < this.friendUsers.length; j++) {
-            if (this.friendUsers[j].id === value[0].id){
-              breaker = false
-            }
-          }
-          if (breaker){
-            this.friendUsers.push({id:value[0].id,name:value[0].username})
-          }
-          uns.unsubscribe()
-        })
-      }
-
+      this.refreshFriendUsers();
     })
     this.ownChats = this.chatService.getOwnChats(this.loggedInUser.uid)
   }
@@ -70,8 +56,46 @@ export class FriendsComponent implements OnInit{
         t2.unsubscribe()
         lep.unsubscribe()
       })
-
-
     })
+  }
+  removeFriend(friendId: string) {
+    // Remove the friend from the local `friends` array
+    this.friends = this.friends.filter(r => r !== friendId);
+
+    // Update the backend
+    let friend: Friend = {
+      user: this.loggedInUser.uid,
+      friends: JSON.stringify(this.friends),
+    };
+    this.friendService.update(friend).then(() => {
+      // Recalculate the friendUsers array to update the UI
+      this.refreshFriendUsers();
+    }).catch(reason => {
+      console.error('Error updating friends:', reason);
+    });
+  }
+
+
+  private refreshFriendUsers() {
+    this.friendUsers = []; // Clear the existing list
+
+    // Re-fetch user data for each friend
+    for (let i = 0; i < this.friends.length; i++) {
+      let uns = this.userService.getUserById(this.friends[i]).subscribe(value => {
+        let breaker = true;
+
+        // Prevent duplicate entries
+        for (let j = 0; j < this.friendUsers.length; j++) {
+          if (this.friendUsers[j].id === value[0].id) {
+            breaker = false;
+          }
+        }
+
+        if (breaker) {
+          this.friendUsers.push({ id: value[0].id, name: value[0].username });
+        }
+        uns.unsubscribe();
+      });
+    }
   }
 }

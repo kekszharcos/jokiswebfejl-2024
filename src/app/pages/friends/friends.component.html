@@ -1,11 +1,10 @@
 <div class="main_component" fxLayout="row wrap" fxLayoutAlign="space-around start">
   <h1 *ngIf="friendUsers.length === 0">You don't have friends yet</h1>
   <mat-card *ngFor="let friend of friendUsers" fxFlex="calc(25%)" class="user-card">
-    <mat-card-title>{{ friend.name }}</mat-card-title>
-    <mat-card-footer>
-      <button mat-raised-button color="primary" type="submit" (click)="openChat(friend.id)">
-        Open chat
-      </button>
-    </mat-card-footer>
+    <mat-card-title>
+      <mat-icon color="secondary" type="submit" (click)="removeFriend(friend.id)">delete</mat-icon>
+      {{ friend.name }}
+      <mat-icon color="primary" type="submit" (click)="openChat(friend.id)">message</mat-icon>
+    </mat-card-title>
   </mat-card>
 </div>

@@ -6,6 +6,7 @@ import { FriendsComponent } from './friends.component';
 import {FlexModule} from "@angular/flex-layout";
 import {MatButton} from "@angular/material/button";
 import {MatCard, MatCardContent, MatCardFooter, MatCardHeader, MatCardTitle} from "@angular/material/card";
+import {MatIcon} from "@angular/material/icon";
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import {MatCard, MatCardContent, MatCardFooter, MatCardHeader, MatCardTitle} fro
         MatCardContent,
         MatCardFooter,
         MatCardHeader,
-        MatCardTitle
+        MatCardTitle,
+        MatIcon
     ]
 })
 export class FriendsModule { }
