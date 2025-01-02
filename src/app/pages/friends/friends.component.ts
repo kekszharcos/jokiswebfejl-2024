@@ -22,6 +22,7 @@ export class FriendsComponent implements OnInit{
     messages:''
   }
   ownChats: Array<Chat> = [];
+  //friendsRefreshing: boolean = false;
   constructor(private friendService: FriendService, private userService : UserService, private chatService:ChatService, private router: Router) {
 
   }
