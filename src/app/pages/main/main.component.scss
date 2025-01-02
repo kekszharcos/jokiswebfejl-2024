@@ -1,4 +1,143 @@
 .main_component {
   height: 100vh;
   align-items: center;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+
+  .dashboard_header {
+    text-align: center;
+    margin-bottom: 20px;
+
+    h1 {
+      font-size: 2rem;
+      color: white;
+    }
+
+    p {
+      font-size: 1rem;
+      color: white;
+    }
+  }
+
+  .dashboard_content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+
+    section {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+      h2 {
+        font-size: 1.5rem;
+        color: #444;
+        margin-bottom: 10px;
+      }
+
+      .placeholder {
+        text-align: center;
+        font-size: 0.9rem;
+        color: #aaa;
+      }
+    }
+
+    .key_metrics {
+
+      .metrics_content {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        .metric {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          font-size: 1rem;
+
+          .label {
+            color: #555;
+          }
+
+          .value {
+            color: #007bff;
+            font-weight: bold;
+          }
+        }
+      }
+    }
+
+    .recent_activity,
+    .active_chats {
+      .activity_item {
+        margin-bottom: 10px;
+        font-size: 0.9rem;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 5px;
+
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+    }
+
+    .quick_actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      button {
+        padding: 10px 15px;
+        font-size: 1rem;
+        color: #fff;
+        background-color: #007bff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background-color: #0056b3;
+        }
+      }
+    }
+
+    .trending_featured {
+      .featured_item {
+        margin-bottom: 10px;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+
+        img {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          margin-right: 10px;
+        }
+
+        .details {
+          display: flex;
+          flex-direction: column;
+
+          .name {
+            font-weight: bold;
+            color: #333;
+          }
+
+          .description {
+            font-size: 0.85rem;
+            color: #666;
+          }
+        }
+      }
+    }
+  }
 }

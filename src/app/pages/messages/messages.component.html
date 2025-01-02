@@ -1,6 +1,6 @@
-<mat-drawer-container class="main_component" fxFlex fxLayout="row" (click)="drawer.close()">
-  <mat-drawer #drawer mode="side" class="Chats" fxLayoutAlign="start center" fxLayoutGap="2" fxLayout="column"
-              (click)="$event.stopPropagation()">
+<mat-drawer-container class="main_component" fxFlex fxLayout="row">
+  <mat-drawer #drawer mode="push" class="Chats" fxFlex="30" fxLayoutAlign="start center" fxLayoutGap="2"
+              fxLayout="column">
     <ng-container>
       <mat-card class="ChatsPeople" *ngFor="let friendName of friendChats">
         <mat-card-header>
@@ -22,18 +22,18 @@
           </mat-form-field>
         </mat-card-content>
       </mat-card>
-      <button mat-icon-button matTooltip="Create new chat" (click)="createNewChat();">
+      <button mat-icon-button matTooltip="Create new chat" aria-label="Create new chat" (click)="createNewChat();">
         <mat-icon>add</mat-icon>
       </button>
     </ng-container>
   </mat-drawer>
-
-  <mat-icon class="pointer" matTooltip="Open/Close Drawer"
-            (click)="openDrawer();$event.stopPropagation()"> {{ drawer.opened ? 'arrow_back_ios' : 'arrow_forward_ios' }}
-  </mat-icon>
-
-  <mat-drawer-content fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="30pt"
-                      *ngIf="contentHider && chattingChatId">
+  <button mat-icon-button matTooltip="Open/Close Drawer" aria-label="Open/Close Drawer"
+          (click)="openDrawer();$event.stopPropagation()">
+    <mat-icon> {{ drawer.opened ? 'arrow_back_ios' : 'arrow_forward_ios' }} </mat-icon>
+  </button>
+  <div fxFlex="100" class="ChatWindow" fxLayout="column" fxLayoutAlign="start center" fxLayoutGap="2"
+       style="padding: 10px"
+       *ngIf="contentHider && chattingChatId">
     <div *ngIf="currentChatSaved">
       <div *ngIf="chattingChatId === currentChatSaved.chatId">
         <div *ngIf="addToChatHider">
@@ -114,7 +114,9 @@
       <mat-card fxFlex fxLayout="column" fxLayoutGap="5pt" class="chat-messages-container">
         <mat-card *ngFor="let message of chatMessages">
           <mat-card-header>From: {{ message.owner }}</mat-card-header>
-          <mat-card-content style="text-justify: auto; word-break: break-word"> {{ message.text }}</mat-card-content>
+          <mat-card-content style="text-justify: auto; word-break: break-word">
+            {{ message.text }}
+          </mat-card-content>
           <mat-icon matTooltip="Remove message" aria-label="Remove message" class="danger" fxLayoutAlign="end end"
                     (click)="deleteMessageFromChat(message.id)"
                     *ngIf="loggedInOwnerInGroup || loggedInModInGroup">delete_forever
@@ -123,13 +125,14 @@
       </mat-card>
       <mat-card-footer>
         <div class="Write" fxLayoutAlign="end">
-          <mat-form-field fxFlex><textarea matInput cdkTextareaAutosize style="max-height: 30vh"
-                                           [formControl]="messageToSend"></textarea></mat-form-field>
+          <mat-form-field fxFlex>
+            <textarea matInput cdkTextareaAutosize style="max-height: 30vh" [formControl]="messageToSend"></textarea>
+          </mat-form-field>
           <button mat-raised-button type="submit" (click)="onSend(chattingChatId)">Send</button>
         </div>
       </mat-card-footer>
       <button class="danger" mat-button (click)="deleteChat(chattingChatId)" *ngIf="loggedInOwnerInGroup">DELETE CHAT
       </button>
     </mat-card>
-  </mat-drawer-content>
+  </div>
 </mat-drawer-container>

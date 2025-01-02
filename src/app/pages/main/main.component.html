@@ -1,5 +1,25 @@
+
 <div class="main_component">
-  <h1>Welcome to the main page</h1>
-  <p>The purpose of this app is to text some1, cuz they might want to text you back.</p>
-  <mat-hint>You can find people after navigating to it's designated site.</mat-hint>
+  <header class="dashboard_header">
+    <h1>Dashboard Overview</h1>
+    <p>Welcome! Here's an overview of your activity and stats.</p>
+  </header>
+  <div fxHide class="chat_dashboard_content">
+
+    <section class="active_chats">
+      <h2>Active Chats</h2>
+      <div class="placeholder">Placeholder for active chats list</div>
+    </section>
+
+    <section class="recent_messages">
+      <h2>Recent Messages</h2>
+      <div class="placeholder">Placeholder for recent messages and senders</div>
+    </section>
+
+    <section class="new_chat">
+      <h2>Start a New Chat</h2>
+      <button mat-raised-button class="start_chat_button">New Chat</button>
+    </section>
+
+  </div>
 </div>
