@@ -1,0 +1,35 @@
+/* General Styles */
+mat-nav-list {
+  width: 100%;
+  padding: 10px 0;
+}
+
+a[mat-list-item] {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  font-size: 1.1em;
+  color: #333; /* Dark text color */
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+a[mat-list-item]:hover {
+  background-color: #00796b; /* Light teal for hover effect */
+  color: #00796b; /* Matching text color for hover */
+}
+
+mat-icon {
+  margin-right: 10px; /* Space between icon and text */
+}
+
+/* Specific Styles for Logout */
+a[mat-list-item] mat-icon[color="warn"] {
+  color: #d32f2f; /* Red color for logout icon */
+}
+
+/* Active Link Styling */
+a[mat-list-item].active {
+  font-weight: bold;
+  border-left: 4px solid #3f51b5; /* Highlight active link */
+}

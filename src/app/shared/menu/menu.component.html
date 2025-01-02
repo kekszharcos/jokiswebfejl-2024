@@ -1,35 +1,39 @@
 <mat-nav-list>
-   <span *ngIf="!(loggedInUser)">
-      <a mat-list-item [routerLink]="'signup'" (click)="close()">
-        <mat-icon>app_registration</mat-icon>
-        <span>login</span>
-      </a>
-   </span>
-  <span *ngIf="loggedInUser">
-    <a mat-list-item [routerLink]="'signup'" (click)="logout(); close()">
-      <mat-icon>exit_to_app</mat-icon>
-      <span>logout</span>
+  <!-- User not logged in -->
+  <ng-container *ngIf="!(loggedInUser)">
+    <a mat-list-item [routerLink]="'signup'" (click)="close()" aria-label="Login">
+      <mat-icon>app_registration</mat-icon>
+      <span>Login</span>
     </a>
-    <a mat-list-item [routerLink]="'people'" (click)="close()">
+  </ng-container>
+
+  <!-- User logged in -->
+  <ng-container *ngIf="loggedInUser">
+    <!-- Logout -->
+    <a mat-list-item [routerLink]="'signup'" (click)="logout(); close()" aria-label="Logout">
+      <mat-icon color="warn">exit_to_app</mat-icon>
+    </a>
+
+    <!-- Navigation Links -->
+    <a mat-list-item [routerLink]="'people'" (click)="close()" aria-label="People">
       <mat-icon>people</mat-icon>
-      <span>people</span>
+      <span>People</span>
     </a>
-    <a mat-list-item [routerLink]="'main'" (click)="close()">
+    <a mat-list-item [routerLink]="'main'" (click)="close()" aria-label="Main">
       <mat-icon>home</mat-icon>
-      <span>main</span>
+      <span>Main</span>
     </a>
-    <a mat-list-item [routerLink]="'friends'" (click)="close()">
+    <a mat-list-item [routerLink]="'friends'" (click)="close()" aria-label="Friends">
       <mat-icon>contacts</mat-icon>
       <span>Friends</span>
     </a>
-    <a mat-list-item [routerLink]="'messages'" (click)="close()">
+    <a mat-list-item [routerLink]="'messages'" (click)="close()" aria-label="Messages">
       <mat-icon>message</mat-icon>
       <span>Messages</span>
     </a>
-    <a mat-list-item [routerLink]="'profile'" (click)="close()">
+    <a mat-list-item [routerLink]="'profile'" (click)="close()" aria-label="Profile">
       <mat-icon>face</mat-icon>
-      <span>profile</span>
-      </a>
-
-  </span>
+      <span>Profile</span>
+    </a>
+  </ng-container>
 </mat-nav-list>

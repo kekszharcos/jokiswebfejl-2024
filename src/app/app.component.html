@@ -1,28 +1,70 @@
 <mat-sidenav-container>
-  <mat-sidenav #sidenav>
-    <app-menu (selectedPage)="changePage($event)" [currentPage]="page" *ngIf="page" [loggedInUser]="loggedInUser"
-              (onCloseSidenav)="onClose($event, sidenav)" (onLogout)="logout($event)"></app-menu>
+  <!-- Side Navigation -->
+  <mat-sidenav #sidenav close fxHide.gt-sm fxShow.lt-md>
+    <app-menu
+      (selectedPage)="changePage($event)"
+      [currentPage]="page"
+      *ngIf="page"
+      [loggedInUser]="loggedInUser"
+      (onCloseSidenav)="onClose($event, sidenav)"
+      (onLogout)="logout($event)">
+    </app-menu>
   </mat-sidenav>
+
   <mat-sidenav-content>
     <mat-toolbar color="primary">
-      <div class="hamburger-menu-wrapper">
-        <button mat-icon-button (click)="onToggleSidenav(sidenav)">
+      <div class="hamburger-menu-wrapper" fxHide.gt-sm fxShow.lt-md>
+        <button mat-icon-button (click)="onToggleSidenav(sidenav)" aria-label="Open Menu">
           <mat-icon>menu</mat-icon>
         </button>
       </div>
-      <div>TEXTME-APP</div>
-      <div fxFlex fxLayout fxLayoutAlign="flex-end" class="navigation-wrapper" fxHide.lt-sm>
-        <ul fxLayout fxLayoutGap="5px" class="navigation-items" [ngSwitch]="loggedInUser === null">
+
+      <div class="app-title">TEXTME-APP</div>
+
+      <div fxFlex fxLayoutAlign="flex-end" class="navigation-wrapper" fxShow.gt-md fxHide.lt-md>
+        <ul class="navigation-items" fxLayout fxLayoutGap="10px" [ngSwitch]="loggedInUser === null">
           <ng-container *ngSwitchCase="true">
-            <li><a routerLink="/signup">Login</a></li>
+            <li>
+              <button mat-button routerLink="/signup">Login</button>
+            </li>
           </ng-container>
-          <ng-container *ngSwitchDefault >
-            <li><a routerLink="/signup" (click)="logout($event)">Logout</a></li>
-            <li><a routerLink="/people">People</a></li>
-            <li><a routerLink="/main">Main</a></li>
-            <li><a routerLink="/friends">Friends</a></li>
-            <li><a routerLink="/messages">Messages</a></li>
-            <li><a routerLink="/profile">Profile</a></li>
+
+          <ng-container *ngSwitchDefault>
+            <li>
+              <button mat-button routerLink="/people">
+                <mat-icon>people</mat-icon>
+                People
+              </button>
+            </li>
+            <li>
+              <button mat-button routerLink="/main">
+                <mat-icon>home</mat-icon>
+                Main
+              </button>
+            </li>
+            <li>
+              <button mat-button routerLink="/friends">
+                <mat-icon>group</mat-icon>
+                Friends
+              </button>
+            </li>
+            <li>
+              <button mat-button routerLink="/messages">
+                <mat-icon>message</mat-icon>
+                Messages
+              </button>
+            </li>
+            <li>
+              <button mat-button routerLink="/profile">
+                <mat-icon>person</mat-icon>
+                Profile
+              </button>
+            </li>
+            <li>
+              <button mat-icon-button routerLink="/signup" color="warn" (click)="logout($event)" aria-label="Logout">
+                <mat-icon>exit_to_app</mat-icon>
+              </button>
+            </li>
           </ng-container>
         </ul>
       </div>

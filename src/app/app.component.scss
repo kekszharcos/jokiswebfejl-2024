@@ -16,12 +16,6 @@ a:hover, a:active {
   margin: 0;
 }
 
-@media screen and (max-width: 576px) {
-  .navigation-items {
-    display: none;
-  }
-}
-
 mat-sidenav {
   width: 250px;
 }
@@ -33,12 +27,52 @@ mat-sidenav {
   padding-left: 10px;
 }
 
-@media screen and (min-width: 576px) {
-  .hamburger-menu-wrapper {
-    display: none;
-  }
-}
-
 h1{
   text-align: center;
+}
+
+/* General Container */
+mat-sidenav-container {
+  height: 100vh;
+}
+
+mat-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hamburger-menu-wrapper {
+  margin-right: 10px;
+}
+
+.app-title {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.navigation-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+/* Navigation Items */
+.navigation-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+.navigation-items li {
+  display: inline-block;
+}
+
+.navigation-items button {
+  text-transform: capitalize;
+}
+
+mat-icon-button {
+  margin-left: 10px;
 }
