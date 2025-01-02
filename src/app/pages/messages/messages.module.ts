@@ -14,6 +14,7 @@ import {MatDrawer, MatDrawerContainer} from "@angular/material/sidenav";
 import {MatIcon} from "@angular/material/icon";
 import {MatOption, MatSelect} from "@angular/material/select";
 import {MatCheckbox} from "@angular/material/checkbox";
+import {MatTooltip} from "@angular/material/tooltip";
 
 
 
@@ -25,24 +26,25 @@ import {MatCheckbox} from "@angular/material/checkbox";
   exports: [
     FromUserIdToNamePipe
   ],
-    imports: [
-        CommonModule,
-        MessagesRoutingModule,
-        MatInputModule,
-        MatButtonModule,
-        MatFormFieldModule,
-        ReactiveFormsModule,
-        MatCard,
-        FlexModule,
-        MatCardContent,
-        MatCardHeader,
-        MatDrawerContainer,
-        MatDrawer,
-        MatCardFooter,
-        MatIcon,
-        MatSelect,
-        MatOption,
-        MatCheckbox
-    ]
+  imports: [
+    CommonModule,
+    MessagesRoutingModule,
+    MatInputModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    ReactiveFormsModule,
+    MatCard,
+    FlexModule,
+    MatCardContent,
+    MatCardHeader,
+    MatDrawerContainer,
+    MatDrawer,
+    MatCardFooter,
+    MatIcon,
+    MatSelect,
+    MatOption,
+    MatCheckbox,
+    MatTooltip
+  ]
 })
 export class MessagesModule { }

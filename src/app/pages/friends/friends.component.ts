@@ -7,31 +7,32 @@ import {Router} from "@angular/router";
 import {Friend} from "../../shared/models/Friend";
 
 @Component({
-    selector: 'app-friends',
-    templateUrl: './friends.component.html',
-    styleUrl: './friends.component.scss',
-    standalone: false
+  selector: 'app-friends',
+  templateUrl: './friends.component.html',
+  styleUrl: './friends.component.scss',
+  standalone: false
 })
-export class FriendsComponent implements OnInit{
+export class FriendsComponent implements OnInit {
   friends: Array<string> = []
-  loggedInUser = JSON.parse(localStorage.getItem('user') as string) ;
-  friendUsers: Array<any> =[];
-  chat: Chat ={
-    id:'',
-    users:'',
-    messages:''
+  loggedInUser = JSON.parse(localStorage.getItem('user') as string);
+  friendUsers: Array<any> = [];
+  chat: Chat = {
+    id: '',
+    users: '',
+    messages: ''
   }
   ownChats: Array<Chat> = [];
+
   //friendsRefreshing: boolean = false;
-  constructor(private friendService: FriendService, private userService : UserService, private chatService:ChatService, private router: Router) {
+  constructor(private friendService: FriendService, private userService: UserService, private chatService: ChatService, private router: Router) {
 
   }
 
   ngOnInit(): void {
     this.friendService.getOwnFriends(this.loggedInUser.uid).subscribe(value => {
-      if (typeof value[0] !== "undefined"){
+      if (typeof value[0] !== "undefined") {
         this.friends = JSON.parse(value[0].friends)
-      }else {
+      } else {
         this.friends = []
       }
       this.refreshFriendUsers();
@@ -39,18 +40,22 @@ export class FriendsComponent implements OnInit{
     this.ownChats = this.chatService.getOwnChats(this.loggedInUser.uid)
   }
 
-  openChat(friendId:string) {
+  openChat(friendId: string) {
     let breaker = true;
     let lep = this.userService.getUserById(friendId).subscribe(value => {
       let t2 = this.userService.getUserById(this.loggedInUser.uid).subscribe(value2 => {
-        this.chat.users = JSON.stringify([{id:this.loggedInUser.uid,name:value2[0].username,role:"owner"},{id:friendId,name:value[0].username,role:"user"}])
-        this.ownChats.forEach(chat =>{
-          if (chat.users.includes(this.loggedInUser.uid) && chat.users.includes(friendId)){
+        this.chat.users = JSON.stringify([{
+          id: this.loggedInUser.uid,
+          name: value2[0].username,
+          role: "owner"
+        }, {id: friendId, name: value[0].username, role: "user"}])
+        this.ownChats.forEach(chat => {
+          if (chat.users.includes(this.loggedInUser.uid) && chat.users.includes(friendId)) {
             breaker = false
           }
         })
-        if (breaker){
-          this.chatService.create(this.chat).then(_=>{
+        if (breaker) {
+          this.chatService.create(this.chat).then(_ => {
             this.router.navigateByUrl("/messages")
           })
         }
@@ -59,6 +64,7 @@ export class FriendsComponent implements OnInit{
       })
     })
   }
+
   removeFriend(friendId: string) {
     // Remove the friend from the local `friends` array
     this.friends = this.friends.filter(r => r !== friendId);
@@ -93,7 +99,7 @@ export class FriendsComponent implements OnInit{
         }
 
         if (breaker) {
-          this.friendUsers.push({ id: value[0].id, name: value[0].username });
+          this.friendUsers.push({id: value[0].id, name: value[0].username});
         }
         uns.unsubscribe();
       });

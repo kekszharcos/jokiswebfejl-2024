@@ -1,26 +1,36 @@
 .main_component {
-  height: 1000vh;
+  height: 100vh;
+}
 
+mat-drawer-content {
+  width: 50%;
+  margin: 0 auto;
 }
-mat-drawer-content{
-  position: absolute;
-  left: 50%;
-  right: 50%;
+
+.chat-messages-container {
+  flex: 1;
+  overflow-y: auto; /* Allows scrolling */
+  padding: 15px;
+  margin-bottom: 10px; /* Creates space for the footer */
 }
-#current{
+
+#current {
   text-align: center;
   font-size: larger;
   border: black 1px solid;
   padding-bottom: 15px;
 }
-.danger{
+
+.danger {
   background-color: red;
   color: white;
   cursor: pointer;
 }
-mat-card-content{
+
+mat-card-content {
   text-justify: auto;
 }
-.poniter{
+
+.pointer {
   cursor: pointer;
 }
