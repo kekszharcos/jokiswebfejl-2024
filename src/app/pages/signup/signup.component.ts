@@ -64,7 +64,7 @@ export class SignupComponent {
   }
 
   loggingIn() {
-    console.log(this.loginEmail,this.loginPassword)
+    console.log(`Login attempt with email: ${this.loginEmail.value}`)
     if (this.loginEmail.valid && this.loginPassword.valid){
       this.authService.login(this.loginEmail.value.trim(),this.loginPassword.value)
         //.then(r => {this.router.navigateByUrl("/main");})
