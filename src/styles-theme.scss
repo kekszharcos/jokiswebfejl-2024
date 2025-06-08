@@ -1,0 +1,52 @@
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+$custom-teal: (
+  50 : #E0F2F1,
+  100 : #B2DFDB,
+  200 : #80CBC4,
+  300 : #4DB6AC,
+  400 : #26A69A,
+  500 : #009688,
+  600 : #00897B,
+  700 : #00796B,
+  800 : #00695C,
+  900 : #004D40,
+  A100 : #A7FFEB,
+  A200 : #64FFDA,
+  A400 : #1DE9B6,
+  A700 : #00BFA5,
+  contrast: (
+    50 : rgba(black, 0.87),
+    100 : rgba(black, 0.87),
+    200 : rgba(black, 0.87),
+    300 : rgba(black, 0.87),
+    400 : rgba(black, 0.87),
+    500 : white,
+    600 : white,
+    700 : white,
+    800 : white,
+    900 : white,
+    A100 : rgba(black, 0.87),
+    A200 : rgba(black, 0.87),
+    A400 : rgba(black, 0.87),
+    A700 : white,
+  )
+);
+
+$jokiswebfelj-2024-primary: mat.define-palette($custom-teal);
+$jokiswebfelj-2024-accent: mat.define-palette($custom-teal, A200, A100, A400);
+$jokiswebfelj-2024-warn: mat.define-palette(mat.$red-palette);
+
+$jokiswebfelj-2024-theme: mat.define-dark-theme((
+  color: (
+    primary: $jokiswebfelj-2024-primary,
+    accent: $jokiswebfelj-2024-accent,
+    warn: $jokiswebfelj-2024-warn,
+  ),
+  typography: mat.define-typography-config(),
+  density: 0
+));
+
+@include mat.all-component-themes($jokiswebfelj-2024-theme);
