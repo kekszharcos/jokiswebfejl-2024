@@ -2,41 +2,42 @@
 
 @include mat.core();
 
-$custom-teal: (
-  50 : #E0F2F1,
-  100 : #B2DFDB,
-  200 : #80CBC4,
-  300 : #4DB6AC,
-  400 : #26A69A,
-  500 : #009688,
-  600 : #00897B,
-  700 : #00796B,
-  800 : #00695C,
-  900 : #004D40,
-  A100 : #A7FFEB,
-  A200 : #64FFDA,
-  A400 : #1DE9B6,
-  A700 : #00BFA5,
+// Define your custom palette using your colors
+$custom-green: (
+  50 : #e1eebc,
+  100: #d3e7a3,
+  200: #c4e08a,
+  300: #b6d971,
+  400: #90c67c, // your color
+  500: #67ae6e, // your color
+  600: #4e9e6e,
+  700: #328e6e, // your color
+  800: #297e5e,
+  900: #206e4e,
+  A100: #e1eebc, // your color
+  A200: #90c67c, // your color
+  A400: #67ae6e, // your color
+  A700: #328e6e, // your color
   contrast: (
-    50 : rgba(black, 0.87),
-    100 : rgba(black, 0.87),
-    200 : rgba(black, 0.87),
-    300 : rgba(black, 0.87),
-    400 : rgba(black, 0.87),
-    500 : white,
-    600 : white,
-    700 : white,
-    800 : white,
-    900 : white,
-    A100 : rgba(black, 0.87),
-    A200 : rgba(black, 0.87),
-    A400 : rgba(black, 0.87),
-    A700 : white,
+    50 : rgba(0,0,0,0.87),
+    100: rgba(0,0,0,0.87),
+    200: rgba(0,0,0,0.87),
+    300: rgba(0,0,0,0.87),
+    400: white,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    A100: rgba(0,0,0,0.87),
+    A200: rgba(0,0,0,0.87),
+    A400: white,
+    A700: white,
   )
 );
 
-$jokiswebfelj-2024-primary: mat.define-palette($custom-teal);
-$jokiswebfelj-2024-accent: mat.define-palette($custom-teal, A200, A100, A400);
+$jokiswebfelj-2024-primary: mat.define-palette($custom-green);
+$jokiswebfelj-2024-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
 $jokiswebfelj-2024-warn: mat.define-palette(mat.$red-palette);
 
 $jokiswebfelj-2024-theme: mat.define-dark-theme((

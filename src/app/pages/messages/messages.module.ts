@@ -1,19 +1,19 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { MessagesRoutingModule } from './messages-routing.module';
 import { MessagesComponent } from './messages.component';
-import {MatInputModule} from "@angular/material/input";
-import {MatButtonModule} from "@angular/material/button";
-import {MatFormFieldModule} from "@angular/material/form-field";
-import {ReactiveFormsModule} from "@angular/forms";
-import {MatCard, MatCardContent, MatCardFooter, MatCardHeader} from "@angular/material/card";
-import {FlexModule} from "@angular/flex-layout";
-import {FromUserIdToNamePipe} from "../../shared/pipes/from-user-id-to-name.pipe";
-import {MatDrawer, MatDrawerContainer} from "@angular/material/sidenav";
-import {MatIcon} from "@angular/material/icon";
-import {MatOption, MatSelect} from "@angular/material/select";
-import {MatCheckbox} from "@angular/material/checkbox";
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { FromUserIdToNamePipe } from '../../shared/pipes/from-user-id-to-name.pipe';
+import { MatDrawer, MatDrawerContainer } from '@angular/material/sidenav';
+import { MatCheckbox } from '@angular/material/checkbox';
 
 
 
@@ -29,20 +29,16 @@ import {MatCheckbox} from "@angular/material/checkbox";
         CommonModule,
         MessagesRoutingModule,
         MatInputModule,
-        MatButtonModule,
         MatFormFieldModule,
         ReactiveFormsModule,
-        MatCard,
-        FlexModule,
-        MatCardContent,
-        MatCardHeader,
+        MatCardModule,
         MatDrawerContainer,
         MatDrawer,
-        MatCardFooter,
-        MatIcon,
-        MatSelect,
-        MatOption,
-        MatCheckbox
+        MatIconModule,
+        MatSelectModule,
+        MatOptionModule,
+        MatCheckbox,
+        MatListModule
     ]
 })
 export class MessagesModule { }
