@@ -10,7 +10,7 @@ import {FriendService} from "../../shared/services/friend.service";
 import {Location} from "@angular/common";
 
 @Component({
-    selector: 'app-messages', templateUrl: './messages.component.html', styleUrl: './messages.component.scss',
+    selector: 'app-messages', templateUrl: './messages.component.html', styleUrl: './messages.component.css',
     standalone: false
 })
 export class MessagesComponent implements OnInit, DoCheck {

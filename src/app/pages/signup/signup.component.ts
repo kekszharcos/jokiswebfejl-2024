@@ -9,10 +9,11 @@ import {Router} from "@angular/router";
 @Component({
     selector: 'app-signup',
     templateUrl: './signup.component.html',
-    styleUrl: './signup.component.scss',
+    styleUrl: './signup.component.css',
     standalone: false
 })
 export class SignupComponent {
+  showLogin = true;
   //login
   loginEmail: FormControl = new FormControl('', Validators.required);
   loginPassword: FormControl = new FormControl('', [Validators.required,Validators.minLength(6)]);

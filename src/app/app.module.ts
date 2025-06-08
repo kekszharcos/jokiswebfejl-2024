@@ -1,30 +1,33 @@
-import {importProvidersFrom, NgModule} from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { getAuth, provideAuth } from '@angular/fire/auth';
-import { getFirestore, provideFirestore } from '@angular/fire/firestore';
-import { getStorage, provideStorage } from '@angular/fire/storage';
+
+import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
+import { provideAuth, getAuth } from '@angular/fire/auth';
+import { provideFirestore, getFirestore } from '@angular/fire/firestore';
+import { provideStorage, getStorage } from '@angular/fire/storage';
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatListModule } from '@angular/material/list';
+import { MatCardModule } from '@angular/material/card';
+import { MatInputModule } from '@angular/material/input';
+
 import { MenuComponent } from './shared/menu/menu.component';
 import { MainModule } from './pages/main/main.module';
-import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {AngularFireModule} from "@angular/fire/compat";
-import { MatSidenavModule} from "@angular/material/sidenav";
-import { MatToolbarModule} from "@angular/material/toolbar";
-import {MatIcon, MatIconModule} from "@angular/material/icon";
-import {MatButtonModule} from "@angular/material/button";
-import {FlexLayoutModule} from "@angular/flex-layout";
-import {MatListModule} from "@angular/material/list";
 import { PeopleComponent } from './pages/people/people.component';
-import {MatCard, MatCardContent, MatCardFooter, MatCardHeader} from "@angular/material/card";
-import {MatInput, MatLabel} from "@angular/material/input";
-import { environment } from '../environments/environment';
-import firebase from "firebase/compat";
-import initializeApp = firebase.initializeApp;
-import {provideFirebaseApp} from "@angular/fire/app";
 
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -37,30 +40,31 @@ import {provideFirebaseApp} from "@angular/fire/app";
     AppRoutingModule,
     MainModule,
     FormsModule,
-    AngularFireModule.initializeApp(environment.firebaseConfig),
-    provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
-    provideAuth(() => getAuth()),
-    provideFirestore(() => getFirestore()),
-    provideStorage(() => getStorage()),
+    ReactiveFormsModule,
 
+    // AngularFire (choose one initialization method, modular preferred)
+    // If you need compat for legacy code, keep this line:
+    AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFirestoreModule,
+    AngularFireAuthModule,
+
+    // Angular Material modules
     MatSidenavModule,
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
-    FlexLayoutModule,
     MatListModule,
-    MatCard,
-    MatInput,
-    ReactiveFormsModule,
-    MatLabel,
-    MatCardHeader,
-    MatCardFooter,
-    MatCardContent,
-    MatIcon
+    MatCardModule,
+    MatInputModule
   ],
   providers: [
-    provideAnimationsAsync()
+    provideAnimationsAsync(),
+    provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
+    provideAuth(() => getAuth()),
+    provideFirestore(() => getFirestore()),
+    provideStorage(() => getStorage())
   ],
   bootstrap: [AppComponent]
 })
+
 export class AppModule { }

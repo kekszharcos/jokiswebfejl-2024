@@ -7,7 +7,7 @@ import {Friend} from "../../shared/models/Friend";
 @Component({
     selector: 'app-people',
     templateUrl: './people.component.html',
-    styleUrl: './people.component.scss',
+    styleUrl: './people.component.css',
     standalone: false
 })
 export class PeopleComponent implements OnInit {

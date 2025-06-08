@@ -8,7 +8,7 @@ import {Router} from "@angular/router";
 @Component({
     selector: 'app-friends',
     templateUrl: './friends.component.html',
-    styleUrl: './friends.component.scss',
+    styleUrl: './friends.component.css',
     standalone: false
 })
 export class FriendsComponent implements OnInit{

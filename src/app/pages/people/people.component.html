@@ -1,12 +1,18 @@
-<div class="main_component" fxLayout="row wrap">
-  <mat-card *ngFor="let user of everyone" fxFlex >
-    <mat-card fxFlex>
-      <mat-card-content>
-        <mat-card-header>{{user.username}}</mat-card-header>
-        <mat-card-footer *ngIf="!currentFriends.includes(user.id)">
-          <button mat-raised-button color="primary" type="submit" (click)="addFriend(user.id)">Add friend</button>
-        </mat-card-footer>
+<div class="flex flex-wrap gap-6 justify-center items-center bg-primary-pale min-h-screen py-8 h-screen">
+  @for (user of everyone; track user) {
+    <mat-card class="w-full max-w-xs bg-white shadow-lg p-4 flex flex-col items-center">
+      <mat-card-content class="w-full flex flex-col items-center">
+        <mat-card-header class="text-lg font-semibold text-primary mb-2">{{user.username}}</mat-card-header>
+        @if (!currentFriends.includes(user.id)) {
+          <mat-card-footer class="mt-4">
+            <button mat-raised-button color="primary" type="submit"
+              (click)="addFriend(user.id)"
+              class="bg-primary text-white hover:bg-primary-light transition px-4 py-2 rounded">
+              Add friend
+            </button>
+          </mat-card-footer>
+        }
       </mat-card-content>
     </mat-card>
-  </mat-card>
+  }
 </div>

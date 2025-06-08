@@ -8,7 +8,7 @@ import {FriendService} from "./shared/services/friend.service";
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
-    styleUrl: './app.component.scss',
+    styleUrl: './app.component.css',
     standalone: false
 })
 export class AppComponent implements OnInit {
@@ -58,10 +58,10 @@ export class AppComponent implements OnInit {
   }
 
   onClose($event: unknown, sidenav: MatSidenav) {
-    if ($event === true) {
-      sidenav.close()
-    }
+  if ($event === true) {
+    sidenav.close();
   }
+}
 
     protected readonly location = location;
 }

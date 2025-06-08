@@ -1,37 +1,67 @@
-<div class="main_component">
-    <div id="app-root">
-      <div class="container" id="login-container">
-        <h2>Login</h2>
-        <form>
-          <mat-form-field>
-            <mat-label for="loginEmail">Email:</mat-label>
-            <input matInput type="email" id="loginEmail" [formControl]="loginEmail"></mat-form-field>
-          <mat-form-field>
-            <mat-label for="loginPassword">Password:</mat-label>
-            <input matInput type="password" id="loginPassword" [formControl]="loginPassword"></mat-form-field>
-          <button mat-raised-button color="primary" [ngClass]="{'active': !isActive}"  (click)="loggingIn();cluck()">Login</button>
-          <button type="button" class="secondary" (click)="goToSignup()">Signup</button>
-        </form>
-      </div>
+<div class="main_component min-vh-100 d-flex align-items-center justify-content-center bg-primary-pale">
+  <div class="container" style="max-width: 420px;">
+    <div class="card shadow-lg border-primary-light rounded-4 animate__animated animate__fadeIn">
+      <div class="card-body p-4">
+        <!-- Toggle Buttons -->
+        <div class="d-flex justify-content-center mb-4">
+          <button mat-raised-button
+                  class="btn btn-outline-primary border-primary-light fw-semibold me-2"
+                  [class.bg-primary]="showLogin"
+                  [class.text-white]="showLogin"
+                  [class.text-primary-light]="!showLogin"
+                  (click)="showLogin = true">
+            Login
+          </button>
+          <button mat-raised-button
+                  class="btn btn-outline-primary border-primary-light fw-semibold"
+                  [class.bg-primary]="!showLogin"
+                  [class.text-white]="!showLogin"
+                  [class.text-primary-light]="showLogin"
+                  (click)="showLogin = false">
+            Signup
+          </button>
+        </div>
 
-      <div class="container" id="signup-container" style="display: none;">
-        <h2>Signup</h2>
-        <form [ngStyle]="{ 'width.px': '9'}" [formGroup]="signUpFrom" (ngSubmit)="onSubmit()" autocomplete="off">
-          <mat-form-field>
-            <mat-label for="email">Email:</mat-label>
-            <input matInput type="email" name="email" id="email" formControlName="email">
+        <!-- Login Form -->
+        <form *ngIf="showLogin" autocomplete="off" class="animate__animated animate__fadeIn">
+          <h2 class="text-center mb-4 text-primary-light fw-bold">Login</h2>
+          <mat-form-field appearance="fill" class="w-100 mb-3">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" [formControl]="loginEmail" placeholder="Email" class="border-primary-light text-primary-light">
           </mat-form-field>
-          <mat-form-field>
-            <mat-label for="password">Password:</mat-label>
-            <input matInput type="password" name="password" id="password" formControlName="password">
+          <mat-form-field appearance="fill" class="w-100 mb-4">
+            <mat-label>Password</mat-label>
+            <input matInput type="password" [formControl]="loginPassword" placeholder="Password" class="border-primary-light text-primary-light">
           </mat-form-field>
-          <mat-form-field>
-            <mat-label for="password_re">Password again:</mat-label>
-            <input matInput type="password" name="password_re" id="password_re" formControlName="password_re">
+          <div class="d-flex justify-content-center gap-2">
+            <button mat-raised-button type="button"
+              class="btn bg-primary-light text-white fw-semibold px-4 shadow-sm"
+              (click)="loggingIn();cluck()">
+              Login
+            </button>
+          </div>
+        </form>
+
+        <!-- Signup Form -->
+        <form *ngIf="!showLogin" [formGroup]="signUpFrom" (ngSubmit)="onSubmit()" autocomplete="off" class="animate__animated animate__fadeIn">
+          <h2 class="text-center mb-4 text-primary-light fw-bold">Signup</h2>
+          <mat-form-field appearance="fill" class="w-100 mb-3">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" formControlName="email" placeholder="Email" class="border-primary-light text-primary-light">
           </mat-form-field>
-          <button type="submit">SignUp</button>
-          <button type="button" class="secondary" (click)="goToLogin()">Back</button>
+          <mat-form-field appearance="fill" class="w-100 mb-3">
+            <mat-label>Password</mat-label>
+            <input matInput type="password" formControlName="password" placeholder="Password" class="border-primary-light text-primary-light">
+          </mat-form-field>
+          <mat-form-field appearance="fill" class="w-100 mb-4">
+            <mat-label>Password again</mat-label>
+            <input matInput type="password" formControlName="password_re" placeholder="Password again" class="border-primary-light text-primary-light">
+          </mat-form-field>
+          <div class="d-flex justify-content-center gap-2">
+            <button mat-raised-button type="submit" class="btn bg-primary-light text-white fw-semibold px-4 shadow-sm">SignUp</button>
+          </div>
         </form>
       </div>
     </div>
   </div>
+</div>

@@ -1,10 +1,3 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Import Angular Material theme if needed (optional, see below) */
-/* @import './styles-theme.scss'; */
-
 /* Global styles */
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
@@ -27,4 +20,41 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+:root {
+  --bs-primary: #328E6E;
+  --bs-primary-rgb: 50, 142, 110;
+}
+
+.bg-primary-light   { background-color: #67AE6E !important; }
+.bg-primary-lighter { background-color: #90C67C !important; }
+.bg-primary-pale    { background-color: #E1EEBC !important; }
+.text-primary-light   { color: #67AE6E !important; }
+.text-primary-lighter { color: #90C67C !important; }
+.text-primary-pale    { color: #E1EEBC !important; }
+.border-primary-light   { border-color: #67AE6E !important; }
+.border-primary-lighter { border-color: #90C67C !important; }
+.border-primary-pale    { border-color: #E1EEBC !important; }
+
+.btn-outline-primary:active,
+.btn-outline-primary:focus,
+.btn-outline-primary.active {
+  background-color: #328E6E !important;
+  border-color: #67AE6E !important;
+  color: #fff !important;
+  box-shadow: none;
+}
+
+.list-group-item a:hover, .list-group-item a:focus {
+  color: #328E6E !important; /* --bs-primary */
+  background-color: #E1EEBC !important; /* --bs-primary-pale */
+  text-decoration: none;
+}
+
+.hover-bg-primary-light:hover, .hover-bg-primary-light:focus {
+  background-color: #67AE6E !important;
+  color: #fff !important;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
 }

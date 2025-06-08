@@ -17,7 +17,7 @@ const routes: Routes = [
   {
     path: 'profile',
     loadChildren: () => import('./pages/profile/profile.module').then(m => m.ProfileModule),
-    canActivate: [authGuard]
+    canActivate: []
   },
   {
     path: 'main',
@@ -27,7 +27,7 @@ const routes: Routes = [
   {
     path: 'people',
     loadChildren: () => import('./pages/people/people.module').then(m => m.PeopleModule),
-    canActivate: [authGuard]
+    canActivate: []
   },
   {path: 'signup', loadChildren: () => import('./pages/signup/signup.module').then(m => m.SignupModule)},
   {path: '', redirectTo: '/signup', pathMatch: 'full'},

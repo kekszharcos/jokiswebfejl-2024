@@ -4,7 +4,7 @@ import {AuthService} from "../services/auth.service";
 @Component({
     selector: 'app-menu',
     templateUrl: './menu.component.html',
-    styleUrl: './menu.component.scss',
+    styleUrl: './menu.component.css',
     standalone: false
 })
 export class MenuComponent implements OnInit, AfterViewInit{
@@ -34,6 +34,6 @@ export class MenuComponent implements OnInit, AfterViewInit{
   }
 
   close(){
-    this.onCloseSidenav.emit(true)
+    this.onCloseSidenav.emit(true);
   }
 }

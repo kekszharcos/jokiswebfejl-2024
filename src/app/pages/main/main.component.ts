@@ -5,7 +5,7 @@ import {FriendService} from "../../shared/services/friend.service";
 @Component({
     selector: 'app-main',
     templateUrl: './main.component.html',
-    styleUrl: './main.component.scss',
+    styleUrl: './main.component.css',
     standalone: false
 })
 export class MainComponent implements OnInit{

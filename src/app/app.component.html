@@ -1,31 +1,53 @@
-<mat-sidenav-container>
-  <mat-sidenav #sidenav>
-    <app-menu (selectedPage)="changePage($event)" [currentPage]="page" *ngIf="page" [loggedInUser]="loggedInUser"
-              (onCloseSidenav)="onClose($event, sidenav)" (onLogout)="logout($event)"></app-menu>
+<mat-sidenav-container class="min-vh-100 bg-primary-pale">
+  <mat-sidenav #sidenav class="bg-primary-pale border-end border-primary-light">
+    @if (page) {
+      <app-menu (selectedPage)="changePage($event)"
+        [currentPage]="page"
+        [loggedInUser]="loggedInUser"
+        (onCloseSidenav)="onClose($event, sidenav)"
+        (onLogout)="logout($event)">
+      </app-menu>
+    }
   </mat-sidenav>
   <mat-sidenav-content>
-    <mat-toolbar color="primary">
-      <div class="hamburger-menu-wrapper">
-        <button mat-icon-button (click)="onToggleSidenav(sidenav)">
-          <mat-icon>menu</mat-icon>
-        </button>
-      </div>
-      <div>TEXTME-APP</div>
-      <div fxFlex fxLayout fxLayoutAlign="flex-end" class="navigation-wrapper" fxHide.lt-sm>
-        <ul fxLayout fxLayoutGap="5px" class="navigation-items" [ngSwitch]="loggedInUser === null">
-          <ng-container *ngSwitchCase="true">
-            <li><a routerLink="/signup">Login</a></li>
-          </ng-container>
-          <ng-container *ngSwitchDefault >
-            <li><a routerLink="/signup" (click)="logout($event)">Logout</a></li>
-            <li><a routerLink="/people">People</a></li>
-            <li><a routerLink="/main">Main</a></li>
-            <li><a routerLink="/friends">Friends</a></li>
-            <li><a routerLink="/messages">Messages</a></li>
-            <li><a routerLink="/profile">Profile</a></li>
-          </ng-container>
+    <mat-toolbar class="bg-primary d-flex align-items-center justify-content-between shadow-sm px-3">
+      <!-- Hamburger menu (hidden on md and up) -->
+      <button mat-icon-button class="d-md-none me-2" (click)="onToggleSidenav(sidenav)">
+        <mat-icon class="text-white">menu</mat-icon>
+      </button>
+      <span class="fw-bold fs-4 text-white">TEXTME-APP</span>
+      <!-- Navigation links (hidden on small screens) -->
+      <nav class="d-none d-md-flex ms-auto">
+        <ul class="d-flex flex-row gap-3 align-items-center mb-0 ps-0">
+          @switch (loggedInUser === null) {
+            @case (true) {
+              <li>
+                <a routerLink="/signup" class="text-white text-decoration-none px-2 py-1 rounded-2 transition hover-bg-primary-light">Login</a>
+              </li>
+            }
+            @default {
+              <li>
+                <a routerLink="/signup" (click)="logout($event)" class="text-white text-decoration-none px-2 py-1 rounded-2 transition hover-bg-primary-light">Logout</a>
+              </li>
+              <li>
+                <a routerLink="/people" class="text-white text-decoration-none px-2 py-1 rounded-2 transition hover-bg-primary-light">People</a>
+              </li>
+              <li>
+                <a routerLink="/main" class="text-white text-decoration-none px-2 py-1 rounded-2 transition hover-bg-primary-light">Main</a>
+              </li>
+              <li>
+                <a routerLink="/friends" class="text-white text-decoration-none px-2 py-1 rounded-2 transition hover-bg-primary-light">Friends</a>
+              </li>
+              <li>
+                <a routerLink="/messages" class="text-white text-decoration-none px-2 py-1 rounded-2 transition hover-bg-primary-light">Messages</a>
+              </li>
+              <li>
+                <a routerLink="/profile" class="text-white text-decoration-none px-2 py-1 rounded-2 transition hover-bg-primary-light">Profile</a>
+              </li>
+            }
+          }
         </ul>
-      </div>
+      </nav>
     </mat-toolbar>
     <router-outlet></router-outlet>
   </mat-sidenav-content>

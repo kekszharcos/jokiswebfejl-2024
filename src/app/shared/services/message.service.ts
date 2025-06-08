@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {AngularFirestore} from "@angular/fire/compat/firestore";
-import {User} from "../models/User";
 import {Message} from "../models/Message";
 
 @Injectable({
