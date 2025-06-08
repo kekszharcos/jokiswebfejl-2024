@@ -9,9 +9,6 @@ import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { provideStorage, getStorage } from '@angular/fire/storage';
-import { AngularFireModule } from '@angular/fire/compat';
-import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
-import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -42,12 +39,6 @@ import { environment } from '../environments/environment';
     FormsModule,
     ReactiveFormsModule,
 
-    // AngularFire (choose one initialization method, modular preferred)
-    // If you need compat for legacy code, keep this line:
-    AngularFireModule.initializeApp(environment.firebaseConfig),
-    AngularFirestoreModule,
-    AngularFireAuthModule,
-
     // Angular Material modules
     MatSidenavModule,
     MatToolbarModule,
@@ -59,12 +50,12 @@ import { environment } from '../environments/environment';
   ],
   providers: [
     provideAnimationsAsync(),
-    provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
+    // Modular Firebase providers (no compat modules!)
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
     provideStorage(() => getStorage())
   ],
   bootstrap: [AppComponent]
 })
-
 export class AppModule { }

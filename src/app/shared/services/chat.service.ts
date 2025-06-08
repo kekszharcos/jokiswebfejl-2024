@@ -1,43 +1,38 @@
 import { Injectable } from '@angular/core';
-import {AngularFirestore} from "@angular/fire/compat/firestore";
-import {Chat} from "../models/Chat";
+import { Firestore, collection, doc, setDoc, updateDoc, deleteDoc, query, where, collectionData, addDoc } from '@angular/fire/firestore';
+import { Chat } from "../models/Chat";
+import { from, Observable } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class ChatService {
   collectionName = 'Chats';
-  chats:Array<Chat> = [];
 
-  constructor(private afs: AngularFirestore) {
-  }
+  constructor(private firestore: Firestore) {}
 
   create(chat: Chat) {
-    chat.id = this.afs.createId()
-    return this.afs.collection<Chat>(this.collectionName).doc(chat.id).set(chat)
+    const chatsCollection = collection(this.firestore, this.collectionName);
+    return from(addDoc(chatsCollection, chat));
   }
 
-  getOwnChats(uid: string) {
-    this.afs.collection<Chat>(this.collectionName).valueChanges().subscribe(value => {
-      this.chats = value.filter(chat => JSON.parse(chat.users).includes(uid));
-    });
-    return this.chats;
-  }
-  getOwnChatsObs() {
-    return this.afs.collection<Chat>(this.collectionName).valueChanges()
-  }
-
-  getChatsById(id:string) {
-    return this.afs.collection<Chat>(this.collectionName, ref => ref.where('id',"==",id )).valueChanges()
+  getOwnChats(uid: string): Observable<Chat[]> {
+    const chatsCollection = collection(this.firestore, this.collectionName);
+    const q = query(chatsCollection, where("users", "array-contains", uid));
+    return collectionData(q, { idField: 'id' }) as Observable<Chat[]>;
   }
 
   update(chat: Chat) {
-    return this.afs.collection<Chat>(this.collectionName).doc(chat.id).update(chat)
+    const chatDoc = doc(this.firestore, this.collectionName, chat.id);
+    return from(updateDoc(chatDoc, { ...chat }));
   }
 
   delete(id: string) {
-    return this.afs.collection<Chat>(this.collectionName).doc(id).delete()
+    const chatDoc = doc(this.firestore, this.collectionName, id);
+    return from(deleteDoc(chatDoc));
   }
 
-
+  getChatsById(chatId: string): Observable<Chat[]> {
+    const chatsCollection = collection(this.firestore, this.collectionName);
+    const q = query(chatsCollection, where('id', '==', chatId));
+    return collectionData(q, { idField: 'id' }) as Observable<Chat[]>;
+  }
 }

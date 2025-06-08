@@ -1,48 +1,49 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from "@angular/fire/compat/firestore";
-import { AngularFireAuth } from "@angular/fire/compat/auth";
-import { Router } from "@angular/router";
+import { Firestore, collection, doc, setDoc, updateDoc, deleteDoc, query, where, getDocs, collectionData } from '@angular/fire/firestore';
+import { Auth, updateEmail, updatePassword, deleteUser, signOut, onAuthStateChanged, User as FirebaseUser } from '@angular/fire/auth';
+import { Router } from '@angular/router';
 
 import { User } from "../models/User";
 import { ChatService } from "./chat.service";
 import { FriendService } from "./friend.service";
 import { MessageService } from "./message.service";
 import { AuthService } from "./auth.service";
+import { Observable, from } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
+  collectionName = 'Users';
+
   constructor(
     private router: Router,
-    private afs: AngularFirestore,
+    private firestore: Firestore,
     private chatService: ChatService,
     private friendService: FriendService,
     private messageService: MessageService,
-    private authService: AuthService
+    private auth: Auth
   ) {}
 
-  collectionName = 'Users';
-
   create(user: User) {
-    return this.afs.collection<User>(this.collectionName).doc(user.id).set(user);
+    const userDoc = doc(this.firestore, this.collectionName, user.id);
+    return from(setDoc(userDoc, user));
   }
 
-  get() {
-    return this.afs.collection<User>(this.collectionName).valueChanges();
+  get(): Observable<User[]> {
+    const usersCollection = collection(this.firestore, this.collectionName);
+    return collectionData(usersCollection, { idField: 'id' }) as Observable<User[]>;
   }
 
   update(user: User, pw: string, isit: boolean) {
-    const subscr = this.authService.isUserLoggedIn().subscribe(isUserLoggedIn => {
-      isUserLoggedIn?.verifyBeforeUpdateEmail(user.email).then(() => {
-        if (isit) isUserLoggedIn?.updateEmail(user.email);
-        if (pw.trim() !== '') isUserLoggedIn?.updatePassword(pw);
-      }).then(() => {
-        this.authService.logout().then(() => {
-          this.router.navigateByUrl('').then(() => {
-            subscr.unsubscribe();
-            return this.afs.collection<User>(this.collectionName).doc(user.id).update(user);
-          });
-        });
-      });
+    onAuthStateChanged(this.auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        if (isit) await updateEmail(firebaseUser, user.email);
+        if (pw.trim() !== '') await updatePassword(firebaseUser, pw);
+        await signOut(this.auth);
+        await this.router.navigateByUrl('');
+        const userDoc = doc(this.firestore, this.collectionName, user.id);
+        await updateDoc(userDoc, { ...user });
+      }
     });
   }
 
@@ -53,34 +54,41 @@ export class UserService {
       }
     });
 
-    const chats = this.chatService.getOwnChats(id);
-    for (const chat of chats) {
-      let users = JSON.parse(chat.users);
-      if (users.length <= 2) {
-        this.chatService.delete(chat.id);
-      } else {
-        users = users.filter((u: string) => u !== id);
-        chat.users = JSON.stringify(users);
-        this.chatService.update(chat);
-      }
-
-      this.messageService.getMessageByChatId(chat.id).subscribe(messages => {
-        for (const msg of messages) {
-          this.messageService.delete(msg.owner);
+    const chats$ = this.chatService.getOwnChats(id);
+    chats$.subscribe(chats => {
+      for (const chat of chats) {
+        let users = JSON.parse(chat.users);
+        if (users.length <= 2) {
+          this.chatService.delete(chat.id);
+        } else {
+          users = users.filter((u: string) => u !== id);
+          chat.users = JSON.stringify(users);
+          this.chatService.update(chat);
         }
-      });
-    }
 
-    this.authService.isUserLoggedIn().subscribe(user => {
-      user?.delete();
+        this.messageService.getMessageByChatId(chat.id).subscribe(messages => {
+          for (const msg of messages) {
+            this.messageService.delete(msg.owner);
+          }
+        });
+      }
     });
 
-    return this.afs.collection<User>(this.collectionName).doc(id).delete();
+    onAuthStateChanged(this.auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        await deleteUser(firebaseUser);
+      }
+    });
+
+    const userDoc = doc(this.firestore, this.collectionName, id);
+    return from(deleteDoc(userDoc));
   }
 
-  getUserById(userId: string) {
-    return this.afs.collection<User>(this.collectionName, ref =>
-      ref.where('id', '==', userId)
-    ).valueChanges();
+  getUserById(userId: string): Observable<User[]> {
+    const usersCollection = collection(this.firestore, this.collectionName);
+    const q = query(usersCollection, where('id', '==', userId));
+    return from(getDocs(q)).pipe(
+      map(snapshot => snapshot.docs.map(doc => doc.data() as User))
+    );
   }
 }

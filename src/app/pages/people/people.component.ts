@@ -60,15 +60,19 @@ export class PeopleComponent implements OnInit {
         this.itFriends.push(this.loggedInUser.uid)
         this.otherFriend.friends = JSON.stringify(this.itFriends)
         this.friendService.create(this.otherFriend)
-          .catch(reason => {
-
-          })
+          .subscribe({
+            error: (reason) => {
+              // handle error if needed
+            }
+          });
         this.currentFriends.push(friendId)
         this.friend.friends = JSON.stringify(this.currentFriends)
         this.friendService.create(this.friend)
-          .catch(reason => {
-
-          })
+          .subscribe({
+            error: (reason) => {
+              // handle error if needed
+            }
+          });
         localStorage.setItem('friends', JSON.stringify(this.currentFriends))
         uns.unsubscribe()
       })

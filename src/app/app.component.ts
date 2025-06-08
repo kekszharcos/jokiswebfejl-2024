@@ -4,6 +4,7 @@ import {filter} from "rxjs";
 import {AuthService} from "./shared/services/auth.service";
 import {MatSidenav} from "@angular/material/sidenav";
 import {FriendService} from "./shared/services/friend.service";
+import { User } from '@angular/fire/auth';
 
 @Component({
     selector: 'app-root',
@@ -15,7 +16,7 @@ export class AppComponent implements OnInit {
   title = 'jokiswebfelj-2024';
   page = '';
   routes: Array<string> = [];
-  loggedInUser?: firebase.default.User | null;
+  loggedInUser?: User | null;
 
   constructor(private router: Router, private authService: AuthService, private friendService: FriendService) {
   }
@@ -45,8 +46,9 @@ export class AppComponent implements OnInit {
   }
 
   logout($event: unknown) {
-    this.authService.logout().then(() => {
-    })
+    this.authService.logout().subscribe(() => {
+      // handle successful logout if needed
+    });
   }
 
   onToggleSidenav(sidenav: MatSidenav) {

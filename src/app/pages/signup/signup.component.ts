@@ -35,18 +35,29 @@ export class SignupComponent {
   }
   onSubmit() {
     if (this.signUpFrom.get('email')?.value?.trim() !== "" && this.signUpFrom.get('password')?.value?.trim() !== "" && this.signUpFrom.get('password')?.value?.trim() === this.signUpFrom.get('password_re')?.value?.trim()){
-      this.authService.signup((this.signUpFrom.get('email')?.value as string),(this.signUpFrom.get('password')?.value as string)).then(cred=>{
-        const user:User = {
-          id: cred.user?.uid as string,
-          email: this.signUpFrom.get('email')?.value as string,
-          username: this.signUpFrom.get('email')?.value?.split('@')[0] as string
+      this.authService.signup(
+        this.signUpFrom.get('email')?.value as string,
+        this.signUpFrom.get('password')?.value as string
+      ).subscribe({
+        next: (cred) => {
+          const user: User = {
+            id: cred.user?.uid as string,
+            email: this.signUpFrom.get('email')?.value as string,
+            username: this.signUpFrom.get('email')?.value?.split('@')[0] as string
+          };
+          this.userService.create(user).subscribe({
+            next: _ => {
+              this.router.navigateByUrl('main');
+            },
+            error: err => {
+              // handle error
+            }
+          });
+        },
+        error: (err) => {
+          // handle signup error
         }
-        this.userService.create(user).then(_=>{
-          this.router.navigateByUrl('main')
-        }).catch(err => {
-
-        })
-      })
+      });
     }
 
   }

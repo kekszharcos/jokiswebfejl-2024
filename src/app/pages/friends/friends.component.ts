@@ -49,7 +49,9 @@ export class FriendsComponent implements OnInit{
       }
 
     })
-    this.ownChats = this.chatService.getOwnChats(this.loggedInUser.uid)
+    this.chatService.getOwnChats(this.loggedInUser.uid).subscribe(chats => {
+      this.ownChats = chats;
+    });
   }
 
   openChat(friendId:string) {
@@ -63,8 +65,10 @@ export class FriendsComponent implements OnInit{
           }
         })
         if (breaker){
-          this.chatService.create(this.chat).then(_=>{
-            this.router.navigateByUrl("/messages")
+          this.chatService.create(this.chat).subscribe({
+            next: _ => {
+              this.router.navigateByUrl("/messages")
+            }
           })
         }
         t2.unsubscribe()

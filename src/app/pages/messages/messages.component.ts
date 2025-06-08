@@ -49,7 +49,7 @@ export class MessagesComponent implements OnInit, DoCheck {
 
   ngOnInit(): void {
     this.message.owner = this.loggedInUser.uid;
-    let ss = this.chatService.getOwnChatsObs().subscribe(value => {
+    let ss = this.chatService.getOwnChats(this.loggedInUser.uid).subscribe(value => {
       let copy = value;
       for (let i = 0; i < copy.length; i++) {
         let curr = JSON.parse(copy[i].users)
@@ -153,21 +153,32 @@ export class MessagesComponent implements OnInit, DoCheck {
   addToChat(currentChatId: string) {if (this.chosActionAndExists(currentChatId)) {
     this.showableFriends = this.showableFriends.filter((fitler: string) => fitler !== this.chosenToAction.value);let iratkozlexd = this.chatService.getChatsById(currentChatId).subscribe(value => {let nele = this.userService.getUserById(this.chosenToAction.value).subscribe(value1 => {
       let modifyableChat = value[0];let pastUsers = JSON.parse(modifyableChat.users);let benneva = false;for (let i = 0; i < pastUsers.length; i++) {if (pastUsers[i].id === this.chosenToAction.value.trim()) {benneva = true;break}}if (!benneva) {pastUsers.push({id: value1[0].id, name: value1[0].username, role: 'user'})
-        modifyableChat.users = JSON.stringify(pastUsers);this.chatService.update(modifyableChat).then(_ => {this.chosenToAction = new FormControl('');this.changeRoleHider = this.removeFromChatHider = this.addOrChangeNicknameHider = false;this.addToChatHider = true;nele.unsubscribe();iratkozlexd.unsubscribe();location.reload()})}});})}}
+        modifyableChat.users = JSON.stringify(pastUsers);this.chatService.update(modifyableChat).subscribe(_ => {this.chosenToAction = new FormControl('');this.changeRoleHider = this.removeFromChatHider = this.addOrChangeNicknameHider = false;this.addToChatHider = true;nele.unsubscribe();iratkozlexd.unsubscribe();location.reload()})}});})}}
 
   createNewChat() {let chat: Chat;
-    let descri = this.userService.getUserById(this.loggedInUser.uid).subscribe(value => {chat = {id: '', messages: '', users: JSON.stringify([{id: this.loggedInUser.uid, name: value[0].username, role: "owner"}])};this.chatService.create(chat).then(value => {descri.unsubscribe();location.reload();})})}
+    let descri = this.userService.getUserById(this.loggedInUser.uid).subscribe(value => {
+      chat = {id: '', messages: '', users: JSON.stringify([{id: this.loggedInUser.uid, name: value[0].username, role: "owner"}])};
+      this.chatService.create(chat).subscribe(_ => {
+        descri.unsubscribe();
+        location.reload();
+      });
+    })}
 
-  deleteChat(chatId: string) {this.chatService.delete(chatId).then(value => {localStorage.setItem('currentChat', 'null');location.reload()})}
+  deleteChat(chatId: string) {
+    this.chatService.delete(chatId).subscribe(() => {
+      localStorage.setItem('currentChat', 'null');
+      location.reload();
+    });
+  }
 
   removeUserFromChat(currentChatId: string) {if (this.chosActionAndExists(currentChatId)) {let updatable: Chat = {id: '', users: '', messages: ''};for (let i = 0; i < this.ownChats.length; i++) {if (this.ownChats[i].id === currentChatId) {updatable.id = currentChatId;let curr = JSON.parse(this.ownChats[i].users);
-    curr = curr.filter((item: any) => item.id !== this.chosenToAction.value);updatable.users = JSON.stringify(curr);this.ownChats[i].users = JSON.stringify(curr);break}}this.chatService.update(updatable).then(_ => {this.chosenToAction = new FormControl('');location.reload()})}this.addToChatHider = false}
+    curr = curr.filter((item: any) => item.id !== this.chosenToAction.value);updatable.users = JSON.stringify(curr);this.ownChats[i].users = JSON.stringify(curr);break}}this.chatService.update(updatable).subscribe(_ => {this.chosenToAction = new FormControl('');location.reload()})}this.addToChatHider = false}
 
   changeRole(currentChatId: string) {if (this.chosActionAndExists(currentChatId)) {if (this.modBox.checked || this.userBox.checked) {let uns = this.chatService.getChatsById(currentChatId).subscribe(value => {let chat = value[0];let curr = JSON.parse(chat.users);
-    for (let i = 0; i < curr.length; i++) {if (this.chosenToAction.value === curr[i].id) {if (this.modBox.checked) {curr[i].role = "moderator"} else if (this.userBox.checked) {curr[i].role = "user"}chat.users = JSON.stringify(curr);uns.unsubscribe();this.chatService.update(chat).then(_ => location.reload());break}}})}}}
+    for (let i = 0; i < curr.length; i++) {if (this.chosenToAction.value === curr[i].id) {if (this.modBox.checked) {curr[i].role = "moderator"} else if (this.userBox.checked) {curr[i].role = "user"}chat.users = JSON.stringify(curr);uns.unsubscribe();this.chatService.update(chat).subscribe(_ => location.reload());break}}})}}}
 
   addOrChangeNickname(currentChatId: string) {if (this.chosActionAndExists(currentChatId)) {let uns = this.chatService.getChatsById(currentChatId).subscribe(value => {
-    let chat = value[0];let curr = JSON.parse(chat.users);for (let i = 0; i < curr.length; i++) {if (this.chosenToAction.value === curr[i].id) {if (this.nick.value.trim() !== "") {curr[i].name = this.nick.value.trim();chat.users = JSON.stringify(curr);uns.unsubscribe();this.chatService.update(chat).then(_ => location.reload())}break;}}})}}
+    let chat = value[0];let curr = JSON.parse(chat.users);for (let i = 0; i < curr.length; i++) {if (this.chosenToAction.value === curr[i].id) {if (this.nick.value.trim() !== "") {curr[i].name = this.nick.value.trim();chat.users = JSON.stringify(curr);uns.unsubscribe();this.chatService.update(chat).subscribe(_ => location.reload())}break;}}})}}
 
   ngDoCheck(): void {const changes = this.differ.diff(this.friendChats);if (this.firstRound && changes) {this.drawer?.open()}}
 
