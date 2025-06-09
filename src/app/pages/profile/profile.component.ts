@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from "../../shared/services/user.service";
-import { Router } from "@angular/router";
 import { AuthService } from "../../shared/services/auth.service";
 import { User } from "../../shared/models/User";
 import { FormControl, Validators, FormGroup, AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms";
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { getAuth, deleteUser, updateEmail, updatePassword } from '@angular/fire/auth';
+import { CanActivateFn, Router } from '@angular/router';
+import { inject } from '@angular/core';
+import { Auth, onAuthStateChanged } from '@angular/fire/auth';
 
 @Component({
     selector: 'app-profile',
@@ -164,4 +166,20 @@ export const passwordMatchValidator: ValidatorFn = (group: AbstractControl): Val
   const password = group.get('password')?.value;
   const re_password = group.get('re_password')?.value;
   return password === re_password ? null : { passwordsMismatch: true };
+};
+
+export const authGuard: CanActivateFn = (route, state) => {
+  const auth = inject(Auth);
+  const router = inject(Router);
+
+  return new Promise<boolean>((resolve) => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        resolve(true);
+      } else {
+        router.navigateByUrl('/signup');
+        resolve(false);
+      }
+    });
+  });
 };
