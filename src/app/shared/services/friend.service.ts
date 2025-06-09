@@ -11,7 +11,7 @@ export class FriendService {
 
   create(friend: Friend) {
     const friendDoc = doc(this.firestore, this.collectionName, friend.user);
-    return from(setDoc(friendDoc, friend));
+    return from(setDoc(friendDoc, friend)); // friend.friends is string[]
   }
 
   update(friend: Friend) {
@@ -23,10 +23,12 @@ export class FriendService {
     const friendsCollection = collection(this.firestore, this.collectionName);
     const q = query(friendsCollection, where("user", "==", uid));
     return collectionData(q, { idField: 'user' }) as Observable<Friend[]>;
+    // friends[0].friends is string[]
   }
 
   delete(id: string) {
     const friendDoc = doc(this.firestore, this.collectionName, id);
     return from(deleteDoc(friendDoc));
   }
+  
 }

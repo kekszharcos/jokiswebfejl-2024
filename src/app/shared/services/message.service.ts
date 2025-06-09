@@ -25,6 +25,12 @@ export class MessageService {
     return collectionData(q, { idField: 'id' }) as Observable<Message[]>;
   }
 
+  getMessagesByOwner(ownerId: string): Observable<Message[]> {
+    const messagesCollection = collection(this.firestore, this.collectionName);
+    const q = query(messagesCollection, where('owner', '==', ownerId));
+    return collectionData(q, { idField: 'id' }) as Observable<Message[]>;
+  }
+
   update(message: Message) {
     const messageDoc = doc(this.firestore, this.collectionName, message.id);
     return from(updateDoc(messageDoc, { ...message }));
@@ -34,4 +40,5 @@ export class MessageService {
     const messageDoc = doc(this.firestore, this.collectionName, id);
     return from(deleteDoc(messageDoc));
   }
+   
 }

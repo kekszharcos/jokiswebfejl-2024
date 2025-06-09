@@ -20,12 +20,15 @@ export class SignupComponent {
   isActive = true;
   signupContainer: any ;
   loginContainer: any ;
+  loginError: string | null = null;
   //signup
   signUpFrom = new FormGroup({
-    email:new FormControl('',[Validators.email, Validators.required]),
-    password:new FormControl('',[Validators.minLength(6), Validators.required]),
-    password_re:new FormControl('',[Validators.minLength(6), Validators.required]),
+    email: new FormControl('', [Validators.email, Validators.required]),
+    password: new FormControl('', [Validators.required, Validators.minLength(6)]),
+    password_re: new FormControl('', [Validators.required, Validators.minLength(6)]),
   })
+
+  formAnimation = 'animate__fadeIn';
 
   constructor(private location:Location, private authService: AuthService, private userService: UserService, private router:Router) {
 
@@ -76,11 +79,42 @@ export class SignupComponent {
   }
 
   loggingIn() {
-    console.log(this.loginEmail,this.loginPassword)
+    this.loginError = null;
     if (this.loginEmail.valid && this.loginPassword.valid){
-      this.authService.login(this.loginEmail.value.trim(),this.loginPassword.value)
-        //.then(r => {this.router.navigateByUrl("/main");})
+      this.authService.login(this.loginEmail.value.trim(), this.loginPassword.value)
+        .subscribe({
+          next: () => {
+            this.router.navigateByUrl('main'); // Navigate to main page on success
+          },
+          error: (err) => {
+            if (err.code === 'auth/user-not-found') {
+              this.loginError = 'No user found with this email.';
+            } else if (err.code === 'auth/wrong-password') {
+              this.loginError = 'Incorrect password.';
+            } else if (err.code === 'auth/invalid-email') {
+              this.loginError = 'Invalid email address.';
+            } else {
+              this.loginError = 'Login failed. Please try again.';
+            }
+          }
+        });
     }
+  }
+
+  switchToLogin() {
+    this.formAnimation = 'animate__fadeOut';
+    setTimeout(() => {
+      this.showLogin = true;
+      this.formAnimation = 'animate__fadeIn';
+    }, 300); // match animate.css duration
+  }
+
+  switchToSignup() {
+    this.formAnimation = 'animate__fadeOut';
+    setTimeout(() => {
+      this.showLogin = false;
+      this.formAnimation = 'animate__fadeIn';
+    }, 300);
   }
 
   cluck(){

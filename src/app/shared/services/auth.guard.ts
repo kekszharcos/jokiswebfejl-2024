@@ -1,11 +1,12 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
+import { Auth } from '@angular/fire/auth';
 
 export const authGuard: CanActivateFn = (route, state) => {
-  const user = JSON.parse(localStorage.getItem('user') as string);
-  const router = inject(Router); // <-- Correct way to get Router
+  const auth = inject(Auth);
+  const router = inject(Router);
 
-  if (user) {
+  if (auth.currentUser) {
     return true;
   } else {
     router.navigateByUrl('/signup');

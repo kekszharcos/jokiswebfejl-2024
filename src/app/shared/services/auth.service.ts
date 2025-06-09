@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, User } from '@angular/fire/auth';
+import { Auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, User, browserLocalPersistence, setPersistence } from '@angular/fire/auth';
 import { from, Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  constructor(private auth: Auth) {}
+  constructor(private auth: Auth) {
+    setPersistence(this.auth, browserLocalPersistence); // or browserSessionPersistence
+  }
 
   login(email: string, password: string) {
     return from(signInWithEmailAndPassword(this.auth, email, password));
@@ -15,8 +17,6 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.setItem("currentChat", "null");
-    localStorage.setItem('friends', "null");
     return from(signOut(this.auth));
   }
 

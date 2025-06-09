@@ -1,0 +1,18 @@
+.form-anim-wrapper {
+  min-height: 380px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  transition: min-height 0.4s cubic-bezier(.4,0,.2,1);
+}
+
+form.d-flex {
+  min-height: 100%;
+}
+
+@media (max-width: 600px) {
+  .form-anim-wrapper {
+    min-height: 320px;
+  }
+}

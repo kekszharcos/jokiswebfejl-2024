@@ -19,12 +19,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { MenuComponent } from './shared/menu/menu.component';
 import { MainModule } from './pages/main/main.module';
 import { PeopleComponent } from './pages/people/people.component';
 
 import { environment } from '../environments/environment';
+import { ConfirmDialogComponent } from './shared/components/confirm-dialog/confirm-dialog.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +40,7 @@ import { environment } from '../environments/environment';
     MainModule,
     FormsModule,
     ReactiveFormsModule,
+    ConfirmDialogComponent,
 
     // Angular Material modules
     MatSidenavModule,
@@ -46,7 +49,8 @@ import { environment } from '../environments/environment';
     MatIconModule,
     MatListModule,
     MatCardModule,
-    MatInputModule
+    MatInputModule,
+    MatDialogModule
   ],
   providers: [
     provideAnimationsAsync(),

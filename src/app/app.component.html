@@ -1,5 +1,9 @@
-<mat-sidenav-container class="min-vh-100 bg-primary-pale">
-  <mat-sidenav #sidenav class="bg-primary-pale border-end border-primary-light">
+<mat-sidenav-container class="min-vh-50 bg-primary" style="color: #fff;">
+  <mat-sidenav
+    #sidenav
+    mode="over"
+    class="bg-primary-light border-end border-primary auto-width-sidenav"
+    [disableClose]="false">
     @if (page) {
       <app-menu (selectedPage)="changePage($event)"
         [currentPage]="page"
@@ -10,9 +14,9 @@
     }
   </mat-sidenav>
   <mat-sidenav-content>
-    <mat-toolbar class="bg-primary d-flex align-items-center justify-content-between shadow-sm px-3">
+    <mat-toolbar [ngClass]="{'navbar-hidden': !showNavbar}" class="bg-primary d-flex align-items-center justify-content-between shadow-sm px-3 animate__animated" style="color: #fff; position: sticky; top: 0; z-index: 1000;">
       <!-- Hamburger menu (hidden on md and up) -->
-      <button mat-icon-button class="d-md-none me-2" (click)="onToggleSidenav(sidenav)">
+      <button mat-icon-button class="d-md-none me-2 text-white" (click)="onToggleSidenav(sidenav)">
         <mat-icon class="text-white">menu</mat-icon>
       </button>
       <span class="fw-bold fs-4 text-white">TEXTME-APP</span>
@@ -22,33 +26,35 @@
           @switch (loggedInUser === null) {
             @case (true) {
               <li>
-                <a routerLink="/signup" class="text-white text-decoration-none px-2 py-1 rounded-2 transition hover-bg-primary-light">Login</a>
+                <a routerLink="/signup" class="text-primary text-decoration-none px-2 py-1 rounded-2 transition bg-primary-pale fw-semibold">Login</a>
               </li>
             }
             @default {
               <li>
-                <a routerLink="/signup" (click)="logout($event)" class="text-white text-decoration-none px-2 py-1 rounded-2 transition hover-bg-primary-light">Logout</a>
+                <a routerLink="/signup" (click)="logout($event)" class="text-primary text-decoration-none px-2 py-1 rounded-2 transition bg-primary-pale fw-semibold">Logout</a>
               </li>
               <li>
-                <a routerLink="/people" class="text-white text-decoration-none px-2 py-1 rounded-2 transition hover-bg-primary-light">People</a>
+                <a routerLink="/people" class="text-white text-decoration-none px-2 py-1 rounded-2 transition hover-bg-primary-pale">People</a>
               </li>
               <li>
-                <a routerLink="/main" class="text-white text-decoration-none px-2 py-1 rounded-2 transition hover-bg-primary-light">Main</a>
+                <a routerLink="/main" class="text-white text-decoration-none px-2 py-1 rounded-2 transition hover-bg-primary-pale">Main</a>
               </li>
               <li>
-                <a routerLink="/friends" class="text-white text-decoration-none px-2 py-1 rounded-2 transition hover-bg-primary-light">Friends</a>
+                <a routerLink="/friends" class="text-white text-decoration-none px-2 py-1 rounded-2 transition hover-bg-primary-pale">Friends</a>
               </li>
               <li>
-                <a routerLink="/messages" class="text-white text-decoration-none px-2 py-1 rounded-2 transition hover-bg-primary-light">Messages</a>
+                <a routerLink="/messages" class="text-white text-decoration-none px-2 py-1 rounded-2 transition hover-bg-primary-pale">Messages</a>
               </li>
               <li>
-                <a routerLink="/profile" class="text-white text-decoration-none px-2 py-1 rounded-2 transition hover-bg-primary-light">Profile</a>
+                <a routerLink="/profile" class="text-white text-decoration-none px-2 py-1 rounded-2 transition hover-bg-primary-pale">Profile</a>
               </li>
             }
           }
         </ul>
       </nav>
     </mat-toolbar>
-    <router-outlet></router-outlet>
+    <div class="p-3 bg-primary-pale animate__animated animate__fadeIn" style="min-height: calc(100vh - 64px);">
+      <router-outlet></router-outlet>
+    </div>
   </mat-sidenav-content>
 </mat-sidenav-container>

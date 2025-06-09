@@ -11,7 +11,7 @@ export class ChatService {
 
   create(chat: Chat) {
     const chatsCollection = collection(this.firestore, this.collectionName);
-    return from(addDoc(chatsCollection, chat));
+    return from(addDoc(chatsCollection, chat)); // chat.users and chat.messages are arrays
   }
 
   getOwnChats(uid: string): Observable<Chat[]> {

@@ -17,6 +17,8 @@ export class AppComponent implements OnInit {
   page = '';
   routes: Array<string> = [];
   loggedInUser?: User | null;
+  showNavbar = true;
+  private lastScrollTop = 0;
 
   constructor(private router: Router, private authService: AuthService, private friendService: FriendService) {
   }
@@ -36,13 +38,10 @@ export class AppComponent implements OnInit {
       }
     })
     this.authService.isUserLoggedIn().subscribe(user => {
-      this.loggedInUser = user
-      localStorage.setItem('user', JSON.stringify(this.loggedInUser))
+      this.loggedInUser = user;
+    });
 
-    }, error => {
-      localStorage.setItem('user', 'null')
-      localStorage.setItem('friends', 'null')
-    })
+    window.addEventListener('scroll', this.onWindowScroll, true);
   }
 
   logout($event: unknown) {
@@ -64,6 +63,16 @@ export class AppComponent implements OnInit {
     sidenav.close();
   }
 }
+
+  onWindowScroll = (): void => {
+    const st = window.pageYOffset || document.documentElement.scrollTop;
+    if (st > this.lastScrollTop) {
+      this.showNavbar = false; // Scrolling down
+    } else {
+      this.showNavbar = true; // Scrolling up
+    }
+    this.lastScrollTop = st <= 0 ? 0 : st;
+  };
 
     protected readonly location = location;
 }

@@ -1,54 +1,81 @@
-<div class="d-flex flex-column align-items-center justify-content-center min-vh-100 bg-primary-pale">
-  <mat-card class="w-100" style="max-width: 480px;">
-    <div class="card shadow-lg border-primary-light rounded-4 animate__animated animate__fadeIn">
+<div class="min-vh-100 d-flex align-items-center justify-content-center bg-primary-pale">
+  <div class="container" style="max-width: 480px;">
+    <div class="card shadow-lg border-0 rounded-4 animate__animated animate__fadeIn bg-primary">
       <div class="card-body p-4">
-        <div class="mb-4">
-          <div class="fw-semibold text-primary-light fs-5 mb-2">
-            Username: {{ loggedInUser.uid | fromUserIdToName | async }}
+        <div class="mb-4 text-center">
+          <div class="fw-semibold fs-5 mb-1 text-white">
+            Username:
+            <span class="text-primary-pale">
+              {{ loggedInUser.id | fromUserIdToName | async }}
+            </span>
           </div>
-          <div class="text-primary-light">
-            Email: {{ loggedInUser.email }}
+          <div class="text-white small">
+            Email: <span class="text-primary-pale">{{ loggedInUser.email }}</span> 
           </div>
         </div>
-        <form autocomplete="off" (ngSubmit)="updateProfile()">
+        <!-- Show error if present -->
+        <div *ngIf="saveError" class="alert alert-danger text-center rounded-3 py-2 mb-3 animate__animated animate__shakeX">
+          {{ saveError }}
+        </div>
+        <form [formGroup]="profileForm" autocomplete="off" (ngSubmit)="updateProfile()">
           <mat-form-field appearance="fill" class="w-100 mb-3">
             <mat-label>Username</mat-label>
             <input matInput type="text" name="username" id="username" [formControl]="username"
-                   [placeholder]="(loggedInUser.uid | fromUserIdToName | async) ?? ''"
-                   class="border-primary-light text-primary-light">
+                   [placeholder]="(loggedInUser.id | fromUserIdToName | async) ?? ''"
+                   class="text-white bg-primary-light border-0">
           </mat-form-field>
           <mat-form-field appearance="fill" class="w-100 mb-3">
             <mat-label>E-mail</mat-label>
             <input matInput type="email" name="email" id="email" [formControl]="email"
                    [placeholder]="loggedInUser.email"
-                   class="border-primary-light text-primary-light">
+                   class="text-white bg-primary-light border-0">
           </mat-form-field>
           <mat-form-field appearance="fill" class="w-100 mb-3">
             <mat-label>Password</mat-label>
             <input matInput type="password" name="password" id="password" [formControl]="password"
                    placeholder="******"
-                   class="border-primary-light text-primary-light">
+                   class="text-white bg-primary-light border-0">
+            <mat-error *ngIf="password.hasError('required')">
+              Password is required.
+            </mat-error>
+            <mat-error *ngIf="password.hasError('minlength')">
+              Password must be at least 6 characters.
+            </mat-error>
           </mat-form-field>
           <mat-form-field appearance="fill" class="w-100 mb-4">
             <mat-label>Password again</mat-label>
             <input matInput type="password" name="re_password" id="re_password" [formControl]="re_password"
                    placeholder="******"
-                   class="border-primary-light text-primary-light">
+                   class="text-white bg-primary-light border-0">
+            <mat-error *ngIf="re_password.hasError('required')">
+              Please confirm your password.
+            </mat-error>
+            <mat-error *ngIf="re_password.hasError('minlength')">
+              Password must be at least 6 characters.
+            </mat-error>
+            <mat-error *ngIf="profileForm.hasError('passwordsMismatch') && re_password.touched">
+              Passwords do not match.
+            </mat-error>
           </mat-form-field>
           <div class="d-flex justify-content-center gap-2">
-            <button mat-raised-button color="primary" type="submit"
-              class="btn bg-primary-light text-white fw-semibold px-4 shadow-sm animate__animated animate__pulse">
+            <button mat-raised-button type="submit"
+              class="bg-primary-light text-white fw-semibold px-4 shadow-sm rounded-3 hover-bg-primary-pale"
+              [disabled]="profileForm.invalid">
               Save changes
             </button>
           </div>
         </form>
         <div class="d-flex justify-content-end mt-4">
-          <button mat-raised-button type="button" (click)="deleteProfile()"
-            class="btn btn-danger text-white px-4 py-2 rounded shadow-sm animate__animated animate__shakeX">
+          <button mat-raised-button type="button" (click)="confirmDeleteProfile()"
+            class="bg-primary-pale text-primary px-4 py-2 rounded-3 shadow-sm animate__animated animate__shakeX fw-semibold border-0">
             DELETE ACCOUNT
           </button>
         </div>
+        <!-- Show error if present -->
+        <div *ngIf="deleteError" class="alert alert-danger text-center rounded-3 py-2 mb-3 animate__animated animate__shakeX">
+          {{ deleteError }}
+        </div>
       </div>
     </div>
-  </mat-card>
+  </div>
 </div>

@@ -25,36 +25,170 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 :root {
   --bs-primary: #328E6E;
   --bs-primary-rgb: 50, 142, 110;
+  --bs-primary-light: #67AE6E;
+  --bs-primary-lighter: #90C67C;
+  --bs-primary-pale: #E1EEBC;
 }
 
-.bg-primary-light   { background-color: #67AE6E !important; }
-.bg-primary-lighter { background-color: #90C67C !important; }
-.bg-primary-pale    { background-color: #E1EEBC !important; }
-.text-primary-light   { color: #67AE6E !important; }
-.text-primary-lighter { color: #90C67C !important; }
-.text-primary-pale    { color: #E1EEBC !important; }
-.border-primary-light   { border-color: #67AE6E !important; }
-.border-primary-lighter { border-color: #90C67C !important; }
-.border-primary-pale    { border-color: #E1EEBC !important; }
+.bg-primary           { background-color: var(--bs-primary) !important; }
+.bg-primary-light     { background-color: var(--bs-primary-light) !important; }
+.bg-primary-lighter   { background-color: var(--bs-primary-lighter) !important; }
+.bg-primary-pale      { background-color: var(--bs-primary-pale) !important; }
+
+.text-primary           { color: var(--bs-primary) !important; }
+.text-primary-light     { color: var(--bs-primary-light) !important; }
+.text-primary-lighter   { color: var(--bs-primary-lighter) !important; }
+.text-primary-pale      { color: var(--bs-primary-pale) !important; }
+.text-white             { color: #fff !important; }
+
+.border-primary           { border-color: var(--bs-primary) !important; }
+.border-primary-light     { border-color: var(--bs-primary-light) !important; }
+.border-primary-lighter   { border-color: var(--bs-primary-lighter) !important; }
+.border-primary-pale      { border-color: var(--bs-primary-pale) !important; }
 
 .btn-outline-primary:active,
 .btn-outline-primary:focus,
 .btn-outline-primary.active {
-  background-color: #328E6E !important;
-  border-color: #67AE6E !important;
+  background-color: var(--bs-primary-light) !important;
+  border-color: var(--bs-primary) !important;
   color: #fff !important;
   box-shadow: none;
 }
 
-.list-group-item a:hover, .list-group-item a:focus {
-  color: #328E6E !important; /* --bs-primary */
-  background-color: #E1EEBC !important; /* --bs-primary-pale */
+.list-group-item {
+  background-color: var(--bs-primary) !important;
+  color: #fff !important;
+  border: none;
+}
+
+.list-group-item a {
+  color: var(--bs-primary-pale) !important;
+  transition: background 0.2s, color 0.2s;
+}
+
+.list-group-item a:hover, .list-group-item a:focus,
+.hover-bg-primary-pale:hover, .hover-bg-primary-pale:focus {
+  background-color: var(--bs-primary-pale) !important;
+  color: var(--bs-primary) !important;
   text-decoration: none;
 }
 
 .hover-bg-primary-light:hover, .hover-bg-primary-light:focus {
-  background-color: #67AE6E !important;
+  background-color: var(--bs-primary-light) !important;
   color: #fff !important;
   text-decoration: none;
   transition: background 0.2s, color 0.2s;
+}
+
+.hover-text-primary:hover, .hover-text-primary:focus {
+  color: var(--bs-primary) !important;
+}
+
+/* Always reserve border space for links with hover-border-primary-pale */
+.hover-border-primary-pale {
+  border: 2px solid transparent !important;
+  box-sizing: border-box;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.hover-border-primary-pale:hover,
+.hover-border-primary-pale:focus {
+  border-color: var(--bs-primary-pale) !important;
+  background-color: transparent !important; /* or keep your bg-primary if you want */
+  color: var(--bs-primary-pale) !important;
+}
+
+/* Prevent the default .list-group-item a:hover from setting bg to pale */
+.list-group-item a.hover-border-primary-pale:hover,
+.list-group-item a.hover-border-primary-pale:focus {
+  background-color: var(--bs-primary) !important;
+  color: var(--bs-primary-pale) !important;
+}
+
+/* For cards and toolbars */
+.card, .mat-toolbar {
+  background-color: var(--bs-primary-light) !important;
+  color: #fff !important;
+}
+
+
+.mat-form-field-appearance-fill .mat-form-field-flex {
+  color: var(--bs-primary-pale) !important;
+}
+
+/* Navbar hidden class */
+.navbar-hidden {
+  transform: translateY(-100%);
+  transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+}
+
+/* Toolbar transition */
+mat-toolbar {
+  transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+}
+
+/* Optional: subtle accent backgrounds */
+.bg-accent {
+  background-color: var(--bs-primary-lighter) !important;
+  color: var(--bs-primary) !important;
+}
+
+/* Make sidenav auto-width and prevent it from stretching */
+.auto-width-sidenav {
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: 90vw; /* Prevents it from being too wide on small screens */
+  white-space: nowrap;
+  padding: 0.5rem 0; /* Top/bottom padding for the whole sidenav */
+  box-shadow: 2px 0 8px rgba(0,0,0,0.08);
+}
+
+/* Style the menu list for even horizontal padding */
+.auto-width-sidenav .list-group {
+  min-width: 0;
+  width: 100%;
+}
+
+/* Each menu item: even horizontal padding, align icon and text */
+.auto-width-sidenav .list-group-item {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1.5rem; /* Even left/right padding */
+  min-width: max-content; /* Only as wide as needed */
+  background: var(--bs-primary) !important;
+  border: none;
+}
+
+/* Make the link fill the item and space icon/text */
+.auto-width-sidenav .list-group-item a {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 0.75rem;
+  padding: 0.25rem 0;
+  color: #fff !important;
+  text-decoration: none;
+  border-radius: 0.375rem;
+  transition: background 0.2s, color 0.2s;
+}
+
+/* Optional: icon on left, text, and a ghost icon on right for symmetry */
+.auto-width-sidenav .list-group-item .mat-icon {
+  font-size: 1.5rem;
+  min-width: 1.5rem;
+  text-align: center;
+}
+
+/* Add a ghost icon for symmetry if needed (optional) */
+.auto-width-sidenav .list-group-item .ghost-icon {
+  opacity: 0;
+  width: 1.5rem;
+  min-width: 1.5rem;
+}
+
+/* On hover, only border or background as you wish */
+.auto-width-sidenav .list-group-item a:hover,
+.auto-width-sidenav .list-group-item a:focus {
+  background: var(--bs-primary-light) !important;
+  color: var(--bs-primary-pale) !important;
 }

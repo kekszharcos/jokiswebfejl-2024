@@ -6,7 +6,7 @@ import { ProfileComponent } from './profile.component';
 import {MatCard, MatCardContent, MatCardFooter, MatCardHeader} from "@angular/material/card";
 import {MessagesModule} from "../messages/messages.module";
 import {MatButton} from "@angular/material/button";
-import {MatFormField, MatLabel} from "@angular/material/form-field";
+import {MatError, MatFormField, MatLabel} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {ReactiveFormsModule} from "@angular/forms";
 
@@ -27,7 +27,8 @@ import {ReactiveFormsModule} from "@angular/forms";
     MatFormField,
     MatInput,
     MatCardFooter,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatError
   ]
 })
 export class ProfileModule { }

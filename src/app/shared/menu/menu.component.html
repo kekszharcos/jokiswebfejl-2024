@@ -1,47 +1,54 @@
-<ul class="list-group list-group-flush shadow-sm rounded-4 border border-primary-light bg-primary-pale animate__animated animate__fadeInLeft">
-  @if (!(loggedInUser)) {
-    <li class="list-group-item bg-primary-pale border-0">
-      <a [routerLink]="'signup'" (click)="close()" class="d-flex align-items-center gap-2 text-decoration-none text-primary-light fw-semibold">
-        <mat-icon class="text-primary-light">app_registration</mat-icon>
-        <span>Login</span>
+<ul class="list-group list-group-flush shadow-sm rounded-4 border border-primary-light bg-primary animate__animated animate__fadeInLeft">
+  @if (!loggedInUser) {
+    <li class="list-group-item bg-primary border-0">
+      <a [routerLink]="'signup'" (click)="close()"
+         class="d-flex align-items-center gap-2 text-decoration-none text-white fw-semibold hover-border-primary-pale ">
+        <mat-icon class="text-primary-pale">app_registration</mat-icon>
+        <span class="ps-1">Login</span>
       </a>
     </li>
   }
   @if (loggedInUser) {
-    <li class="list-group-item bg-primary-pale border-0">
-      <a [routerLink]="'signup'" (click)="logout(); close()" class="d-flex align-items-center gap-2 text-decoration-none text-primary-light fw-semibold">
-        <mat-icon class="text-primary-light">exit_to_app</mat-icon>
-        <span>Logout</span>
+    <li class="list-group-item bg-primary border-0">
+      <a [routerLink]="'signup'" (click)="logout(); close()"
+         class="d-flex align-items-center gap-2 text-decoration-none text-white fw-semibold hover-border-primary-pale">
+        <mat-icon class="text-primary-pale">exit_to_app</mat-icon>
+        <span class="ps-1">Logout</span>
       </a>
     </li>
-    <li class="list-group-item bg-primary-pale border-0">
-      <a [routerLink]="'people'" (click)="close()" class="d-flex align-items-center gap-2 text-decoration-none text-primary-light fw-semibold">
-        <mat-icon class="text-primary-light">people</mat-icon>
-        <span>People</span>
+    <li class="list-group-item bg-primary border-0">
+      <a [routerLink]="'people'" (click)="close()"
+         class="d-flex align-items-center gap-2 text-decoration-none text-white fw-semibold hover-border-primary-pale">
+        <mat-icon class="text-primary-pale">people</mat-icon>
+        <span class="ps-1">People</span>
       </a>
     </li>
-    <li class="list-group-item bg-primary-pale border-0">
-      <a [routerLink]="'main'" (click)="close()" class="d-flex align-items-center gap-2 text-decoration-none text-primary-light fw-semibold">
-        <mat-icon class="text-primary-light">home</mat-icon>
-        <span>Main</span>
+    <li class="list-group-item bg-primary border-0">
+      <a [routerLink]="'main'" (click)="close()"
+         class="d-flex align-items-center gap-2 text-decoration-none text-white fw-semibold hover-border-primary-pale">
+        <mat-icon class="text-primary-pale">home</mat-icon>
+        <span class="ps-1">Main</span>
       </a>
     </li>
-    <li class="list-group-item bg-primary-pale border-0">
-      <a [routerLink]="'friends'" (click)="close()" class="d-flex align-items-center gap-2 text-decoration-none text-primary-light fw-semibold">
-        <mat-icon class="text-primary-light">contacts</mat-icon>
-        <span>Friends</span>
+    <li class="list-group-item bg-primary border-0">
+      <a [routerLink]="'friends'" (click)="close()"
+         class="d-flex align-items-center gap-2 text-decoration-none text-white fw-semibold hover-border-primary-pale">
+        <mat-icon class="text-primary-pale">contacts</mat-icon>
+        <span class="ps-1">Friends</span>
       </a>
     </li>
-    <li class="list-group-item bg-primary-pale border-0">
-      <a [routerLink]="'messages'" (click)="close()" class="d-flex align-items-center gap-2 text-decoration-none text-primary-light fw-semibold">
-        <mat-icon class="text-primary-light">message</mat-icon>
-        <span>Messages</span>
+    <li class="list-group-item bg-primary border-0">
+      <a [routerLink]="'messages'" (click)="close()"
+         class="d-flex align-items-center gap-2 text-decoration-none text-white fw-semibold hover-border-primary-pale">
+        <mat-icon class="text-primary-pale">message</mat-icon>
+        <span class="ps-1">Messages</span>
       </a>
     </li>
-    <li class="list-group-item bg-primary-pale border-0">
-      <a [routerLink]="'profile'" (click)="close()" class="d-flex align-items-center gap-2 text-decoration-none text-primary-light fw-semibold">
-        <mat-icon class="text-primary-light">face</mat-icon>
-        <span>Profile</span>
+    <li class="list-group-item bg-primary border-0">
+      <a [routerLink]="'profile'" (click)="close()"
+         class="d-flex align-items-center gap-2 text-decoration-none text-white fw-semibold hover-border-primary-pale">
+        <mat-icon class="text-primary-pale">face</mat-icon>
+        <span class="ps-1">Profile</span>
       </a>
     </li>
   }

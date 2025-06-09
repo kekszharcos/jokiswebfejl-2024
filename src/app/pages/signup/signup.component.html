@@ -1,66 +1,88 @@
 <div class="main_component min-vh-100 d-flex align-items-center justify-content-center bg-primary-pale">
   <div class="container" style="max-width: 420px;">
-    <div class="card shadow-lg border-primary-light rounded-4 animate__animated animate__fadeIn">
+    <div class="card shadow-lg border-primary-light rounded-4 animate__animated animate__fadeIn bg-primary">
       <div class="card-body p-4">
         <!-- Toggle Buttons -->
         <div class="d-flex justify-content-center mb-4">
           <button mat-raised-button
-                  class="btn btn-outline-primary border-primary-light fw-semibold me-2"
+                  class="btn btn-outline-pale border-primary fw-semibold me-2 text-white fw-semibold px-4 shadow-sm"
                   [class.bg-primary]="showLogin"
                   [class.text-white]="showLogin"
-                  [class.text-primary-light]="!showLogin"
-                  (click)="showLogin = true">
+                  (click)="switchToLogin()">
             Login
           </button>
           <button mat-raised-button
-                  class="btn btn-outline-primary border-primary-light fw-semibold"
+                  class="btn btn-outline-pale border-primary fw-semibold me-2 text-white fw-semibold px-4 shadow-sm"
                   [class.bg-primary]="!showLogin"
                   [class.text-white]="!showLogin"
-                  [class.text-primary-light]="showLogin"
-                  (click)="showLogin = false">
+                  (click)="switchToSignup()">
             Signup
           </button>
         </div>
 
-        <!-- Login Form -->
-        <form *ngIf="showLogin" autocomplete="off" class="animate__animated animate__fadeIn">
-          <h2 class="text-center mb-4 text-primary-light fw-bold">Login</h2>
-          <mat-form-field appearance="fill" class="w-100 mb-3">
-            <mat-label>Email</mat-label>
-            <input matInput type="email" [formControl]="loginEmail" placeholder="Email" class="border-primary-light text-primary-light">
-          </mat-form-field>
-          <mat-form-field appearance="fill" class="w-100 mb-4">
-            <mat-label>Password</mat-label>
-            <input matInput type="password" [formControl]="loginPassword" placeholder="Password" class="border-primary-light text-primary-light">
-          </mat-form-field>
-          <div class="d-flex justify-content-center gap-2">
-            <button mat-raised-button type="button"
-              class="btn bg-primary-light text-white fw-semibold px-4 shadow-sm"
-              (click)="loggingIn();cluck()">
-              Login
-            </button>
-          </div>
-        </form>
+        <div class="form-anim-wrapper" [ngClass]="showLogin ? 'login-height' : 'signup-height'">
+          <!-- Login Form -->
+          <form *ngIf="showLogin" autocomplete="off" [ngClass]="['animate__animated', formAnimation]" class="d-flex flex-column h-100">
+            <div class="flex-grow-1">
+              <h2 class="text-center mb-4 text-primary-pale fw-bold">Login</h2>
+              <mat-form-field appearance="fill" class="w-100 mb-3">
+                <mat-label>Email</mat-label>
+                <input matInput type="email" [formControl]="loginEmail" placeholder="Email" class="border-primary-light text-primary-pale">
+              </mat-form-field>
+              <mat-form-field appearance="fill" class="w-100 mb-4">
+                <mat-label>Password</mat-label>
+                <input matInput type="password" [formControl]="loginPassword" placeholder="Password" class="border-primary-light text-primary-pale">
+              </mat-form-field>
+              <div *ngIf="loginError" class="alert alert-danger py-2 mb-3 rounded-3 text-center animate__animated animate__shakeX">
+                {{ loginError }}
+              </div>
+            </div>
+            <div class="d-flex justify-content-center gap-2 mt-auto">
+              <button mat-raised-button type="button"
+                class="btn bg-primary-light text-white fw-semibold px-4 shadow-sm"
+                (click)="loggingIn();cluck()">
+                Login
+              </button>
+            </div>
+          </form>
 
-        <!-- Signup Form -->
-        <form *ngIf="!showLogin" [formGroup]="signUpFrom" (ngSubmit)="onSubmit()" autocomplete="off" class="animate__animated animate__fadeIn">
-          <h2 class="text-center mb-4 text-primary-light fw-bold">Signup</h2>
-          <mat-form-field appearance="fill" class="w-100 mb-3">
-            <mat-label>Email</mat-label>
-            <input matInput type="email" formControlName="email" placeholder="Email" class="border-primary-light text-primary-light">
-          </mat-form-field>
-          <mat-form-field appearance="fill" class="w-100 mb-3">
-            <mat-label>Password</mat-label>
-            <input matInput type="password" formControlName="password" placeholder="Password" class="border-primary-light text-primary-light">
-          </mat-form-field>
-          <mat-form-field appearance="fill" class="w-100 mb-4">
-            <mat-label>Password again</mat-label>
-            <input matInput type="password" formControlName="password_re" placeholder="Password again" class="border-primary-light text-primary-light">
-          </mat-form-field>
-          <div class="d-flex justify-content-center gap-2">
-            <button mat-raised-button type="submit" class="btn bg-primary-light text-white fw-semibold px-4 shadow-sm">SignUp</button>
-          </div>
-        </form>
+          <!-- Signup Form -->
+          <form *ngIf="!showLogin" [formGroup]="signUpFrom" (ngSubmit)="onSubmit()" autocomplete="off" [ngClass]="['animate__animated', formAnimation]" class="d-flex flex-column h-100">
+            <div class="flex-grow-1">
+              <h2 class="text-center mb-4 text-primary-pale fw-bold">Signup</h2>
+              <mat-form-field appearance="fill" class="w-100 mb-3">
+                <mat-label>Email</mat-label>
+                <input matInput type="email" formControlName="email" placeholder="Email" class="border-primary-light text-primary-pale">
+              </mat-form-field>
+              <mat-form-field appearance="fill" class="w-100 mb-3">
+                <mat-label>Password</mat-label>
+                <input matInput type="password" formControlName="password" placeholder="Password" class="border-primary-light text-primary-pale">
+                <mat-error *ngIf="signUpFrom.get('password')?.hasError('required')">
+                  Password is required.
+                </mat-error>
+                <mat-error *ngIf="signUpFrom.get('password')?.hasError('minlength')">
+                  Password must be at least 6 characters.
+                </mat-error>
+              </mat-form-field>
+              <mat-form-field appearance="fill" class="w-100 mb-4">
+                <mat-label>Password again</mat-label>
+                <input matInput type="password" formControlName="password_re" placeholder="Password again" class="border-primary-light text-primary-pale">
+                <mat-error *ngIf="signUpFrom.get('password_re')?.hasError('required')">
+                  Please confirm your password.
+                </mat-error>
+                <mat-error *ngIf="signUpFrom.get('password_re')?.hasError('minlength')">
+                  Password must be at least 6 characters.
+                </mat-error>
+                <mat-error *ngIf="signUpFrom.get('password')?.value !== signUpFrom.get('password_re')?.value && signUpFrom.get('password_re')?.value">
+                  Passwords do not match.
+                </mat-error>
+              </mat-form-field>
+            </div>
+            <div class="d-flex justify-content-center gap-2 mt-auto">
+              <button mat-raised-button type="submit" class="btn bg-primary-light text-white fw-semibold px-4 shadow-sm">SignUp</button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>
