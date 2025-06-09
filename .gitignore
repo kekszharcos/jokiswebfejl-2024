@@ -6,7 +6,7 @@
 /out-tsc
 /bazel-out
 
-# Node
+# Node dependencies
 /node_modules
 npm-debug.log
 yarn-error.log
@@ -19,19 +19,17 @@ yarn-error.log
 *.launch
 .settings/
 *.sublime-workspace
-
-# Visual Studio Code
-.vscode/*
+.history/
+.vscode/
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-.history/*
 
 # Miscellaneous
 /.angular/cache
 .sass-cache/
-/connect.lock
+.connect.lock
 /coverage
 /libpeerconnection.log
 testem.log
@@ -42,6 +40,9 @@ testem.log
 Thumbs.db
 
 # Firebase
-.firebase
+.firebase/
 *-debug.log
 .runtimeconfig.json
+
+# Environment files (optional: only if you use local/private env files)
+/src/environments/*.local.ts
