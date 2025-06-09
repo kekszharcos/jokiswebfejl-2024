@@ -1,12 +1,12 @@
 export const environment = {
   production: true,
   firebase: {
-    apiKey: "AIzaSyCyyU7SY0joW1oAL8s4tRIwB3VGXNVX-fg",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    projectId: "jokiswebfejl-2024",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "1:395342193033:web:7f25d442c7949d06fc4158"
-    // ...any other Firebase config values
+    apiKey: "AIzaSyD7fMJO3ZSoVv8BY_4H1kmIF_LFJAedvVk",
+    authDomain: "textifi.firebaseapp.com",
+    projectId: "textifi",
+    storageBucket: "textifi.firebasestorage.app",
+    messagingSenderId: "858201836171",
+    appId: "1:858201836171:web:75c4a729fe626dde3d628e",
+    measurementId: "G-XKT7E4S1N9"
   }
 };
