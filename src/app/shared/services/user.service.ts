@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, doc, setDoc, updateDoc, deleteDoc, query, where, getDocs, collectionData } from '@angular/fire/firestore';
-import { Auth, updateEmail, updatePassword, deleteUser, signOut, onAuthStateChanged, User as FirebaseUser } from '@angular/fire/auth';
+import { Firestore, collection, doc, setDoc, updateDoc, deleteDoc, query, where, getDocs, collectionData, QuerySnapshot, DocumentData } from '@angular/fire/firestore';
+import { Auth, updateEmail, updatePassword, deleteUser, signOut, onAuthStateChanged, User, updateProfile, updateCurrentUser, user } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 
-import { User } from "../models/User";
 import { ChatService } from "./chat.service";
 import { FriendService } from "./friend.service";
 import { MessageService } from "./message.service";
@@ -23,37 +22,29 @@ export class UserService {
     private auth: Auth
   ) {}
 
-  create(user: User) {
-    const userDoc = doc(this.firestore, this.collectionName, user.id);
-    return from(setDoc(userDoc, user));
+  create(email: string, uid: string, username: string) {
+    const userDoc = doc(this.firestore, this.collectionName, uid);
+    return setDoc(userDoc,{email: email, uid: uid, username: username});
   }
 
-  get(): Observable<User[]> {
-    const usersCollection = collection(this.firestore, this.collectionName);
-    return collectionData(usersCollection, { idField: 'id' }) as Observable<User[]>;
+  get(): Promise<QuerySnapshot<DocumentData, DocumentData>> {
+    const usersCollection = collection(this.firestore, this.collectionName);    
+    return getDocs(usersCollection);
   }
 
-  update(user: User, pw: string, isit: boolean): Observable<any> {
-    return new Observable(observer => {
-      onAuthStateChanged(this.auth, async (firebaseUser) => {
-        try {
-          if (firebaseUser) {
-            if (isit) await updateEmail(firebaseUser, user.email);
-            if (pw.trim() !== '') await updatePassword(firebaseUser, pw);
-            await signOut(this.auth);
-            await this.router.navigateByUrl('');
-            const userDoc = doc(this.firestore, this.collectionName, user.id);
-            await updateDoc(userDoc, { ...user });
-            observer.next({ success: true });
-            observer.complete();
-          } else {
-            observer.error('No authenticated user.');
-          }
-        } catch (error) {
-          observer.error(error);
-        }
-      });
-    });
+  update(newEmail: string, newPassword: string, newDisplayName: string, upEmail: boolean, upPassword: boolean, upDisplayName: boolean): any {
+    const userDoc = doc(this.firestore, this.collectionName, this.auth.currentUser!.uid);
+    if(upEmail) {
+      updateEmail(this.auth.currentUser!, newEmail);
+      updateDoc(userDoc, { email: newEmail });
+    }
+    if(upPassword) {
+      updatePassword(this.auth.currentUser!, newPassword);
+    }
+    if(upDisplayName) {
+      updateProfile(this.auth.currentUser!, { displayName: newDisplayName });
+      updateDoc(userDoc, { username: newDisplayName });
+    }
   }
 
   delete(id: string): Observable<any> {

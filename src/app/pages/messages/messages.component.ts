@@ -9,7 +9,7 @@ import { MatDrawer } from "@angular/material/sidenav";
 import { FriendService } from "../../shared/services/friend.service";
 import { Location } from "@angular/common";
 import { AuthService } from "../../shared/services/auth.service";
-import { User } from "../../shared/models/User";
+import { User, authState } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-messages',
@@ -23,7 +23,7 @@ export class MessagesComponent implements OnInit, DoCheck {
   @ViewChild('modBox') modBox: any;
   @ViewChild('userBox') userBox: any;
 
-  loggedInUser!: User;
+  loggedInUser: User | null = null;
   messageToSend: FormControl = new FormControl('');
   chosenToAction: FormControl = new FormControl('');
   chosenAction: FormControl = new FormControl('');
@@ -57,29 +57,23 @@ export class MessagesComponent implements OnInit, DoCheck {
     private location: Location,
     private authService: AuthService
   ) {
+    authState(this.authService.auth).subscribe(user => this.loggedInUser = user);
     this.differ = this.differs.find([]).create();
   }
 
   ngOnInit(): void {
-    this.authService.isUserLoggedIn().subscribe(user => {
-      if (!user) return;
-      this.loggedInUser = {
-        id: user.uid,
-        username: user.displayName || user.email || '',
-        email: user.email || ''
-      };
-      this.loadChats();
-    });
+    this.loadChats();
   }
 
   loadChats() {
-    this.chatService.getOwnChats(this.loggedInUser.id).subscribe(chats => {
+    if(!this.loggedInUser) return;
+    this.chatService.getOwnChats(this.loggedInUser.uid).subscribe(chats => {
       this.ownChats = chats;
       this.friendChats = [];
       for (let chat of this.ownChats) {
         const users = chat.users;
-        const myUser = users.find(u => u.id === this.loggedInUser.id);
-        const others = users.filter(u => u.id !== this.loggedInUser.id);
+        const myUser = users.find(u => u.id === this.loggedInUser!.uid);
+        const others = users.filter(u => u.id !== this.loggedInUser!.uid);
         if (users.length === 1 && myUser) {
           this.friendChats.push([myUser.name + " [Solo chat]", chat.id, myUser.id, myUser.role]);
         } else if (others.length === 1) {
@@ -100,12 +94,13 @@ export class MessagesComponent implements OnInit, DoCheck {
   }
 
   onSend(chatId: string) {
+    if(!this.loggedInUser) return;
     const text = this.messageToSend.value;
     if (text && text.trim() !== "") {
       const message: Message = {
         id: '',
         chatId: chatId,
-        owner: this.loggedInUser.id,
+        owner: this.loggedInUser.uid,
         text: text,
         time: new Date().toISOString()
       };
@@ -115,6 +110,7 @@ export class MessagesComponent implements OnInit, DoCheck {
   }
 
   openChatWindow(chatId: string, chatName: string, id: string) {
+    if(!this.loggedInUser) return;
     this.chatMessages = [];
     this.usersOfChat = [];
     this.chattingChatId = chatId;
@@ -134,11 +130,11 @@ export class MessagesComponent implements OnInit, DoCheck {
     const chat = this.ownChats.find(c => c.id === chatId);
     if (!chat) return;
 
-    this.usersOfChat = chat.users.filter(u => u.id !== this.loggedInUser.id);
+    this.usersOfChat = chat.users.filter(u => u.id !== this.loggedInUser!.uid);
 
     chat.users.forEach(u => {
-      if (u.id === this.loggedInUser.id && u.role === "owner") this.loggedInOwnerInGroup = true;
-      if (u.id === this.loggedInUser.id && u.role === "moderator") this.loggedInModInGroup = true;
+      if (u.id === this.loggedInUser!.uid && u.role === "owner") this.loggedInOwnerInGroup = true;
+      if (u.id === this.loggedInUser!.uid && u.role === "moderator") this.loggedInModInGroup = true;
     });
 
     this.messageService.getMessageByChatId(chatId).subscribe(messages => {
@@ -152,10 +148,11 @@ export class MessagesComponent implements OnInit, DoCheck {
   }
 
   addToChatOpen(chatId: string) {
+    if(!this.loggedInUser) return;
     this.showableFriends = [];
     switch (this.chosenAction.value) {
       case 'add':
-        this.friendService.getOwnFriends(this.loggedInUser.id).subscribe(value => {
+        this.friendService.getOwnFriends(this.loggedInUser.uid).subscribe(value => {
           this.friends = value[0]?.friends ?? [];
           const chat = this.ownChats.find(c => c.id === chatId);
           if (!chat) return;
@@ -199,7 +196,7 @@ export class MessagesComponent implements OnInit, DoCheck {
           let chat = value[0];
           let benneva = chat.users.some((u: any) => u.id === this.chosenToAction.value.trim());
           if (!benneva) {
-            chat.users.push({ id: value1[0].id, name: value1[0].username, role: 'user' });
+            chat.users.push({ id: value1[0].uid, name: value1[0].displayName!, role: 'user' });
             this.chatService.update(chat).subscribe(() => {
               this.chosenToAction.reset();
               this.changeRoleHider = this.removeFromChatHider = this.addOrChangeNicknameHider = false;
@@ -213,11 +210,12 @@ export class MessagesComponent implements OnInit, DoCheck {
   }
 
   createNewChat() {
-    this.userService.getUserById(this.loggedInUser.id).subscribe(value => {
+    if(!this.loggedInUser) return;
+    this.userService.getUserById(this.loggedInUser.uid).subscribe(value => {
       const chat: Chat = {
         id: '',
         messages: [],
-        users: [{ id: this.loggedInUser.id, name: value[0].username, role: "owner" }]
+        users: [{ id: this.loggedInUser!.uid, name: value[0].displayName!, role: "owner" }]
       };
       this.chatService.create(chat).subscribe(() => {
         this.loadChats();

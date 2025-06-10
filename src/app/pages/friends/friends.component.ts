@@ -5,7 +5,7 @@ import { ChatService } from "../../shared/services/chat.service";
 import { Chat } from "../../shared/models/Chat";
 import { Router } from "@angular/router";
 import { AuthService } from "../../shared/services/auth.service";
-import { User } from "../../shared/models/User";
+import { User, authState } from '@angular/fire/auth';
 
 
 @Component({
@@ -16,7 +16,7 @@ import { User } from "../../shared/models/User";
 })
 export class FriendsComponent implements OnInit {
   friends: Array<string> = [];
-  loggedInUser?: User | null;
+  loggedInUser: User | null = null;
   friendUsers: Array<any> = [];
   chat: Chat = {
     id: '',
@@ -31,43 +31,34 @@ export class FriendsComponent implements OnInit {
     private chatService: ChatService,
     private router: Router,
     private authService: AuthService
-  ) {}
+  ) {
+    authState(this.authService.auth).subscribe(user => this.loggedInUser = user);
+  }
 
   ngOnInit(): void {
-    this.authService.isUserLoggedIn().subscribe(user => {
-      if (!user) {
-        this.loggedInUser = null;
-        return;
+    if (!this.loggedInUser) return;
+    this.friendService.getOwnFriends(this.loggedInUser.uid).subscribe(friends => {
+      if (friends[0] && Array.isArray(friends[0].friends)) {
+        this.friends = friends[0].friends;
+      } else {
+        this.friends = [];
       }
-      this.loggedInUser = {
-        id: user.uid,
-        username: user.displayName || user.email || '', // fallback, or fetch via service if needed
-        email: user.email || ''
-        // ...other User fields if needed
-      } as User;
-
-      this.friendService.getOwnFriends(user.uid).subscribe(friends => {
-        if (friends[0] && Array.isArray(friends[0].friends)) {
-          this.friends = friends[0].friends;
-        } else {
-          this.friends = [];
-        }
-      });
     });
+    
   }
 
   openChat(friendId: string) {
     if (!this.loggedInUser) return;
     let breaker = true;
     let lep = this.userService.getUserById(friendId).subscribe(value => {
-      let t2 = this.userService.getUserById(this.loggedInUser!.id).subscribe(value2 => {
+      let t2 = this.userService.getUserById(this.loggedInUser!.uid).subscribe(value2 => {
         this.chat.users = [
-          { id: this.loggedInUser!.id, name: value2[0].username, role: "owner" },
-          { id: friendId, name: value[0].username, role: "user" }
+          { id: this.loggedInUser!.uid, name: value2[0].displayName!, role: "owner" },
+          { id: friendId, name: value[0].displayName!, role: "user" }
         ];
         this.ownChats.forEach(chat => {
           if (
-            chat.users.some(u => u.id === this.loggedInUser!.id) &&
+            chat.users.some(u => u.id === this.loggedInUser!.uid) &&
             chat.users.some(u => u.id === friendId)
           ) {
             breaker = false;

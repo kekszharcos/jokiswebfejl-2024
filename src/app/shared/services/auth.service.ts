@@ -1,28 +1,27 @@
 import { Injectable } from '@angular/core';
-import { Auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, User, browserLocalPersistence, setPersistence } from '@angular/fire/auth';
+import { Auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, User, browserLocalPersistence, setPersistence, authState } from '@angular/fire/auth';
 import { from, Observable } from 'rxjs';
+import { getAuth, updateProfile } from "firebase/auth";
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  constructor(private auth: Auth) {
+  constructor(public auth: Auth) {
     setPersistence(this.auth, browserLocalPersistence); // or browserSessionPersistence
   }
 
   login(email: string, password: string) {
-    return from(signInWithEmailAndPassword(this.auth, email, password));
+    return signInWithEmailAndPassword(this.auth, email, password);
   }
 
-  signup(email: string, password: string) {
-    return from(createUserWithEmailAndPassword(this.auth, email, password));
+  signupUser(email: string, password: string, username: string) {
+    return createUserWithEmailAndPassword(this.auth, email, password);
+  }
+
+  updateUser(user: User, username: string) {
+    return updateProfile(user, { displayName: username });
   }
 
   logout() {
-    return from(signOut(this.auth));
-  }
-
-  isUserLoggedIn(): Observable<User | null> {
-    return new Observable(subscriber => {
-      this.auth.onAuthStateChanged(subscriber);
-    });
+    return this.auth.signOut();
   }
 }

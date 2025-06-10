@@ -2,11 +2,11 @@
   <div class="container" style="max-width: 480px;">
     <div class="card shadow-lg border-0 rounded-4 animate__animated animate__fadeIn bg-primary">
       <div class="card-body p-4">
-        <div class="mb-4 text-center">
+        <div *ngIf="loggedInUser as user" class="mb-4 text-center">
           <div class="fw-semibold fs-5 mb-1 text-white">
             Username:
             <span class="text-primary-pale">
-              {{ loggedInUser.id | fromUserIdToName | async }}
+              {{ loggedInUser.displayName }}
             </span>
           </div>
           <div class="text-white small">
@@ -21,19 +21,18 @@
           <mat-form-field appearance="fill" class="w-100 mb-3">
             <mat-label>Username</mat-label>
             <input matInput type="text" name="username" id="username" [formControl]="username"
-                   [placeholder]="(loggedInUser.id | fromUserIdToName | async) ?? ''"
+                   [value]="loggedInUser?.displayName!"
                    class="text-white bg-primary-light border-0">
           </mat-form-field>
           <mat-form-field appearance="fill" class="w-100 mb-3">
             <mat-label>E-mail</mat-label>
             <input matInput type="email" name="email" id="email" [formControl]="email"
-                   [placeholder]="loggedInUser.email"
+                   [value]="loggedInUser ? loggedInUser.email! : '' "
                    class="text-white bg-primary-light border-0">
           </mat-form-field>
           <mat-form-field appearance="fill" class="w-100 mb-3">
             <mat-label>Password</mat-label>
             <input matInput type="password" name="password" id="password" [formControl]="password"
-                   placeholder="******"
                    class="text-white bg-primary-light border-0">
             <mat-error *ngIf="password.hasError('required')">
               Password is required.
@@ -45,7 +44,6 @@
           <mat-form-field appearance="fill" class="w-100 mb-4">
             <mat-label>Password again</mat-label>
             <input matInput type="password" name="re_password" id="re_password" [formControl]="re_password"
-                   placeholder="******"
                    class="text-white bg-primary-light border-0">
             <mat-error *ngIf="re_password.hasError('required')">
               Please confirm your password.

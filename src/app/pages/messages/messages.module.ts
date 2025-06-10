@@ -11,7 +11,6 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import { FromUserIdToNamePipe } from '../../shared/pipes/from-user-id-to-name.pipe';
 import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
 import { MatCheckbox } from '@angular/material/checkbox';
 
@@ -19,11 +18,10 @@ import { MatCheckbox } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
-    MessagesComponent,
-    FromUserIdToNamePipe
+    MessagesComponent
   ],
   exports: [
-    FromUserIdToNamePipe
+    
   ],
     imports: [
         CommonModule,

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {AuthService} from "../services/auth.service";
 import { User } from '@angular/fire/auth';
 
@@ -8,22 +8,14 @@ import { User } from '@angular/fire/auth';
     styleUrl: './menu.component.css',
     standalone: false
 })
-export class MenuComponent implements OnInit, AfterViewInit{
+export class MenuComponent {
   @Output() selectedPage: EventEmitter<string> = new EventEmitter();
   @Input() currentPage!: string;
   @Output() onCloseSidenav = new EventEmitter<unknown>();
-  @Input() loggedInUser!: User | null | undefined;
+  loggedInUser: User | null;
   @Output() onLogout = new EventEmitter<unknown>();
   constructor(private authService : AuthService) {
-
-  }
-
-  ngOnInit(): void {
-
-  }
-
-  ngAfterViewInit(): void {
-
+    this.loggedInUser = authService.auth.currentUser;
   }
 
   menuSwitch() {

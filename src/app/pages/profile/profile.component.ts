@@ -1,14 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { UserService } from "../../shared/services/user.service";
 import { AuthService } from "../../shared/services/auth.service";
-import { User } from "../../shared/models/User";
+import { User } from '@angular/fire/auth';
 import { FormControl, Validators, FormGroup, AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms";
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { getAuth, deleteUser, updateEmail, updatePassword } from '@angular/fire/auth';
 import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
-import { Auth, onAuthStateChanged } from '@angular/fire/auth';
+import { Auth, onAuthStateChanged, authState } from '@angular/fire/auth';
 
 @Component({
     selector: 'app-profile',
@@ -16,9 +16,8 @@ import { Auth, onAuthStateChanged } from '@angular/fire/auth';
     styleUrl: './profile.component.css',
     standalone: false
 })
-export class ProfileComponent implements OnInit {
-  loggedInUser!: User;
-  newUser!: User;
+export class ProfileComponent {
+  loggedInUser: User | null = null;
   pwToSend = '';
   username = new FormControl('', [Validators.minLength(3), Validators.required]);
   email = new FormControl('', [Validators.email, Validators.required]);
@@ -35,25 +34,12 @@ export class ProfileComponent implements OnInit {
   deleteError: string | null = null;
   saveError: string | null = null;
 
-  constructor(
-    private userService: UserService,
-    private router: Router,
-    private authService: AuthService,
-    private dialog: MatDialog
-  ) {}
-
-  ngOnInit(): void {
-    this.authService.isUserLoggedIn().subscribe(user => {
-      if (!user) return;
-      this.loggedInUser = {
-        id: user.uid,
-        username: user.displayName || user.email?.split('@')[0] || '',
-        email: user.email || ''
-      };
-      this.newUser = { ...this.loggedInUser };
-      this.username.setValue(this.loggedInUser.username);
-      this.email.setValue(this.loggedInUser.email);
-    });
+  constructor(private userService: UserService, private router: Router, private authService: AuthService, private dialog: MatDialog) {
+    authState(this.authService.auth).subscribe(user => this.loggedInUser = user);
+    if (!this.loggedInUser) return;
+    
+    this.username.setValue(this.loggedInUser.displayName);
+    this.email.setValue(this.loggedInUser.email);
   }
 
   openDialog(): void {
@@ -71,28 +57,19 @@ export class ProfileComponent implements OnInit {
 
   deleteProfile() {
     this.deleteError = null;
-    this.userService.delete(this.loggedInUser.id).subscribe({
-      next: () => {
-        const auth = getAuth();
-        const user = auth.currentUser;
-        if (user) {
-          deleteUser(user).then(() => {
-            this.authService.logout().subscribe(() => {
-              this.router.navigate(['/login']);
-            });
-          }).catch((error) => {
-            if (error.code === 'auth/requires-recent-login') {
-              this.deleteError = 'Please log out and log in again before deleting your account for security reasons.';
-            } else {
-              this.deleteError = 'Account deletion failed. Please try again or contact support.';
-            }
-          });
+    if (this.loggedInUser) {
+      deleteUser(this.loggedInUser).then(() => {
+        this.authService.logout().then(() => {
+          //this.router.navigate(['/login']);
+        });
+      }).catch((error) => {
+        if (error.code === 'auth/requires-recent-login') {
+          this.deleteError = 'Please log out and log in again before deleting your account for security reasons.';
+        } else {
+          this.deleteError = 'Account deletion failed. Please try again or contact support.';
         }
-      },
-      error: () => {
-        this.deleteError = 'Account deletion failed. Please try again or contact support.';
-      }
-    });
+      });
+    }
   }
 
   updateProfile() {
@@ -103,35 +80,36 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
-    const auth = getAuth();
-    const user = auth.currentUser;
     const newEmail = this.profileForm.value.email as string;
     const newPassword = this.profileForm.value.password as string;
     const newUsername = this.profileForm.value.username as string;
+    let upEmail = false;
+    let upPass = false;
+    let upUsername = false;
 
     // 1. Update Auth profile first (if needed)
-    const promises: Promise<any>[] = [];
-    if (user) {
+    
+    if (this.loggedInUser) {
       if (newEmail && newEmail !== this.loggedInUser.email) {
-        promises.push(updateEmail(user, newEmail));
+        upEmail = true;
       }
       if (newPassword) {
-        promises.push(updatePassword(user, newPassword));
+        upPass = true;
+      }
+      if(newUsername && newUsername !== this.loggedInUser.displayName) {
+        upUsername
       }
     } else {
       this.saveError = 'No authenticated user found. Please log in again.';
       return;
     }
 
+    /*
+    const promises: Promise<any>[] = [];
     Promise.all(promises)
       .then(() => {
         // 2. Only update Firestore/DB if Auth update succeeded
-        const updatedUser: User = {
-          id: this.loggedInUser.id,
-          username: newUsername,
-          email: newEmail,
-        };
-        this.userService.update(updatedUser, '', false).subscribe({
+        this.userService.update(newEmail, newPassword, false).subscribe({
           next: () => {
             // Optionally show success
           },
@@ -145,6 +123,15 @@ export class ProfileComponent implements OnInit {
           this.saveError = 'Please log out and log in again before saving changes for security reasons.';
         } else {
           this.saveError = 'Failed to save changes. Please try again or contact support.';
+        }
+      });*/
+
+      this.userService.update(newEmail, newPassword, newUsername, upEmail, upPass, upUsername).subscribe({
+        next: () => {
+          // Optionally show success
+        },
+        error: () => {
+          this.saveError = 'Failed to save changes in the database. Please try again or contact support.';
         }
       });
   }

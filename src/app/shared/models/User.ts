@@ -1,5 +1,5 @@
-export interface User {
-  id: string;
-  username: string;
-  email: string;
+export interface Stranger {
+  uid: string;
+  username: string | null;
+  email: string | null;
 }

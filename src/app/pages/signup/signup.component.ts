@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Location} from "@angular/common";
 import {AuthService} from "../../shared/services/auth.service";
-import {User} from "../../shared/models/User";
 import {UserService} from "../../shared/services/user.service";
 import {Router} from "@angular/router";
 
@@ -31,20 +30,23 @@ export class SignupComponent {
   formAnimation = 'animate__fadeIn';
 
   constructor(private location:Location, private authService: AuthService, private userService: UserService, private router:Router) {
-
     this.signupContainer = document.getElementById('signup-container');
     this.loginContainer =  document.getElementById('login-container');
-
   }
   onSubmit() {
     if (this.signUpFrom.get('email')?.value?.trim() !== "" && this.signUpFrom.get('password')?.value?.trim() !== "" && this.signUpFrom.get('password')?.value?.trim() === this.signUpFrom.get('password_re')?.value?.trim()){
-      this.authService.signup(
-        this.signUpFrom.get('email')?.value as string,
-        this.signUpFrom.get('password')?.value as string
-      ).subscribe({
-        next: (cred) => {
+      const email = this.signUpFrom.get('email')?.value as string;
+      const password = this.signUpFrom.get('password')?.value as string;
+      const username = this.signUpFrom.get('email')?.value?.split('@')[0] as string;
+      
+      this.authService.signupUser(email, password, username).then(cred => {
+        this.authService.updateUser(cred.user, username).then(() => {
+            this.userService.create(email, cred.user.uid, username).then(() => this.router.navigateByUrl('main'))
+        })
+      })
+      /*.then((cred) => {
           const user: User = {
-            id: cred.user?.uid as string,
+            uid: cred.user?.uid as string,
             email: this.signUpFrom.get('email')?.value as string,
             username: this.signUpFrom.get('email')?.value?.split('@')[0] as string
           };
@@ -56,11 +58,9 @@ export class SignupComponent {
               // handle error
             }
           });
-        },
-        error: (err) => {
+        }).catch(() => {
           // handle signup error
-        }
-      });
+        });*/
     }
 
   }
@@ -73,7 +73,6 @@ export class SignupComponent {
     this.loginContainer.style.display = 'block';
   }
   goToSignup() {
-    console.log(this.signupContainer)
     this.loginContainer!.style.display = 'none';
     this.signupContainer!.style.display = 'block';
   }
@@ -82,12 +81,10 @@ export class SignupComponent {
     this.loginError = null;
     if (this.loginEmail.valid && this.loginPassword.valid){
       this.authService.login(this.loginEmail.value.trim(), this.loginPassword.value)
-        .subscribe({
-          next: () => {
+        .then(() => {
             this.router.navigateByUrl('main'); // Navigate to main page on success
-          },
-          error: (err) => {
-            if (err.code === 'auth/user-not-found') {
+          }).catch((err) => {
+           if (err.code === 'auth/user-not-found') {
               this.loginError = 'No user found with this email.';
             } else if (err.code === 'auth/wrong-password') {
               this.loginError = 'Incorrect password.';
@@ -96,8 +93,8 @@ export class SignupComponent {
             } else {
               this.loginError = 'Login failed. Please try again.';
             }
-          }
-        });
+           
+          })
     }
   }
 

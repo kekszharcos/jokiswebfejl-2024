@@ -4,7 +4,7 @@ import {filter} from "rxjs";
 import {AuthService} from "./shared/services/auth.service";
 import {MatSidenav} from "@angular/material/sidenav";
 import {FriendService} from "./shared/services/friend.service";
-import { User } from '@angular/fire/auth';
+import {User, authState} from '@angular/fire/auth';
 
 @Component({
     selector: 'app-root',
@@ -16,11 +16,12 @@ export class AppComponent implements OnInit {
   title = 'jokiswebfelj-2024';
   page = '';
   routes: Array<string> = [];
-  loggedInUser?: User | null;
   showNavbar = true;
   private lastScrollTop = 0;
+  loggedInUser: User | null = null;
 
   constructor(private router: Router, private authService: AuthService, private friendService: FriendService) {
+    authState(this.authService.auth).subscribe(user => this.loggedInUser = user);
   }
 
   pageSelect(selectedPage: string) {
@@ -37,15 +38,12 @@ export class AppComponent implements OnInit {
         this.page = currentPage;
       }
     })
-    this.authService.isUserLoggedIn().subscribe(user => {
-      this.loggedInUser = user;
-    });
 
     window.addEventListener('scroll', this.onWindowScroll, true);
   }
 
   logout($event: unknown) {
-    this.authService.logout().subscribe(() => {
+    this.authService.logout().then(() => {
       // handle successful logout if needed
     });
   }

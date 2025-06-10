@@ -40,11 +40,11 @@
     <!-- Messages List -->
     <div class="flex-1 overflow-y-auto px-4 py-2 space-y-4">
       @for (message of chatMessages; track message) {
-        <div class="flex" [ngClass]="{'justify-end': message.owner === loggedInUser!.username}">
+        <div class="flex" [ngClass]="{'justify-end': message.owner === loggedInUser!.displayName}">
           <div class="max-w-xs px-4 py-2 rounded-lg shadow"
                [ngClass]="{
-                 'bg-primary text-white': message.owner === loggedInUser!.username,
-                 'bg-primary-light text-primary': message.owner !== loggedInUser!.username
+                 'bg-primary text-white': message.owner === loggedInUser!.displayName,
+                 'bg-primary-light text-primary': message.owner !== loggedInUser!.displayName
                }">
             <div class="text-xs font-semibold mb-1">{{ message.owner }}</div>
             <div class="break-words">{{ message.text }}</div>

@@ -22,8 +22,11 @@
     "@angular/platform-browser": "^20.0.2",
     "@angular/platform-browser-dynamic": "^20.0.2",
     "@angular/router": "^20.0.2",
+    "@types/angularfire": "^0.8.38",
     "animate.css": "^4.1.1",
     "bootstrap": "^5.3.6",
+    "firebase-admin": "^13.4.0",
+    "firebase-functions": "^6.3.2",
     "rxjs": "^7.8.1",
     "tslib": "^2.6.2",
     "zone.js": "~0.15.0"

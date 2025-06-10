@@ -7,7 +7,6 @@
     @if (page) {
       <app-menu (selectedPage)="changePage($event)"
         [currentPage]="page"
-        [loggedInUser]="loggedInUser"
         (onCloseSidenav)="onClose($event, sidenav)"
         (onLogout)="logout($event)">
       </app-menu>
@@ -23,13 +22,12 @@
       <!-- Navigation links (hidden on small screens) -->
       <nav class="d-none d-md-flex ms-auto">
         <ul class="d-flex flex-row gap-3 align-items-center mb-0 ps-0">
-          @switch (loggedInUser === null) {
-            @case (true) {
+          @if (!loggedInUser) {
               <li>
                 <a routerLink="/signup" class="text-primary text-decoration-none px-2 py-1 rounded-2 transition bg-primary-pale fw-semibold">Login</a>
               </li>
-            }
-            @default {
+          }
+          @if (loggedInUser) {
               <li>
                 <a routerLink="/signup" (click)="logout($event)" class="text-primary text-decoration-none px-2 py-1 rounded-2 transition bg-primary-pale fw-semibold">Logout</a>
               </li>
@@ -48,7 +46,6 @@
               <li>
                 <a routerLink="/profile" class="text-white text-decoration-none px-2 py-1 rounded-2 transition hover-bg-primary-pale">Profile</a>
               </li>
-            }
           }
         </ul>
       </nav>
