@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, doc, setDoc, updateDoc, deleteDoc, query, where, collectionData, addDoc } from '@angular/fire/firestore';
+import { Firestore, collection, doc, setDoc, updateDoc, deleteDoc, query, where, collectionData, addDoc, getDoc } from '@angular/fire/firestore';
 import { Chat } from "../models/Chat";
 import { from, Observable } from 'rxjs';
 
@@ -30,9 +30,7 @@ export class ChatService {
     return from(deleteDoc(chatDoc));
   }
 
-  getChatsById(chatId: string): Observable<Chat[]> {
-    const chatsCollection = collection(this.firestore, this.collectionName);
-    const q = query(chatsCollection, where('id', '==', chatId));
-    return collectionData(q, { idField: 'id' }) as Observable<Chat[]>;
+  getChatById(chatId: string) {
+    return getDoc(doc(this.firestore, this.collectionName, chatId));
   }
 }

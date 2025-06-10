@@ -6,6 +6,9 @@ import { Router } from "@angular/router";
 import { AuthService } from "../../shared/services/auth.service";
 import { User, authState } from '@angular/fire/auth';
 import { Friend } from "../../shared/models/Friend"
+import { FormControl } from '@angular/forms';
+import { MessageService } from '../../shared/services/message.service';
+import { Message } from '../../shared/models/Message';
 
 @Component({
   selector: 'app-friends',
@@ -16,10 +19,14 @@ import { Friend } from "../../shared/models/Friend"
 export class FriendsComponent {
   loggedInUser: User | null = null;
   friends: Array<Friend> = [];
-  chat: Chat = { id: '', users: [], messages: [] };
   ownChats: Array<Chat> = [];
+  selectedFriend: Friend | null = null;
+  chatMessages: Message[] = [];
+  messageToSend = new FormControl('');
+  loggedInOwnerInGroup = false;
+  loggedInModInGroup = false;
 
-  constructor(private userService: UserService, private chatService: ChatService, private router: Router, private authService: AuthService) {
+  constructor(private userService: UserService, private chatService: ChatService, private router: Router, private authService: AuthService, private messageService: MessageService) {
     authState(this.authService.auth).subscribe(user => {this.loggedInUser = user
       if (this.loggedInUser){
         this.userService.getFriends(this.loggedInUser.uid).then(doc => {
@@ -40,7 +47,27 @@ export class FriendsComponent {
   openChat(friendId: string) {
     if (!this.loggedInUser) return;
     // Check if a chat already exists with the selected friend if yes, navigate to that chat if not, create a new chat thats it
-    
+    this.userService.getPrivateChats().then((doc) => {
+      let data = doc.data();
+      let friendsCopy = [...this.friends];
+      
+      if(data) {
+        let chats = data['pchats'];
+        for(let chatId of chats) {
+          this.chatService.getChatById(chatId).then((chatDoc) => {
+            let chatData = chatDoc.data();
+            if(chatData) {
+              let uid1 = chatData['uid1'];
+              let uid2 = chatData['uid2'];
+              let messages = chatData['messages']
+              this.ownChats.push({id: chatId, messages: messages, uid1: uid1, uid2: uid2});
+              friendsCopy = friendsCopy.filter(friend => friend.uid !== uid1 && friend !== uid2);
+            }
+          })
+        }
+      }
+    })
+    /*
     let breaker = true;
     this.userService.getUserById(friendId).then(friendDoc => {
       this.chat.users = [
@@ -59,9 +86,51 @@ export class FriendsComponent {
           }
         });
       }
+    });*/
+  }
+  selectFriend(friend: Friend) {
+    this.selectedFriend = friend;
+    // Load chat messages for this friend
+    this.loadMessages(friend.uid);
+  }
+
+  loadMessages(friendUid: string) {
+    // Implement logic to load messages between loggedInUser and friendUid
+    // Example:
+    // this.messageService.getMessagesBetween(this.loggedInUser.uid, friendUid).subscribe(messages => {
+    //   this.chatMessages = messages;
+    // });
+  }
+
+  onSend(friendUid: string) {
+    if (!this.loggedInUser) return;
+    const text = this.messageToSend.value;
+    if (!text || text.trim() === "") return;
+
+    const message: Message = {
+      id: '',
+      chatId: '', // set chatId if you have it
+      owner: this.loggedInUser.displayName || this.loggedInUser.uid,
+      text: text,
+      time: new Date().toISOString()
+    };
+    this.messageToSend.reset();
+    this.messageService.create(message).subscribe();
+    // Optionally reload messages
+    this.loadMessages(friendUid);
+  }
+
+  deleteMessageFromChat(messageId: string) {
+    this.messageService.delete(messageId).subscribe(() => {
+      if (this.selectedFriend) this.loadMessages(this.selectedFriend.uid);
     });
   }
+
   trackByFriend(index: number, friend: any) {
     return friend.uid;
+  }
+
+  trackByMessage(index: number, message: Message) {
+    return message.id;
   }
 }

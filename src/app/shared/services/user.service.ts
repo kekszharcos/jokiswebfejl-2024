@@ -23,7 +23,7 @@ export class UserService {
 
   create(email: string, uid: string, username: string) {
     const userDoc = doc(this.firestore, this.collectionName, uid);
-    return setDoc(userDoc,{email: email, uid: uid, username: username, friends: []});
+    return setDoc(userDoc,{email: email, uid: uid, username: username, friends: [], pchats: []});
   }
 
   get(): Promise<QuerySnapshot<DocumentData, DocumentData>> {
@@ -56,6 +56,10 @@ export class UserService {
 
   deleteFriend(userUID: string, friendUID: string) {
     return updateDoc(doc(this.firestore, this.collectionName, userUID), { friends: arrayRemove(friendUID)})
+  }
+
+  getPrivateChats(): Promise<DocumentSnapshot<DocumentData, DocumentData>> {
+    return getDoc(doc(this.firestore, this.collectionName, this.auth.currentUser!.uid));
   }
 /*
   delete(id: string): Observable<any> {

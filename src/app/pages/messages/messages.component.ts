@@ -68,7 +68,7 @@ export class MessagesComponent implements OnInit, DoCheck {
     this.chatService.getOwnChats(this.loggedInUser.uid).subscribe(chats => {
       this.ownChats = chats;
       this.friendChats = [];
-      for (let chat of this.ownChats) {
+      /*for (let chat of this.ownChats) {
         const users = chat.users;
         const myUser = users.find(u => u.id === this.loggedInUser!.uid);
         const others = users.filter(u => u.id !== this.loggedInUser!.uid);
@@ -87,7 +87,7 @@ export class MessagesComponent implements OnInit, DoCheck {
         this.openChatWindow(this.currentChatSaved.chatId, this.currentChatSaved.name, '');
         this.chosenAction.setValue(this.currentChatSaved.what);
         this.addToChatOpen(this.currentChatSaved.chatId);
-      }
+      }*/
     });
   }
 
@@ -101,8 +101,8 @@ export class MessagesComponent implements OnInit, DoCheck {
     if (!chat) return;
 
     // Check if the user is a member of the chat
-    const isMember = chat.users.some(u => u.id === this.loggedInUser!.uid);
-    if (!isMember) return; // Not a member, do not send
+    /*const isMember = chat.users.some(u => u.id === this.loggedInUser!.uid);
+    if (!isMember) return; // Not a member, do not send*/
 
     const message: Message = {
       id: '',
@@ -136,7 +136,7 @@ export class MessagesComponent implements OnInit, DoCheck {
     const chat = this.ownChats.find(c => c.id === chatId);
     if (!chat) return;
 
-    this.usersOfChat = chat.users.filter(u => u.id !== this.loggedInUser!.uid);
+    /*this.usersOfChat = chat.users.filter(u => u.id !== this.loggedInUser!.uid);
 
     chat.users.forEach(u => {
       if (u.id === this.loggedInUser!.uid && u.role === "owner") this.loggedInOwnerInGroup = true;
@@ -148,7 +148,7 @@ export class MessagesComponent implements OnInit, DoCheck {
         const user = chat.users.find(u => u.id === msg.owner);
         return { ...msg, owner: user ? user.name : msg.owner };
       });
-    });
+    });*/
 
     this.currentChatName = chatName;
   }
@@ -197,8 +197,8 @@ export class MessagesComponent implements OnInit, DoCheck {
   addToChat(currentChatId: string) {
     if (this.chosActionAndExists(currentChatId)) {
       this.showableFriends = this.showableFriends.filter(f => f !== this.chosenToAction.value);
-      this.chatService.getChatsById(currentChatId).subscribe(value => {
-        /*this.userService.getUserById(this.chosenToAction.value).subscribe(value1 => {
+      /*this.chatService.getChatsById(currentChatId).subscribe(value => {
+        this.userService.getUserById(this.chosenToAction.value).subscribe(value1 => {
           let chat = value[0];
           let benneva = chat.users.some((u: any) => u.id === this.chosenToAction.value.trim());
           if (!benneva) {
@@ -210,8 +210,8 @@ export class MessagesComponent implements OnInit, DoCheck {
               this.loadChats();
             });
           }
-        });*/
-      });
+        });
+      });*/
     }
   }
 
@@ -237,11 +237,12 @@ export class MessagesComponent implements OnInit, DoCheck {
     });
   }
 
+  //add to chat
   removeUserFromChat(currentChatId: string) {
     if (this.chosActionAndExists(currentChatId)) {
       const chat = this.ownChats.find(c => c.id === currentChatId);
       if (!chat) return;
-      chat.users = chat.users.filter(u => u.id !== this.chosenToAction.value);
+      //chat.users = chat.users.filter(u => u.id !== this.chosenToAction.value);
       this.chatService.update(chat).subscribe(() => {
         this.chosenToAction.reset();
         this.loadChats();
@@ -253,7 +254,7 @@ export class MessagesComponent implements OnInit, DoCheck {
   changeRole(currentChatId: string) {
     if (this.chosActionAndExists(currentChatId)) {
       if (this.modBox.checked || this.userBox.checked) {
-        this.chatService.getChatsById(currentChatId).subscribe(value => {
+        /*this.chatService.getChatsById(currentChatId).subscribe(value => {
           let chat = value[0];
           for (let i = 0; i < chat.users.length; i++) {
             if (this.chosenToAction.value === chat.users[i].id) {
@@ -262,14 +263,14 @@ export class MessagesComponent implements OnInit, DoCheck {
               break;
             }
           }
-        });
+        });*/
       }
     }
   }
 
   addOrChangeNickname(currentChatId: string) {
     if (this.chosActionAndExists(currentChatId)) {
-      this.chatService.getChatsById(currentChatId).subscribe(value => {
+      /*this.chatService.getChatsById(currentChatId).subscribe(value => {
         let chat = value[0];
         for (let i = 0; i < chat.users.length; i++) {
           if (this.chosenToAction.value === chat.users[i].id) {
@@ -280,7 +281,7 @@ export class MessagesComponent implements OnInit, DoCheck {
             break;
           }
         }
-      });
+      });*/
     }
   }
 
