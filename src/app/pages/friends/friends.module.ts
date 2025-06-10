@@ -5,6 +5,7 @@ import { FriendsRoutingModule } from './friends-routing.module';
 import { FriendsComponent } from './friends.component';
 import {MatButton} from "@angular/material/button";
 import {MatCard, MatCardContent, MatCardFooter, MatCardHeader} from "@angular/material/card";
+import { MatIcon, MatIconModule } from '@angular/material/icon';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import {MatCard, MatCardContent, MatCardFooter, MatCardHeader} from "@angular/ma
         MatCard,
         MatCardContent,
         MatCardFooter,
-        MatCardHeader
+        MatCardHeader,
+        MatIconModule
     ]
 })
 export class FriendsModule { }

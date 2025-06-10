@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-
 import { MessagesRoutingModule } from './messages-routing.module';
 import { MessagesComponent } from './messages.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -14,30 +13,24 @@ import { MatListModule } from '@angular/material/list';
 import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
 import { MatCheckbox } from '@angular/material/checkbox';
 
-
-
 @NgModule({
-  declarations: [
-    MessagesComponent
-  ],
-  exports: [
-    
-  ],
-    imports: [
-        CommonModule,
-        MessagesRoutingModule,
-        MatInputModule,
-        MatFormFieldModule,
-        ReactiveFormsModule,
-        MatCardModule,
-        MatDrawerContainer,
-        MatDrawer,
-        MatIconModule,
-        MatSelectModule,
-        MatOptionModule,
-        MatCheckbox,
-        MatListModule,
-        MatDrawerContent
-    ]
+  declarations: [ MessagesComponent ],
+  exports: [],
+  imports: [
+    CommonModule,
+    MessagesRoutingModule,
+    MatInputModule,
+    MatFormFieldModule,
+    ReactiveFormsModule,
+    MatCardModule,
+    MatDrawerContainer,
+    MatDrawer,
+    MatIconModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatCheckbox,
+    MatListModule,
+    MatDrawerContent
+  ]
 })
 export class MessagesModule { }

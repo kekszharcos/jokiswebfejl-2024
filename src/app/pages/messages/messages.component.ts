@@ -6,7 +6,6 @@ import { ChatService } from "../../shared/services/chat.service";
 import { Chat } from "../../shared/models/Chat";
 import { UserService } from "../../shared/services/user.service";
 import { MatDrawer } from "@angular/material/sidenav";
-import { FriendService } from "../../shared/services/friend.service";
 import { Location } from "@angular/common";
 import { AuthService } from "../../shared/services/auth.service";
 import { User, authState } from '@angular/fire/auth';
@@ -53,7 +52,6 @@ export class MessagesComponent implements OnInit, DoCheck {
     private messageService: MessageService,
     private chatService: ChatService,
     private userService: UserService,
-    private friendService: FriendService,
     private location: Location,
     private authService: AuthService
   ) {
@@ -94,19 +92,27 @@ export class MessagesComponent implements OnInit, DoCheck {
   }
 
   onSend(chatId: string) {
-    if(!this.loggedInUser) return;
+    if (!this.loggedInUser) return;
     const text = this.messageToSend.value;
-    if (text && text.trim() !== "") {
-      const message: Message = {
-        id: '',
-        chatId: chatId,
-        owner: this.loggedInUser.uid,
-        text: text,
-        time: new Date().toISOString()
-      };
-      this.messageToSend.reset();
-      this.messageService.create(message).subscribe();
-    }
+    if (!text || text.trim() === "") return;
+
+    // Find the chat
+    const chat = this.ownChats.find(c => c.id === chatId);
+    if (!chat) return;
+
+    // Check if the user is a member of the chat
+    const isMember = chat.users.some(u => u.id === this.loggedInUser!.uid);
+    if (!isMember) return; // Not a member, do not send
+
+    const message: Message = {
+      id: '',
+      chatId: chatId,
+      owner: this.loggedInUser.uid,
+      text: text,
+      time: new Date().toISOString()
+    };
+    this.messageToSend.reset();
+    this.messageService.create(message).subscribe();
   }
 
   openChatWindow(chatId: string, chatName: string, id: string) {
@@ -152,7 +158,7 @@ export class MessagesComponent implements OnInit, DoCheck {
     this.showableFriends = [];
     switch (this.chosenAction.value) {
       case 'add':
-        this.friendService.getOwnFriends(this.loggedInUser.uid).subscribe(value => {
+        /*this.userService.getFriends(this.loggedInUser.uid).subscribe(value => {
           this.friends = value[0]?.friends ?? [];
           const chat = this.ownChats.find(c => c.id === chatId);
           if (!chat) return;
@@ -162,7 +168,7 @@ export class MessagesComponent implements OnInit, DoCheck {
           );
           this.addToChatHider = true;
           this.addOrChangeNicknameHider = this.changeRoleHider = this.removeFromChatHider = false;
-        });
+        });*/
         break;
       case 'remove':
         this.removeFromChatHider = true;
@@ -192,7 +198,7 @@ export class MessagesComponent implements OnInit, DoCheck {
     if (this.chosActionAndExists(currentChatId)) {
       this.showableFriends = this.showableFriends.filter(f => f !== this.chosenToAction.value);
       this.chatService.getChatsById(currentChatId).subscribe(value => {
-        this.userService.getUserById(this.chosenToAction.value).subscribe(value1 => {
+        /*this.userService.getUserById(this.chosenToAction.value).subscribe(value1 => {
           let chat = value[0];
           let benneva = chat.users.some((u: any) => u.id === this.chosenToAction.value.trim());
           if (!benneva) {
@@ -204,14 +210,14 @@ export class MessagesComponent implements OnInit, DoCheck {
               this.loadChats();
             });
           }
-        });
+        });*/
       });
     }
   }
 
   createNewChat() {
     if(!this.loggedInUser) return;
-    this.userService.getUserById(this.loggedInUser.uid).subscribe(value => {
+    /*this.userService.getUserById(this.loggedInUser.uid).subscribe(value => {
       const chat: Chat = {
         id: '',
         messages: [],
@@ -220,7 +226,7 @@ export class MessagesComponent implements OnInit, DoCheck {
       this.chatService.create(chat).subscribe(() => {
         this.loadChats();
       });
-    });
+    });*/
   }
 
   deleteChat(chatId: string) {
@@ -287,5 +293,18 @@ export class MessagesComponent implements OnInit, DoCheck {
 
   deleteMessageFromChat(id: string) {
     this.messageService.delete(id).subscribe();
+  }
+
+  // For friendChats (use unique id or index)
+  trackByFn(index: number, item: any): any {
+    // If friendName[1] is a unique id, use it:
+    return item[1];
+    // Or just use index if no unique id:
+    // return index;
+  }
+
+  // For chatMessages (use unique message id)
+  trackByMessage(index: number, message: any): any {
+    return message.id; // or whatever uniquely identifies a message
   }
 }

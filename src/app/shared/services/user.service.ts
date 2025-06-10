@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, doc, setDoc, updateDoc, deleteDoc, query, where, getDocs, collectionData, QuerySnapshot, DocumentData } from '@angular/fire/firestore';
+import { Firestore, collection, doc, setDoc, updateDoc, deleteDoc, query, where, getDocs, collectionData, QuerySnapshot, getDoc, DocumentSnapshot, DocumentData, arrayUnion, arrayRemove } from '@angular/fire/firestore';
 import { Auth, updateEmail, updatePassword, deleteUser, signOut, onAuthStateChanged, User, updateProfile, updateCurrentUser, user } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 
 import { ChatService } from "./chat.service";
-import { FriendService } from "./friend.service";
 import { MessageService } from "./message.service";
 import { Observable, from } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Friend } from "../models/Friend";
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
@@ -17,14 +17,13 @@ export class UserService {
     private router: Router,
     private firestore: Firestore,
     private chatService: ChatService,
-    private friendService: FriendService,
     private messageService: MessageService,
     private auth: Auth
   ) {}
 
   create(email: string, uid: string, username: string) {
     const userDoc = doc(this.firestore, this.collectionName, uid);
-    return setDoc(userDoc,{email: email, uid: uid, username: username});
+    return setDoc(userDoc,{email: email, uid: uid, username: username, friends: []});
   }
 
   get(): Promise<QuerySnapshot<DocumentData, DocumentData>> {
@@ -47,10 +46,22 @@ export class UserService {
     }
   }
 
+  getFriends(uid: string): Promise<DocumentSnapshot<DocumentData, DocumentData>> {
+    return getDoc(doc(this.firestore, this.collectionName, uid));
+  }
+
+  addFriend(userUID: string, friendUID: string) {
+    return updateDoc(doc(this.firestore, this.collectionName, userUID), { friends: arrayUnion(friendUID)})
+  }
+
+  deleteFriend(userUID: string, friendUID: string) {
+    return updateDoc(doc(this.firestore, this.collectionName, userUID), { friends: arrayRemove(friendUID)})
+  }
+/*
   delete(id: string): Observable<any> {
     // Delete all friend records for this user
-    const friends$ = this.friendService.getOwnFriends(id).pipe(
-      map(friends => friends.map(f => this.friendService.delete(f.user)))
+    const friends$ = this.userService.getFriends(id).pipe(
+      map(friends => friends.map(f => this.userService.deleteFriend(f.user)))
     );
 
     // Delete or update all chats involving this user
@@ -100,12 +111,8 @@ export class UserService {
       map(() => deleteUserDoc$)
     );
   }
-
-  getUserById(userId: string): Observable<User[]> {
-    const usersCollection = collection(this.firestore, this.collectionName);
-    const q = query(usersCollection, where('id', '==', userId));
-    return from(getDocs(q)).pipe(
-      map(snapshot => snapshot.docs.map(doc => doc.data() as User))
-    );
+*/
+  getUserById(userId: string) {
+    return getDoc(doc(this.firestore, this.collectionName, userId));
   }
 }

@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { ChatService } from "../../shared/services/chat.service";
-import { FriendService } from "../../shared/services/friend.service";
 import { AuthService } from "../../shared/services/auth.service";
 import { User, authState } from '@angular/fire/auth';
 
@@ -16,7 +15,6 @@ export class MainComponent {
 
   constructor(
     private chatService: ChatService,
-    private friendService: FriendService,
     private authService: AuthService
   ) {
     authState(this.authService.auth).subscribe(user => this.loggedInUser = user);

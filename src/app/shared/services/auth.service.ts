@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, User, browserLocalPersistence, setPersistence, authState } from '@angular/fire/auth';
+import { Auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, User, browserLocalPersistence, setPersistence, authState, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider, OAuthProvider } from '@angular/fire/auth';
 import { from, Observable } from 'rxjs';
 import { getAuth, updateProfile } from "firebase/auth";
 
@@ -23,5 +23,9 @@ export class AuthService {
 
   logout() {
     return this.auth.signOut();
+  }
+
+  loginWithGoogle() {
+    return signInWithPopup(this.auth, new GoogleAuthProvider());
   }
 }

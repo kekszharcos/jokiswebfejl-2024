@@ -3,7 +3,6 @@ import {NavigationEnd, Router} from "@angular/router";
 import {filter} from "rxjs";
 import {AuthService} from "./shared/services/auth.service";
 import {MatSidenav} from "@angular/material/sidenav";
-import {FriendService} from "./shared/services/friend.service";
 import {User, authState} from '@angular/fire/auth';
 
 @Component({
@@ -20,7 +19,7 @@ export class AppComponent implements OnInit {
   private lastScrollTop = 0;
   loggedInUser: User | null = null;
 
-  constructor(private router: Router, private authService: AuthService, private friendService: FriendService) {
+  constructor(private router: Router, private authService: AuthService) {
     authState(this.authService.auth).subscribe(user => this.loggedInUser = user);
   }
 

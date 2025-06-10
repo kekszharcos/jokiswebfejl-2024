@@ -1,34 +1,26 @@
-<div class="section" style="background-color: #E1EEBC; min-height: 100vh;">
-  <div class="container">
-    <div class="columns is-multiline is-centered">
-      @if (friendUsers.length === 0) {
-        <div class="column is-12 has-text-centered">
-          <h1 class="title has-text-weight-bold" style="color: #328E6E;">You don't have friends yet</h1>
-        </div>
-      }
-      @for (friend of friendUsers; track friend) {
-        <div class="column is-4">
-          <div class="card" style="background-color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-            <header class="card-header">
-              <p class="card-header-title" style="color: #328E6E; font-size: 1.25rem;">
-                {{friend.name}}
-              </p>
-            </header>
-            <div class="card-content has-text-centered">
-              <button
-                class="button"
-                type="button"
-                (click)="openChat(friend.id)"
-                style="background-color: #328E6E; color: #fff;"
-                onmouseover="this.style.backgroundColor='#67AE6E'"
-                onmouseout="this.style.backgroundColor='#328E6E'"
-              >
-                Open chat
-              </button>
-            </div>
+<div class="main_component min-vh-100 d-flex align-items-center justify-content-center bg-primary-pale">
+  <div class="container" style="max-width: 900px;">
+    <div class="row justify-content-center animate__animated animate__fadeIn">
+      <div *ngIf="friends.length === 0" class="col-12 text-center">
+        <h1 class="fw-bold text-primary mb-4">You don't have friends yet</h1>
+      </div>
+      <div *ngFor="let friend of friends; trackBy: trackByFriend" class="col-12 col-md-6 col-lg-4 mb-4">
+        <div class="card shadow-lg border-primary-light rounded-4 bg-white h-100 d-flex flex-column">
+          <div class="card-header bg-primary-light text-white rounded-top-4 d-flex align-items-center justify-content-center">
+            <span class="fw-semibold fs-5">{{ friend.username }}</span>
+          </div>
+          <div class="card-body d-flex flex-column align-items-center justify-content-center">
+            <button
+              mat-raised-button
+              color="primary"
+              class="btn bg-primary-light text-white fw-semibold px-4 shadow-sm animate__animated animate__pulse"
+              (click)="openChat(friend.uid)">
+              
+              Open private chat
+            </button>
           </div>
         </div>
-      }
+      </div>
     </div>
   </div>
 </div>

@@ -118,4 +118,13 @@ export class SignupComponent {
     //this.isActive = !this.isActive
   }
 
+  loginWithGoogle() {
+    this.authService.loginWithGoogle().then(cred => {
+       this.router.navigateByUrl('main'); // Navigate to main page on success
+    }).catch(err => {
+      if(err) {
+        this.loginError = 'Login failed. Please try again.';
+      }
+    });
+  }
 }

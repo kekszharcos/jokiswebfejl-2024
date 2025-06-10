@@ -9,13 +9,12 @@
       </mat-card-content>
       @if (!currentFriends.includes(user.uid)) {
         <mat-card-actions class="d-flex justify-content-center pb-3">
-          <button mat-raised-button color="primary" type="button"
-            (click)="addFriend(user.uid)"
+          <button mat-raised-button color="primary" type="button" (click)="addFriend(user.uid)"
             class="bg-primary text-white fw-semibold px-4 py-2 rounded-3 shadow-sm hover-bg-primary-pale animate__animated animate__pulse">
             Add friend
           </button>
         </mat-card-actions>
-      }
+      }<!-- If the user is already a friend, show a badge instead -->
       @if (currentFriends.includes(user.uid)) {
         <mat-card-actions class="d-flex justify-content-center pb-3">
           <span class="badge bg-primary-pale text-primary px-3 py-2 rounded-3 fw-semibold shadow-sm animate__animated animate__fadeIn">
