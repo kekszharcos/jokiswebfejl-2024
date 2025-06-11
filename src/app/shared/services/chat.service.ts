@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Firestore, collection, doc, setDoc, updateDoc, deleteDoc, query, where, arrayUnion, collectionData, addDoc, getDoc, getDocs } from '@angular/fire/firestore';
 import { Chat } from "../models/Chat";
-import { from, Observable } from 'rxjs';
-import { UserService } from './user.service';
+
 
 @Injectable({ providedIn: 'root' })
 export class ChatService {

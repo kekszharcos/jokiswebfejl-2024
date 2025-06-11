@@ -1,5 +1,28 @@
-<div class="flex flex-col items-center justify-center h-screen bg-primary-pale">
-  <h1 class="text-3xl font-bold text-primary mb-4">Welcome to the main page</h1>
-  <p class="mb-2 text-primary">The purpose of this app is to text some1, cuz they might want to text you back.</p>
-  <mat-hint class="text-primary-light">You can find people after navigating to its designated site.</mat-hint>
+<div class="min-vh-100 d-flex align-items-center justify-content-center bg-primary-pale">
+  <div class="container" style="max-width: 480px;">
+    <div class="card shadow-lg border-0 rounded-4 animate__animated animate__fadeIn bg-primary">
+      <div class="card-body p-4 text-center">
+        <mat-icon style="font-size: 3rem; color: var(--bs-primary-light);" class="mb-3 animate__animated animate__bounceIn">chat</mat-icon>
+        <h1 class="fw-bold text-white mb-3">Welcome to Textifi</h1>
+        <p class="mb-3 text-primary-pale fs-5">
+          Connect, chat, and share moments with your friends. Textifi makes messaging simple, fast, and fun.
+        </p>
+        <mat-hint class="text-primary-light d-block mb-4">
+          Start by finding new people or chatting with your friends!
+        </mat-hint>
+        <div class="d-flex flex-column flex-md-row justify-content-center align-items-center gap-3 mt-4">
+          <a routerLink="/people" mat-raised-button
+             class="bg-primary-light text-white fw-semibold px-4 py-2 shadow-sm rounded-3 animate__animated animate__fadeInUp d-flex align-items-center justify-content-center">
+            <mat-icon class="me-2">group</mat-icon>
+            <span>Find People</span>
+          </a>
+          <a routerLink="/friends" mat-raised-button
+             class="bg-primary-pale text-primary fw-semibold px-4 py-2 shadow-sm rounded-3 animate__animated animate__fadeInUp d-flex align-items-center justify-content-center">
+            <mat-icon class="me-2">person</mat-icon>
+            <span>My Friends</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

@@ -13,7 +13,10 @@
     }
   </mat-sidenav>
   <mat-sidenav-content>
-    <mat-toolbar [ngClass]="{'navbar-hidden': !showNavbar}" class="bg-primary d-flex align-items-center justify-content-between shadow-sm px-3 animate__animated" style="color: #fff; position: sticky; top: 0; z-index: 1000;">
+    <!-- FIXED NAVBAR OVERLAY -->
+    <mat-toolbar [ngClass]="{'navbar-hidden': !showNavbar}"
+      class="bg-primary d-flex align-items-center justify-content-between shadow-sm px-3 animate__animated"
+      style="color: #fff; position: fixed; top: 0; left: 0; width: 100vw; z-index: 1100; height: 64px;">
       <!-- Hamburger menu (hidden on md and up) -->
       <button mat-icon-button class="d-md-none me-2 text-white" (click)="onToggleSidenav(sidenav)">
         <mat-icon class="text-white">menu</mat-icon>
@@ -50,7 +53,8 @@
         </ul>
       </nav>
     </mat-toolbar>
-    <div class="p-3 bg-primary-pale animate__animated animate__fadeIn" style="min-height: calc(100vh - 64px);">
+    <!-- Add top padding so content is not hidden under the fixed navbar -->
+    <div class="p-3 bg-primary-pale animate__animated animate__fadeIn" style="min-height: calc(100vh - 64px); padding-top: 64px;">
       <router-outlet></router-outlet>
     </div>
   </mat-sidenav-content>

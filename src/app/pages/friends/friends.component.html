@@ -16,7 +16,7 @@
               <div class="p-3 rounded-4 shadow-sm"
                    [ngClass]="{
                      'bg-primary text-white': message.owner === loggedInUser?.displayName,
-                     'bg-primary-light text-primary': message.owner !== loggedInUser?.displayName
+                     'bg-primary-light text-white': message.owner !== loggedInUser?.displayName
                    }">
                 <div class="fw-semibold small mb-1">{{ message.owner }}</div>
                 <div class="break-word">{{ message.text }}</div>
@@ -30,7 +30,7 @@
           </ng-container>
         </div>
         <!-- Message Input -->
-        <div class="border-top border-primary bg-primary-lighter px-3 py-3 d-flex align-items-center gap-2">
+        <div class="border-top rounded-bottom-4 border-primary bg-primary-lighter px-3 py-3 d-flex align-items-center gap-2">
           <mat-form-field class="flex-grow-1 m-0">
             <textarea matInput cdkTextareaAutosize style="max-height: 30vh" [formControl]="messageToSend" placeholder="Type your message..."></textarea>
           </mat-form-field>
