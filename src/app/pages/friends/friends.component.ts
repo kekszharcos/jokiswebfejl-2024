@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { UserService } from "../../shared/services/user.service";
 import { ChatService } from "../../shared/services/chat.service";
 import { Chat } from "../../shared/models/Chat";
@@ -16,7 +16,7 @@ import { Message } from '../../shared/models/Message';
   styleUrl: './friends.component.css',
   standalone: false
 })
-export class FriendsComponent {
+export class FriendsComponent implements OnInit, OnDestroy {
   loggedInUser: User | null = null;
   friends: Array<Friend> = [];
   ownChats: Array<Chat> = [];
@@ -26,6 +26,8 @@ export class FriendsComponent {
   loggedInOwnerInGroup = false;
   loggedInModInGroup = false;
   selectedFriendChatId: string | null = null;
+  unsubscribeChats: () => void = () => {};
+  unsubscribeMessages: () => void = () => {};
 
   constructor(private userService: UserService, private chatService: ChatService, private router: Router, private authService: AuthService, private messageService: MessageService) {
     authState(this.authService.auth).subscribe(user => {this.loggedInUser = user
@@ -43,6 +45,19 @@ export class FriendsComponent {
         });
       }
     });
+  }
+
+  ngOnInit() {
+    if (this.loggedInUser) {
+      this.unsubscribeChats = this.userService.listenToPrivateChats(this.loggedInUser.uid, (chats) => {
+        this.ownChats = chats;
+      });
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.unsubscribeChats) this.unsubscribeChats();
+    if (this.unsubscribeMessages) this.unsubscribeMessages();
   }
 
   async openChat(friendId: string) {
@@ -80,6 +95,12 @@ export class FriendsComponent {
       this.selectedFriendChatId = chatDocRef.id;
       this.loadMessages(chatDocRef.id);
     }
+
+    // When opening a chat:
+    if (this.unsubscribeMessages) this.unsubscribeMessages();
+    this.unsubscribeMessages = this.messageService.listenToMessages(this.selectedFriendChatId, (messages) => {
+      this.chatMessages = messages;
+    });
   }
 
   async selectFriend(friend: Friend) {

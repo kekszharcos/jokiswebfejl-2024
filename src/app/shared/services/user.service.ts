@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, doc, setDoc, updateDoc, deleteDoc, query, where, getDocs, collectionData, QuerySnapshot, getDoc, DocumentSnapshot, DocumentData, arrayUnion, arrayRemove } from '@angular/fire/firestore';
+import { Firestore, collection, doc, setDoc, updateDoc, deleteDoc, query, where, getDocs, collectionData, QuerySnapshot, getDoc, DocumentSnapshot, DocumentData, arrayUnion, arrayRemove, onSnapshot } from '@angular/fire/firestore';
 import { Auth, updateEmail, updatePassword, deleteUser, signOut, onAuthStateChanged, User, updateProfile, updateCurrentUser, user } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 
@@ -107,5 +107,22 @@ export class UserService {
 
   getUserById(userId: string) {
     return getDoc(doc(this.firestore, this.collectionName, userId));
+  }
+
+  // Returns an unsubscribe function
+  listenToPrivateChats(uid: string, callback: (chats: Chat[]) => void) {
+    const userDoc = doc(this.firestore, this.collectionName, uid);
+    return onSnapshot(userDoc, async (docSnap) => {
+      const pchats = docSnap.data()?.['pchats'] || [];
+      const chats: Chat[] = [];
+      for (const chatId of pchats) {
+        if (!chatId) continue;
+        const chatDoc = await this.chatService.getChatById(chatId);
+        if (chatDoc.exists()) {
+          chats.push({ id: chatDoc.id, ...chatDoc.data() } as Chat);
+        }
+      }
+      callback(chats);
+    });
   }
 }

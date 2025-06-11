@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, doc, setDoc, updateDoc, deleteDoc, query, where, orderBy, collectionData, addDoc, DocumentSnapshot, DocumentData, getDocs, QuerySnapshot } from '@angular/fire/firestore';
+import { Firestore, collection, doc, setDoc, updateDoc, deleteDoc, query, where, orderBy, collectionData, addDoc, DocumentSnapshot, DocumentData, getDocs, QuerySnapshot, onSnapshot } from '@angular/fire/firestore';
 import { Message } from "../models/Message";
 import { from, Observable } from 'rxjs';
 
@@ -43,4 +43,12 @@ export class MessageService {
     return deleteDoc(messageDoc);
   }
    
+  listenToMessages(chatId: string, callback: (messages: Message[]) => void) {
+    const messagesCollection = collection(this.firestore, this.collectionName);
+    const q = query(messagesCollection, where('chatId', '==', chatId), orderBy('time'));
+    return onSnapshot(q, (snapshot) => {
+      const messages = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Message[];
+      callback(messages);
+    });
+  }
 }
