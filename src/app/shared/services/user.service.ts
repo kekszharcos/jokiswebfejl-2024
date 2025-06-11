@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, doc, setDoc, updateDoc, deleteDoc, query, where, getDocs, collectionData, QuerySnapshot, getDoc, DocumentSnapshot, DocumentData, arrayUnion, arrayRemove, onSnapshot } from '@angular/fire/firestore';
-import { Auth, updateEmail, updatePassword, deleteUser, signOut, onAuthStateChanged, User, updateProfile, updateCurrentUser, user } from '@angular/fire/auth';
+import { Firestore, collection, doc, setDoc, updateDoc, deleteDoc, getDocs, QuerySnapshot, getDoc, DocumentSnapshot, DocumentData, arrayUnion, arrayRemove, onSnapshot } from '@angular/fire/firestore';
+import { Auth, updateEmail, updatePassword, deleteUser,  updateProfile} from '@angular/fire/auth';
 import { Router } from '@angular/router';
 
 import { ChatService } from "./chat.service";
@@ -21,7 +21,7 @@ export class UserService {
 
   create(email: string, uid: string, username: string) {
     const userDoc = doc(this.firestore, this.collectionName, uid);
-    return setDoc(userDoc,{email: email, uid: uid, username: username, friends: [], pchats: []});
+    return setDoc(userDoc,{email: email, uid: uid, username: username, friends: [], pchats: [],groups: []});
   }
 
   get(): Promise<QuerySnapshot<DocumentData, DocumentData>> {
@@ -29,19 +29,39 @@ export class UserService {
     return getDocs(usersCollection);
   }
 
-  updateData(newEmail: string, newPassword: string, newDisplayName: string, upEmail: boolean, upPassword: boolean, upDisplayName: boolean): any {
+  async updateData(newEmail: string, newPassword: string, newDisplayName: string, upEmail: boolean, upPassword: boolean, upDisplayName: boolean) {
     const userDoc = doc(this.firestore, this.collectionName, this.auth.currentUser!.uid);
+    let error = false;
     if(upEmail) {
-      updateEmail(this.auth.currentUser!, newEmail);
-      updateDoc(userDoc, { email: newEmail });
+      await updateEmail(this.auth.currentUser!, newEmail).catch(error => {
+        error = true;
+      });
+      await updateDoc(userDoc, { email: newEmail }).catch(error => {
+        error = true;
+      });
     }
     if(upPassword) {
-      updatePassword(this.auth.currentUser!, newPassword);
+      await updatePassword(this.auth.currentUser!, newPassword).catch(error => {
+        error = true;
+      });
     }
     if(upDisplayName) {
-      updateProfile(this.auth.currentUser!, { displayName: newDisplayName });
-      updateDoc(userDoc, { username: newDisplayName });
+      await this.messageService.getMessagesByOwner(this.auth.currentUser!.displayName!).then(snapshot => {
+        snapshot.docs.forEach(async (data) => {
+          const messageDocRef = doc(this.firestore, this.messageService.collectionName, data.id);
+          await updateDoc(messageDocRef, { owner: newDisplayName });
+        });
+      });
+
+      await updateProfile(this.auth.currentUser!, { displayName: newDisplayName }).catch(error => {
+        error = true;
+      });
+      await updateDoc(userDoc, { username: newDisplayName }).catch(error => {
+        error = true;
+      });
+      
     }
+    return error ? Promise.reject('Error updating user data') : Promise.resolve('User data updated successfully');
   }
 
   getFriends(uid: string): Promise<DocumentSnapshot<DocumentData, DocumentData>> {

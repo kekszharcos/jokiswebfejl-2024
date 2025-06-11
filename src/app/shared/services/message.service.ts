@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, doc, setDoc, updateDoc, deleteDoc, query, where, orderBy, collectionData, addDoc, DocumentSnapshot, DocumentData, getDocs, QuerySnapshot, onSnapshot } from '@angular/fire/firestore';
+import { Firestore, collection, doc, setDoc, updateDoc, deleteDoc, query, where, orderBy, addDoc, DocumentData, getDocs, QuerySnapshot, onSnapshot } from '@angular/fire/firestore';
 import { Message } from "../models/Message";
-import { from, Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class MessageService {
@@ -30,7 +29,7 @@ export class MessageService {
   getMessagesByOwner(ownerId: string): Promise<QuerySnapshot<DocumentData, DocumentData>>{
     const messagesCollection = collection(this.firestore, this.collectionName);
     const q = query(messagesCollection, where('owner', '==', ownerId));
-    return getDocs(q);;
+    return getDocs(q);
   }
 
   update(message: Message) {

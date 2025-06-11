@@ -5,7 +5,7 @@ import { User } from '@angular/fire/auth';
 import { FormControl, Validators, FormGroup, AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms";
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
-import { getAuth, deleteUser, updateEmail, updatePassword } from '@angular/fire/auth';
+import { deleteUser } from '@angular/fire/auth';
 import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
 import { Auth, onAuthStateChanged, authState } from '@angular/fire/auth';
@@ -34,6 +34,8 @@ export class ProfileComponent {
   deleteError: string | null = null;
   saveError: string | null = null;
 
+  successMessage: string | null = null;
+
   constructor(private userService: UserService, private router: Router, private authService: AuthService, private dialog: MatDialog) {
     authState(this.authService.auth).subscribe(user => this.loggedInUser = user);
     if (!this.loggedInUser) return;
@@ -60,7 +62,7 @@ export class ProfileComponent {
     if (this.loggedInUser) {
       deleteUser(this.loggedInUser).then(() => {
         this.authService.logout().then(() => {
-          //this.router.navigate(['/login']);
+          this.router.navigate(['/login']);
         });
       }).catch((error) => {
         if (error.code === 'auth/requires-recent-login') {
@@ -72,7 +74,7 @@ export class ProfileComponent {
     }
   }
 
-  updateProfile() {
+  async updateProfile() {
     this.saveError = null;
     if (this.profileForm.invalid) {
       this.saveError = 'Please fix the errors in the form before saving.';
@@ -97,7 +99,7 @@ export class ProfileComponent {
         upPass = true;
       }
       if(newUsername && newUsername !== this.loggedInUser.displayName) {
-        upUsername
+        upUsername = true;
       }
     } else {
       this.saveError = 'No authenticated user found. Please log in again.';
@@ -126,14 +128,13 @@ export class ProfileComponent {
         }
       });*/
 
-      this.userService.updateData(newEmail, newPassword, newUsername, upEmail, upPass, upUsername).subscribe({
-        next: () => {
-          // Optionally show success
-        },
-        error: () => {
-          this.saveError = 'Failed to save changes in the database. Please try again or contact support.';
-        }
+      this.userService.updateData(newEmail, newPassword, newUsername, upEmail, upPass, upUsername).then(() => {
+      // Optionally show success
+       this.successMessage = 'Profile updated successfully.';
+      }).catch((smth) => {
+        this.saveError = smth;
       });
+     
   }
 
   confirmDeleteProfile() {

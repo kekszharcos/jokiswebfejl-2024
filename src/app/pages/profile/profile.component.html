@@ -73,6 +73,10 @@
         <div *ngIf="deleteError" class="alert alert-danger text-center rounded-3 py-2 mb-3 animate__animated animate__shakeX">
           {{ deleteError }}
         </div>
+        <!-- Show success if present -->
+        <div *ngIf="deleteError" class="success text-center rounded-3 py-2 mb-3 animate__animated animate__shakeX">
+          {{ successMessage }}
+        </div>
       </div>
     </div>
   </div>

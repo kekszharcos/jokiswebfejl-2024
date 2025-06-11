@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, User, browserLocalPersistence, setPersistence, authState, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider, OAuthProvider } from '@angular/fire/auth';
-import { from, Observable } from 'rxjs';
-import { getAuth, updateProfile } from "firebase/auth";
+import { Auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, User, browserLocalPersistence, setPersistence, signInWithPopup, GoogleAuthProvider } from '@angular/fire/auth';
+import { updateProfile } from "firebase/auth";
 import { UserService } from './user.service';
+import { MessageService } from './message.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  constructor(public auth: Auth, private userService: UserService) {
+  constructor(public auth: Auth, private userService: UserService, private messageService: MessageService) {
     setPersistence(this.auth, browserLocalPersistence); // or browserSessionPersistence
   }
 
@@ -27,8 +27,13 @@ export class AuthService {
   }
 
   async loginWithGoogle() {
-    await signInWithPopup(this.auth, new GoogleAuthProvider()).then((result) => {
-      return this.userService.create(result.user.email!, result.user.uid, result.user.displayName!) 
-    });
+    const result = await signInWithPopup(this.auth, new GoogleAuthProvider());
+    const doc = await this.userService.getUserById(result.user.uid);
+    if (!doc.exists()) {
+      await this.userService.create(result.user.email!, result.user.uid, result.user.displayName!);
+      //console.log('User created successfully');
+    }else{
+      this.userService.updateData('', '', result.user.displayName!, false, false, true);
+    }
   }
 }

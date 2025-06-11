@@ -126,6 +126,7 @@ export class FriendsComponent implements OnInit, OnDestroy {
     const message = {
       chatId: this.selectedFriendChatId,
       owner: this.loggedInUser.displayName || this.loggedInUser.uid,
+      ownerId: this.loggedInUser.uid,
       text: text,
       time: new Date().toISOString()
     };

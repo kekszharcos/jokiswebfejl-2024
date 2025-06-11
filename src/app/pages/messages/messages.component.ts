@@ -77,7 +77,7 @@ export class MessagesComponent implements OnInit, DoCheck {
     if (this.currentChatSaved.chatId) {
       this.openChatWindow(this.currentChatSaved.chatId, this.currentChatSaved.name, '');
       this.chosenAction.setValue(this.currentChatSaved.what);
-      this.addToChatOpen(this.currentChatSaved.chatId);
+      this.addToGroupOpen(this.currentChatSaved.chatId);
     }
   }
 
@@ -97,7 +97,8 @@ export class MessagesComponent implements OnInit, DoCheck {
     const message: Message = {
       id: '',
       chatId: chatId,
-      owner: this.loggedInUser.uid,
+      owner: this.loggedInUser.displayName || this.loggedInUser.uid,
+      ownerId: this.loggedInUser.uid,
       text: text,
       time: new Date().toISOString()
     };
@@ -143,7 +144,7 @@ export class MessagesComponent implements OnInit, DoCheck {
     this.currentChatName = chatName;
   }
 
-  addToChatOpen(chatId: string) {
+  addToGroupOpen(chatId: string) {
     if(!this.loggedInUser) return;
     this.showableFriends = [];
     switch (this.chosenAction.value) {
@@ -184,7 +185,7 @@ export class MessagesComponent implements OnInit, DoCheck {
     return this.chosenToAction.value && this.chosenToAction.value.trim() !== '' && currentChatId;
   }
 
-  addToChat(currentChatId: string) {
+  addToGroup(currentChatId: string) {
     if (this.chosActionAndExists(currentChatId)) {
       this.showableFriends = this.showableFriends.filter(f => f !== this.chosenToAction.value);
       /*this.chatService.getChatsById(currentChatId).subscribe(value => {
@@ -205,7 +206,7 @@ export class MessagesComponent implements OnInit, DoCheck {
     }
   }
 
-  createNewChat() {
+  createNewGroup() {
     if(!this.loggedInUser) return;
     /*this.userService.getUserById(this.loggedInUser.uid).subscribe(value => {
       const chat: Chat = {
@@ -219,13 +220,14 @@ export class MessagesComponent implements OnInit, DoCheck {
     });*/
   }
 
+  createNewPost() {
+    if(!this.loggedInUser) return;
+   
+  }
+
   //group chat
-  deleteChat(chatId: string) {
-    this.chatService.delete(chatId).then(() => {
-      // No localStorage usage!
-      this.currentChatSaved = { chatId: '', name: '', what: '' }; // Reset in-memory state
-      this.loadChats();
-    });
+  deleteGroup(groupId: string) {
+   
   }
 
   //group chat
@@ -286,20 +288,18 @@ export class MessagesComponent implements OnInit, DoCheck {
   }
 
   //group chat @ private
-  deleteMessageFromChat(id: string) {
-    this.messageService.delete(id);
+  deletePostFromGroup(id: string) {
+    
   }
 
-  // For friendChats (use unique id or index)
-  trackByFn(index: number, item: any): any {
-    // If friendName[1] is a unique id, use it:
+  // For Groups (use unique id or index)
+  trackByGp(index: number, item: any): any {
+    // ?
     return item[1];
-    // Or just use index if no unique id:
-    // return index;
   }
 
-  // For chatMessages (use unique message id)
-  trackByMessage(index: number, message: any): any {
-    return message.id; // or whatever uniquely identifies a message
+  // For posts (use unique post id)
+  trackByPost(index: number, post: any): any {
+    return post.id; // or whatever uniquely identifies a post
   }
 }

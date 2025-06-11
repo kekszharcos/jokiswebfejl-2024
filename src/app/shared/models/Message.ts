@@ -3,5 +3,6 @@ export interface Message {
   chatId: string;
   text: string;
   owner: string;
+  ownerId: string;
   time: string;
 }
