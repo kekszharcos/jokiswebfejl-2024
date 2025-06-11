@@ -25,6 +25,7 @@ export class FriendsComponent {
   messageToSend = new FormControl('');
   loggedInOwnerInGroup = false;
   loggedInModInGroup = false;
+  selectedFriendChatId: string | null = null;
 
   constructor(private userService: UserService, private chatService: ChatService, private router: Router, private authService: AuthService, private messageService: MessageService) {
     authState(this.authService.auth).subscribe(user => {this.loggedInUser = user
@@ -44,84 +45,83 @@ export class FriendsComponent {
     });
   }
 
-  openChat(friendId: string) {
+  async openChat(friendId: string) {
     if (!this.loggedInUser) return;
-    // Check if a chat already exists with the selected friend if yes, navigate to that chat if not, create a new chat thats it
-    this.userService.getPrivateChats().then((doc) => {
-      let data = doc.data();
-      let friendsCopy = [...this.friends];
-      
-      if(data) {
-        let chats = data['pchats'];
-        for(let chatId of chats) {
-          this.chatService.getChatById(chatId).then((chatDoc) => {
-            let chatData = chatDoc.data();
-            if(chatData) {
-              let uid1 = chatData['uid1'];
-              let uid2 = chatData['uid2'];
-              let messages = chatData['messages']
-              this.ownChats.push({id: chatId, messages: messages, uid1: uid1, uid2: uid2});
-              friendsCopy = friendsCopy.filter(friend => friend.uid !== uid1 && friend !== uid2);
-            }
-          })
-        }
+
+    // Try to find an existing chat between the two users
+    let existingChat: Chat | null = null;
+    const chats = await this.userService.getPrivateChats();
+    for (const chat of chats) {
+      // Assuming your Chat model has uid1 and uid2
+      if (
+        (chat.uid1 === this.loggedInUser.uid && chat.uid2 === friendId) ||
+        (chat.uid2 === this.loggedInUser.uid && chat.uid1 === friendId)
+      ) {
+        existingChat = chat;
+        break;
       }
-    })
-    /*
-    let breaker = true;
-    this.userService.getUserById(friendId).then(friendDoc => {
-      this.chat.users = [
-        { id: this.loggedInUser!.uid, name: this.loggedInUser!.displayName, role: "owner" },
-        { id: friendId, name: friendDoc.data()!['username'], role: "user" }
-      ];
-      this.ownChats.forEach(chat => {
-        if (chat.users.some(u => u.id === this.loggedInUser!.uid) && chat.users.some(u => u.id === friendId)) {
-          breaker = false;
-        }
-      });
-      if (breaker) {
-        this.chatService.create(this.chat).subscribe({
-          next: _ => {
-            this.router.navigateByUrl("/messages");
-          }
-        });
-      }
-    });*/
+    }
+
+    if (existingChat) {
+      // Chat exists, set selectedFriend and chatId
+      this.selectedFriend = this.friends.find(f => f.uid === friendId) || null;
+      this.selectedFriendChatId = existingChat.id;
+      this.loadMessages(existingChat.id);
+    } else {
+      // Chat does not exist, create it and use the generated ID
+      const chatData = {
+        uid1: this.loggedInUser.uid,
+        uid2: friendId,
+        messages: []
+      };
+      //Had to remove Chat type from create to make it work without id field
+      const chatDocRef = await this.chatService.create(chatData);
+      this.selectedFriend = this.friends.find(f => f.uid === friendId) || null;
+      this.selectedFriendChatId = chatDocRef.id;
+      this.loadMessages(chatDocRef.id);
+    }
   }
-  selectFriend(friend: Friend) {
+
+  async selectFriend(friend: Friend) {
     this.selectedFriend = friend;
-    // Load chat messages for this friend
-    this.loadMessages(friend.uid);
+    await this.openChat(friend.uid);
+    // Do NOT call this.loadMessages here
   }
 
-  loadMessages(friendUid: string) {
-    // Implement logic to load messages between loggedInUser and friendUid
-    // Example:
-    // this.messageService.getMessagesBetween(this.loggedInUser.uid, friendUid).subscribe(messages => {
-    //   this.chatMessages = messages;
-    // });
+  loadMessages(chatId: string) {
+    this.messageService.getMessagesByChatId(chatId).then(messagesSnapshot => {
+      this.chatMessages = messagesSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as Message[];
+    });
   }
 
-  onSend(friendUid: string) {
-    if (!this.loggedInUser) return;
+  async onSend() {
+    if (!this.loggedInUser || !this.selectedFriendChatId) return;
     const text = this.messageToSend.value;
     if (!text || text.trim() === "") return;
 
-    const message: Message = {
-      id: '',
-      chatId: '', // set chatId if you have it
+    const message = {
+      chatId: this.selectedFriendChatId,
       owner: this.loggedInUser.displayName || this.loggedInUser.uid,
       text: text,
       time: new Date().toISOString()
     };
+
     this.messageToSend.reset();
-    this.messageService.create(message).subscribe();
-    // Optionally reload messages
-    this.loadMessages(friendUid);
+
+    // Use your messageService to add the message to the chat (should use addDoc)
+    await this.messageService.create(message);
+
+    // Reload messages
+    this.loadMessages(this.selectedFriendChatId);
   }
 
   deleteMessageFromChat(messageId: string) {
-    this.messageService.delete(messageId).subscribe(() => {
+
+    //might not needed to reload messages after deletion
+    this.messageService.delete(messageId).then(() => {
       if (this.selectedFriend) this.loadMessages(this.selectedFriend.uid);
     });
   }

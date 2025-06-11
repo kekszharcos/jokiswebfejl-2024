@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, doc, setDoc, updateDoc, deleteDoc, query, where, orderBy, collectionData, addDoc } from '@angular/fire/firestore';
+import { Firestore, collection, doc, setDoc, updateDoc, deleteDoc, query, where, orderBy, collectionData, addDoc, DocumentSnapshot, DocumentData, getDocs, QuerySnapshot } from '@angular/fire/firestore';
 import { Message } from "../models/Message";
 import { from, Observable } from 'rxjs';
 
@@ -9,36 +9,38 @@ export class MessageService {
 
   constructor(private firestore: Firestore) {}
 
-  create(message: Message) {
+  create(message: any) {
     const messagesCollection = collection(this.firestore, this.collectionName);
-    return from(addDoc(messagesCollection, message));
+    return addDoc(messagesCollection, message)
   }
 
-  get(): Observable<Message[]> {
+  get() {
     const messagesCollection = collection(this.firestore, this.collectionName);
-    return collectionData(messagesCollection, { idField: 'id' }) as Observable<Message[]>;
+    return getDocs(messagesCollection) ;
   }
 
-  getMessageByChatId(chatId: string): Observable<Message[]> {
+  //changed
+  getMessagesByChatId(chatId: string): Promise<QuerySnapshot<DocumentData, DocumentData>>{
     const messagesCollection = collection(this.firestore, this.collectionName);
     const q = query(messagesCollection, where('chatId', '==', chatId), orderBy('time'));
-    return collectionData(q, { idField: 'id' }) as Observable<Message[]>;
+    return getDocs(q);
   }
 
-  getMessagesByOwner(ownerId: string): Observable<Message[]> {
+
+  getMessagesByOwner(ownerId: string): Promise<QuerySnapshot<DocumentData, DocumentData>>{
     const messagesCollection = collection(this.firestore, this.collectionName);
     const q = query(messagesCollection, where('owner', '==', ownerId));
-    return collectionData(q, { idField: 'id' }) as Observable<Message[]>;
+    return getDocs(q);;
   }
 
   update(message: Message) {
     const messageDoc = doc(this.firestore, this.collectionName, message.id);
-    return from(updateDoc(messageDoc, { ...message }));
+    return updateDoc(messageDoc, { ...message });
   }
 
   delete(id: string) {
     const messageDoc = doc(this.firestore, this.collectionName, id);
-    return from(deleteDoc(messageDoc));
+    return deleteDoc(messageDoc);
   }
    
 }

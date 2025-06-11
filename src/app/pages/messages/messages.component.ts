@@ -59,36 +59,26 @@ export class MessagesComponent implements OnInit, DoCheck {
     this.differ = this.differs.find([]).create();
   }
 
-  ngOnInit(): void {
-    this.loadChats();
+  async ngOnInit(): Promise<void> {
+    await this.loadChats();
   }
 
-  loadChats() {
+  async loadChats() {
     if(!this.loggedInUser) return;
-    this.chatService.getOwnChats(this.loggedInUser.uid).subscribe(chats => {
-      this.ownChats = chats;
-      this.friendChats = [];
-      /*for (let chat of this.ownChats) {
-        const users = chat.users;
-        const myUser = users.find(u => u.id === this.loggedInUser!.uid);
-        const others = users.filter(u => u.id !== this.loggedInUser!.uid);
-        if (users.length === 1 && myUser) {
-          this.friendChats.push([myUser.name + " [Solo chat]", chat.id, myUser.id, myUser.role]);
-        } else if (others.length === 1) {
-          this.friendChats.push([others[0].name, chat.id, others[0].id, others[0].role]);
-        } else if (others.length > 1) {
-          this.friendChats.push([others[0].name + " [Group]", chat.id, others[0].id, others[0].role]);
-        } else {
-          this.friendChats.push([others[0]?.name || '', chat.id, others[0]?.id || '', others[0]?.role || '']);
-        }
-      }
-      // Restore chat state from memory if needed
-      if (this.currentChatSaved.chatId) {
-        this.openChatWindow(this.currentChatSaved.chatId, this.currentChatSaved.name, '');
-        this.chosenAction.setValue(this.currentChatSaved.what);
-        this.addToChatOpen(this.currentChatSaved.chatId);
-      }*/
-    });
+    this.ownChats = await this.userService.getPrivateChats();
+    this.friendChats = [];
+    for (let chat of this.ownChats) {
+      const users = [chat.uid1, chat.uid2];
+      const myUser = users.find(u => u === this.loggedInUser!.uid);
+      const others = users.filter(u => u !== this.loggedInUser!.uid);
+      //Use it for making highlight your own text or idk
+    }
+    // Restore chat state from memory if needed
+    if (this.currentChatSaved.chatId) {
+      this.openChatWindow(this.currentChatSaved.chatId, this.currentChatSaved.name, '');
+      this.chosenAction.setValue(this.currentChatSaved.what);
+      this.addToChatOpen(this.currentChatSaved.chatId);
+    }
   }
 
   onSend(chatId: string) {
@@ -112,7 +102,7 @@ export class MessagesComponent implements OnInit, DoCheck {
       time: new Date().toISOString()
     };
     this.messageToSend.reset();
-    this.messageService.create(message).subscribe();
+    this.messageService.create(message);
   }
 
   openChatWindow(chatId: string, chatName: string, id: string) {
@@ -143,7 +133,7 @@ export class MessagesComponent implements OnInit, DoCheck {
       if (u.id === this.loggedInUser!.uid && u.role === "moderator") this.loggedInModInGroup = true;
     });
 
-    this.messageService.getMessageByChatId(chatId).subscribe(messages => {
+    this.messageService.getMessagesByChatId(chatId).subscribe(messages => {
       this.chatMessages = messages.map(msg => {
         const user = chat.users.find(u => u.id === msg.owner);
         return { ...msg, owner: user ? user.name : msg.owner };
@@ -229,21 +219,22 @@ export class MessagesComponent implements OnInit, DoCheck {
     });*/
   }
 
+  //group chat
   deleteChat(chatId: string) {
-    this.chatService.delete(chatId).subscribe(() => {
+    this.chatService.delete(chatId).then(() => {
       // No localStorage usage!
-      this.currentChatSaved = { chatId: '', name: '', what: '' }; // Reset in-memory state if needed
+      this.currentChatSaved = { chatId: '', name: '', what: '' }; // Reset in-memory state
       this.loadChats();
     });
   }
 
-  //add to chat
+  //group chat
   removeUserFromChat(currentChatId: string) {
     if (this.chosActionAndExists(currentChatId)) {
       const chat = this.ownChats.find(c => c.id === currentChatId);
       if (!chat) return;
       //chat.users = chat.users.filter(u => u.id !== this.chosenToAction.value);
-      this.chatService.update(chat).subscribe(() => {
+      this.chatService.update(chat).then(() => {
         this.chosenToAction.reset();
         this.loadChats();
       });
@@ -251,6 +242,7 @@ export class MessagesComponent implements OnInit, DoCheck {
     }
   }
 
+  //group chat
   changeRole(currentChatId: string) {
     if (this.chosActionAndExists(currentChatId)) {
       if (this.modBox.checked || this.userBox.checked) {
@@ -268,6 +260,7 @@ export class MessagesComponent implements OnInit, DoCheck {
     }
   }
 
+  //group chat & private
   addOrChangeNickname(currentChatId: string) {
     if (this.chosActionAndExists(currentChatId)) {
       /*this.chatService.getChatsById(currentChatId).subscribe(value => {
@@ -292,8 +285,9 @@ export class MessagesComponent implements OnInit, DoCheck {
     }
   }
 
+  //group chat @ private
   deleteMessageFromChat(id: string) {
-    this.messageService.delete(id).subscribe();
+    this.messageService.delete(id);
   }
 
   // For friendChats (use unique id or index)

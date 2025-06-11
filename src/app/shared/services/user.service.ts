@@ -5,9 +5,7 @@ import { Router } from '@angular/router';
 
 import { ChatService } from "./chat.service";
 import { MessageService } from "./message.service";
-import { Observable, from } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Friend } from "../models/Friend";
+import { Chat } from "../models/Chat";
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
@@ -31,7 +29,7 @@ export class UserService {
     return getDocs(usersCollection);
   }
 
-  update(newEmail: string, newPassword: string, newDisplayName: string, upEmail: boolean, upPassword: boolean, upDisplayName: boolean): any {
+  updateData(newEmail: string, newPassword: string, newDisplayName: string, upEmail: boolean, upPassword: boolean, upDisplayName: boolean): any {
     const userDoc = doc(this.firestore, this.collectionName, this.auth.currentUser!.uid);
     if(upEmail) {
       updateEmail(this.auth.currentUser!, newEmail);
@@ -58,64 +56,55 @@ export class UserService {
     return updateDoc(doc(this.firestore, this.collectionName, userUID), { friends: arrayRemove(friendUID)})
   }
 
-  getPrivateChats(): Promise<DocumentSnapshot<DocumentData, DocumentData>> {
-    return getDoc(doc(this.firestore, this.collectionName, this.auth.currentUser!.uid));
-  }
-/*
-  delete(id: string): Observable<any> {
-    // Delete all friend records for this user
-    const friends$ = this.userService.getFriends(id).pipe(
-      map(friends => friends.map(f => this.userService.deleteFriend(f.user)))
-    );
+  async getPrivateChats() {
+    const docSnap = await getDoc(doc(this.firestore, this.collectionName, this.auth.currentUser!.uid));
+    let chats: Chat[] = [];
 
-    // Delete or update all chats involving this user
-    const chats$ = this.chatService.getOwnChats(id).pipe(
-      map(chats => chats.map(chat => {
-        // chat.users is now an array of user objects
-        if (chat.users.length <= 2) {
-          // Delete the whole chat if only 2 or fewer users
-          return this.chatService.delete(chat.id);
-        } else {
-          // Remove the user from the chat and update
-          chat.users = chat.users.filter((u: any) => u.id !== id);
-          return this.chatService.update(chat);
-        }
-      }))
-    );
+    for (const chatId of docSnap.data()?.['pchats'] || []) {
+      if (!chatId) continue; // Skip if chatId is undefined or null
+      const chatDoc = await this.chatService.getChatById(chatId);
+      //console.log("Chat document:", chatDoc.data());
+      if (chatDoc.exists()) {
+        chats.push({ id: chatDoc.id, ...chatDoc.data() } as Chat);
+      }
+    }
+    return chats;
+  }
+
+  async delete(id: string) {
+    // Delete all friend records for this user
+    const docFriends = await this.getFriends(id);
+    const friendUIDArray = docFriends.data()?.['friends'] || [];
+    for (const friendUID of friendUIDArray) {
+      const docFriendUsers = await this.getUserById(friendUID);
+      const FriendUser = docFriendUsers.data();
+      if (FriendUser) {
+        await this.deleteFriend(friendUID, id);
+        await this.deleteFriend(id, friendUID);
+        //console.log(`Friendship between ${id} and ${friendUID} deleted.`);
+      }
+    }
 
     // Delete all messages sent by this user
-    const messages$ = this.messageService.getMessagesByOwner(id).pipe(
-      map(messages => messages.map(msg => this.messageService.delete(msg.id)))
-    );
+    const messagesSnapshot = await this.messageService.getMessagesByOwner(id);
+    for (const messageDoc of messagesSnapshot.docs) {
+      const messageDocRef = doc(this.firestore, this.messageService.collectionName, messageDoc.id);
+      await deleteDoc(messageDocRef);
+    }
 
-    // Delete the user from Firebase Auth
-    const deleteAuthUser$ = new Observable(observer => {
-      onAuthStateChanged(this.auth, async (firebaseUser) => {
-        if (firebaseUser) {
-          await deleteUser(firebaseUser);
-        }
-        observer.next({ success: true });
-        observer.complete();
-      });
-    });
+    // Delete or update all chats involving this user
+    let chats = await this.getPrivateChats();
+    for (const chat of chats) {
+        await this.chatService.delete(chat.id);
+    }
 
-    // Delete the user document from Firestore
-    const userDoc = doc(this.firestore, this.collectionName, id);
-    const deleteUserDoc$ = from(deleteDoc(userDoc));
+    // Delete user from Firebase Authentication
+    await deleteUser(this.auth.currentUser!);
 
-    // Combine all operations
-    return friends$.pipe(
-      // Wait for friends to be deleted
-      map(() => chats$),
-      // Wait for chats to be deleted/updated
-      map(() => messages$),
-      // Wait for messages to be deleted
-      map(() => deleteAuthUser$),
-      // Wait for auth user to be deleted
-      map(() => deleteUserDoc$)
-    );
+    // Delete user document from Firestore
+    return deleteDoc(doc(this.firestore, this.collectionName, id));
   }
-*/
+
   getUserById(userId: string) {
     return getDoc(doc(this.firestore, this.collectionName, userId));
   }

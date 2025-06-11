@@ -1,6 +1,4 @@
-# Jokiswebfelj2024
-
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.2.1.
+# Textifi
 
 ## Development server
 
@@ -8,7 +6,7 @@ Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The appli
 
 ## Product
 
-The website is available to the public at `https://jokiswebfejl-2024.web.app/` 
+The website is available to the public at `https://textifi.web.app/` 
 
 ## Developer note
 

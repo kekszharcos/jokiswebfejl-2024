@@ -126,7 +126,7 @@ export class ProfileComponent {
         }
       });*/
 
-      this.userService.update(newEmail, newPassword, newUsername, upEmail, upPass, upUsername).subscribe({
+      this.userService.updateData(newEmail, newPassword, newUsername, upEmail, upPass, upUsername).subscribe({
         next: () => {
           // Optionally show success
         },

@@ -34,7 +34,7 @@
           <mat-form-field class="flex-grow-1 m-0">
             <textarea matInput cdkTextareaAutosize style="max-height: 30vh" [formControl]="messageToSend" placeholder="Type your message..."></textarea>
           </mat-form-field>
-          <button mat-fab color="primary" class="btn btn-primary-light text-white d-flex align-items-center justify-content-center shadow" (click)="onSend(selectedFriend.uid)">
+          <button mat-fab color="primary" class="btn btn-primary-light text-white d-flex align-items-center justify-content-center shadow" (click)="onSend()">
             <mat-icon>send</mat-icon>
           </button>
         </div>

@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, doc, setDoc, updateDoc, deleteDoc, query, where, collectionData, addDoc, getDoc } from '@angular/fire/firestore';
+import { Firestore, collection, doc, setDoc, updateDoc, deleteDoc, query, where, arrayUnion, collectionData, addDoc, getDoc, getDocs } from '@angular/fire/firestore';
 import { Chat } from "../models/Chat";
 import { from, Observable } from 'rxjs';
+import { UserService } from './user.service';
 
 @Injectable({ providedIn: 'root' })
 export class ChatService {
@@ -9,28 +10,35 @@ export class ChatService {
 
   constructor(private firestore: Firestore) {}
 
-  create(chat: Chat) {
+  async create(chat: any) {
     const chatsCollection = collection(this.firestore, this.collectionName);
-    return from(addDoc(chatsCollection, chat)); // chat.users and chat.messages are arrays
+    const chatDocRef = await addDoc(chatsCollection, chat); // Firestore generates the ID
+    await this.updatePChats(chat.uid1, chatDocRef.id)
+    await this.updatePChats(chat.uid2, chatDocRef.id)
+    return chatDocRef
   }
 
-  getOwnChats(uid: string): Observable<Chat[]> {
+  /*getPrivateChats(uid: string) {
     const chatsCollection = collection(this.firestore, this.collectionName);
-    const q = query(chatsCollection, where("users", "array-contains", uid));
-    return collectionData(q, { idField: 'id' }) as Observable<Chat[]>;
-  }
+    const q = query(chatsCollection, where("uid1", "==", uid) || where("uid2", "==", uid));
+    return getDocs(q);
+  }*/
 
   update(chat: Chat) {
     const chatDoc = doc(this.firestore, this.collectionName, chat.id);
-    return from(updateDoc(chatDoc, { ...chat }));
+    return updateDoc(chatDoc, { ...chat });
   }
 
   delete(id: string) {
     const chatDoc = doc(this.firestore, this.collectionName, id);
-    return from(deleteDoc(chatDoc));
+    return deleteDoc(chatDoc);
   }
 
   getChatById(chatId: string) {
     return getDoc(doc(this.firestore, this.collectionName, chatId));
+  }
+
+  updatePChats(userId: string, chatId: string) {
+    return updateDoc(doc(this.firestore, 'Users', userId), { pchats: arrayUnion(chatId) });
   }
 }
