@@ -72,6 +72,13 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   text-decoration: none;
 }
 
+.hover-bg-red:hover, .hover-bg-red:focus {
+  background-color: #ff4d4d !important; /* Example red color */
+  color: #fff !important;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+
 .hover-bg-primary-light:hover, .hover-bg-primary-light:focus {
   background-color: var(--bs-primary-light) !important;
   color: #fff !important;

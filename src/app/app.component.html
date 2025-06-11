@@ -24,31 +24,35 @@
       <span class="fw-bold fs-4 text-white">Textifi</span>
       <!-- Navigation links (hidden on small screens) -->
       <nav class="d-none d-md-flex ms-auto">
-        <ul class="d-flex flex-row gap-3 align-items-center mb-0 ps-0">
+        <ul class="list-unstyled d-flex flex-row gap-3 align-items-center mb-0 ps-0">
           @if (!loggedInUser) {
               <li>
-                <a routerLink="/signup" class="text-primary text-decoration-none px-2 py-1 rounded-2 transition bg-primary-pale fw-semibold">Login</a>
+                <a routerLink="/signup" routerLinkActive="bg-primary" class="text-white text-decoration-none px-2 py-1 rounded-2 transition fw-semibold hover-bg-primary-pale">Login</a>
               </li>
           }
           @if (loggedInUser) {
               <li>
-                <a routerLink="/signup" (click)="logout($event)" class="text-primary text-decoration-none px-2 py-1 rounded-2 transition bg-primary-pale fw-semibold">Logout</a>
+                <a routerLink="/people" routerLinkActive="bg-primary" class="text-white text-decoration-none px-2 py-1 rounded-2 transition hover-bg-primary-pale">People</a>
               </li>
               <li>
-                <a routerLink="/people" class="text-white text-decoration-none px-2 py-1 rounded-2 transition hover-bg-primary-pale">People</a>
+                <a routerLink="/main" routerLinkActive="bg-primary" class="text-white text-decoration-none px-2 py-1 rounded-2 transition hover-bg-primary-pale">Main</a>
               </li>
               <li>
-                <a routerLink="/main" class="text-white text-decoration-none px-2 py-1 rounded-2 transition hover-bg-primary-pale">Main</a>
+                <a routerLink="/friends" routerLinkActive="bg-primary" class="text-white text-decoration-none px-2 py-1 rounded-2 transition hover-bg-primary-pale">Friends</a>
               </li>
               <li>
-                <a routerLink="/friends" class="text-white text-decoration-none px-2 py-1 rounded-2 transition hover-bg-primary-pale">Friends</a>
+                <a routerLink="/messages" routerLinkActive="bg-primary" class="text-white text-decoration-none px-2 py-1 rounded-2 transition hover-bg-primary-pale">Messages</a>
               </li>
               <li>
-                <a routerLink="/messages" class="text-white text-decoration-none px-2 py-1 rounded-2 transition hover-bg-primary-pale">Messages</a>
+                <a routerLink="/profile" routerLinkActive="bg-primary" class="text-white text-decoration-none px-2 py-1 rounded-2 transition hover-bg-primary-pale">Profile</a>
               </li>
-              <li>
-                <a routerLink="/profile" class="text-white text-decoration-none px-2 py-1 rounded-2 transition hover-bg-primary-pale">Profile</a>
-              </li>
+               <li class="mb-1">
+                  <a routerLink="/signup" (click)="logout($event)"
+                     class="d-flex align-items-center justify-content-center text-white text-decoration-none rounded-2 transition fw-semibold hover-bg-red"
+                     style="height: 40px; width: 40px;">
+                    <mat-icon class="m-0">exit_to_app</mat-icon>
+                  </a>
+                </li>
           }
         </ul>
       </nav>
