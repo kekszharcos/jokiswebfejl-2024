@@ -28,7 +28,7 @@ export class MessageService {
 
   getMessagesByOwner(ownerId: string): Promise<QuerySnapshot<DocumentData, DocumentData>>{
     const messagesCollection = collection(this.firestore, this.collectionName);
-    const q = query(messagesCollection, where('owner', '==', ownerId));
+    const q = query(messagesCollection, where('ownerId', '==', ownerId));
     return getDocs(q);
   }
 

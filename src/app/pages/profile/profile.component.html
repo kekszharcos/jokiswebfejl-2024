@@ -34,10 +34,10 @@
             <mat-label>Password</mat-label>
             <input matInput type="password" name="password" id="password" [formControl]="password"
                    class="text-white bg-primary-light border-0">
-            <mat-error *ngIf="password.hasError('required')">
+            <mat-error class="error" *ngIf="password.hasError('required')">
               Password is required.
             </mat-error>
-            <mat-error *ngIf="password.hasError('minlength')">
+            <mat-error class="error" *ngIf="password.hasError('minlength')">
               Password must be at least 6 characters.
             </mat-error>
           </mat-form-field>
@@ -45,13 +45,13 @@
             <mat-label>Password again</mat-label>
             <input matInput type="password" name="re_password" id="re_password" [formControl]="re_password"
                    class="text-white bg-primary-light border-0">
-            <mat-error *ngIf="re_password.hasError('required')">
+            <mat-error class="error" *ngIf="re_password.hasError('required')">
               Please confirm your password.
             </mat-error>
-            <mat-error *ngIf="re_password.hasError('minlength')">
+            <mat-error class="error" *ngIf="re_password.hasError('minlength')">
               Password must be at least 6 characters.
             </mat-error>
-            <mat-error *ngIf="profileForm.hasError('passwordsMismatch') && re_password.touched">
+            <mat-error class="error" *ngIf="profileForm.hasError('passwordsMismatch') && re_password.touched">
               Passwords do not match.
             </mat-error>
           </mat-form-field>

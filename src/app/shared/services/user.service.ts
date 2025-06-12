@@ -46,7 +46,7 @@ export class UserService {
       });
     }
     if(upDisplayName) {
-      await this.messageService.getMessagesByOwner(this.auth.currentUser!.displayName!).then(snapshot => {
+      await this.messageService.getMessagesByOwner(this.auth.currentUser!.uid).then(snapshot => {
         snapshot.docs.forEach(async (data) => {
           const messageDocRef = doc(this.firestore, this.messageService.collectionName, data.id);
           await updateDoc(messageDocRef, { owner: newDisplayName });

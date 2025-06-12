@@ -44,33 +44,22 @@ export class ProfileComponent {
     this.email.setValue(this.loggedInUser.email);
   }
 
-  openDialog(): void {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '250px',
-      data: { message: 'Are you sure you want to delete your profile?' }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === true) {
-        this.deleteProfile();
-      }
-    });
-  }
-
-  deleteProfile() {
+  async deleteProfile() {
     this.deleteError = null;
-    if (this.loggedInUser) {
-      deleteUser(this.loggedInUser).then(() => {
-        this.authService.logout().then(() => {
-          this.router.navigate(['/login']);
-        });
-      }).catch((error) => {
-        if (error.code === 'auth/requires-recent-login') {
-          this.deleteError = 'Please log out and log in again before deleting your account for security reasons.';
-        } else {
-          this.deleteError = 'Account deletion failed. Please try again or contact support.';
-        }
-      });
+    if (!this.loggedInUser) return;
+
+    try {
+      await deleteUser(this.loggedInUser);
+      // Only if Firebase Auth deletion succeeded, delete from Firestore
+      await this.userService.delete(this.loggedInUser.uid);
+      await this.authService.logout();
+      this.router.navigate(['/login']);
+    } catch (error: any) {
+      if (error.code === 'auth/requires-recent-login') {
+        this.deleteError = 'Please log out and log in again before deleting your account for security reasons.';
+      } else {
+        this.deleteError = 'Account deletion failed. Please try again or contact support.';
+      }
     }
   }
 
