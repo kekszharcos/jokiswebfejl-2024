@@ -198,3 +198,15 @@ mat-toolbar {
   background: var(--bs-primary-light) !important;
   color: var(--bs-primary-pale) !important;
 }
+
+.mat-progress-spinner circle,
+.mat-mdc-progress-spinner circle {
+  stroke: var(--bs-primary) !important;
+}
+
+/* In your styles.css or component CSS */
+.mat-mdc-progress-spinner .mdc-circular-progress__indeterminate-circle-graphic {
+  animation-duration: 0.6s !important;
+  stroke-dasharray: 100, 200 !important; /* More visible arc */
+  stroke-dashoffset: 0 !important;
+}

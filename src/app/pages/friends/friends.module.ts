@@ -16,6 +16,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
 import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
 import { MatCheckbox } from '@angular/material/checkbox';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 
 @NgModule({
@@ -45,7 +46,8 @@ import { MatCheckbox } from '@angular/material/checkbox';
         MatOptionModule,
         MatCheckbox,
         MatListModule,
-        MatDrawerContent
+        MatDrawerContent,
+        MatProgressSpinnerModule,
     ]
 })
 export class FriendsModule { }

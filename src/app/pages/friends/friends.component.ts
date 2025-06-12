@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ElementRef, AfterViewInit, AfterViewChecked } from '@angular/core';
 import { UserService } from "../../shared/services/user.service";
 import { ChatService } from "../../shared/services/chat.service";
 import { Chat } from "../../shared/models/Chat";
@@ -9,6 +9,7 @@ import { Friend } from "../../shared/models/Friend"
 import { FormControl } from '@angular/forms';
 import { MessageService } from '../../shared/services/message.service';
 import { Message } from '../../shared/models/Message';
+import { LoadingService } from '../../shared/services/loading.service';
 
 @Component({
   selector: 'app-friends',
@@ -16,7 +17,7 @@ import { Message } from '../../shared/models/Message';
   styleUrl: './friends.component.css',
   standalone: false
 })
-export class FriendsComponent implements OnInit, OnDestroy {
+export class FriendsComponent implements OnInit, OnDestroy, AfterViewInit, AfterViewChecked {
   loggedInUser: User | null = null;
   friends: Array<Friend> = [];
   ownChats: Array<Chat> = [];
@@ -28,30 +29,92 @@ export class FriendsComponent implements OnInit, OnDestroy {
   selectedFriendChatId: string | null = null;
   unsubscribeChats: () => void = () => {};
   unsubscribeMessages: () => void = () => {};
+  friendsLoaded = false;
+  messagesLoading = false;
+  private shouldHideSpinnerAfterScroll = false;
 
-  constructor(private userService: UserService, private chatService: ChatService, private router: Router, private authService: AuthService, private messageService: MessageService) {
-    authState(this.authService.auth).subscribe(user => {this.loggedInUser = user
-      if (this.loggedInUser){
+  @ViewChild('messagesContainer') messagesContainer!: ElementRef<HTMLDivElement>;
+  private wasScrolledToBottom = true;
+  private lastMessagesLength = 0;
+  private _scrollListenerAttached = false;
+
+  constructor(
+    private userService: UserService,
+    private chatService: ChatService,
+    private router: Router,
+    private authService: AuthService,
+    private messageService: MessageService,
+    public loadingService: LoadingService // public for template access
+  ) {
+    authState(this.authService.auth).subscribe(user => {
+      this.loggedInUser = user;
+      if (this.loggedInUser) {
+        this.friends = [];
+        this.friendsLoaded = false;
+        this.loadingService.setLoading(true);
         this.userService.getFriends(this.loggedInUser.uid).then(doc => {
           let friendUIDArray = doc.data()!['friends'];
-          for (let friendUID of friendUIDArray) {
-            this.userService.getUserById(friendUID).then((doc) => {
+          const friendPromises = friendUIDArray.map((friendUID: string) =>
+            this.userService.getUserById(friendUID).then(doc => {
               let valami = doc.data();
-              if(valami) {
-                this.friends.push({ uid: valami['uid'], username: valami['username']});
+              if (valami) {
+                this.friends.push({ uid: valami['uid'], username: valami['username'] });
               }
             })
-          }
+          );
+          Promise.all(friendPromises).then(() => {
+            this.friendsLoaded = true;
+            this.loadingService.setLoading(false);
+          });
         });
       }
     });
   }
 
   ngOnInit() {
+    // Only start listening to chats after friends are loaded
     if (this.loggedInUser) {
       this.unsubscribeChats = this.userService.listenToPrivateChats(this.loggedInUser.uid, (chats) => {
         this.ownChats = chats;
       });
+    }
+  }
+
+  ngAfterViewInit() {
+    if (this.messagesContainer) {
+      this.messagesContainer.nativeElement.addEventListener('scroll', () => {
+        const el = this.messagesContainer.nativeElement;
+        this.wasScrolledToBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 5;
+      });
+    }
+  }
+
+  ngAfterViewChecked() {
+    // Attach scroll listener only if messagesContainer exists and not already attached
+    if (this.messagesContainer && !this._scrollListenerAttached) {
+      this.messagesContainer.nativeElement.addEventListener('scroll', () => {
+        const el = this.messagesContainer.nativeElement;
+        this.wasScrolledToBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 5;
+      });
+      this._scrollListenerAttached = true;
+    }
+
+    // Only scroll if new messages arrived
+    if (
+      this.chatMessages &&
+      this.messagesContainer &&
+      this.chatMessages.length !== this.lastMessagesLength
+    ) {
+      this.scrollToBottomIfNeeded();
+      this.lastMessagesLength = this.chatMessages.length;
+    }
+
+    // Hide spinner only after scroll and DOM update
+    if (this.shouldHideSpinnerAfterScroll && this.messagesContainer) {
+      setTimeout(() => {
+        this.messagesLoading = false;
+        this.shouldHideSpinnerAfterScroll = false;
+      }, 0);
     }
   }
 
@@ -61,7 +124,7 @@ export class FriendsComponent implements OnInit, OnDestroy {
   }
 
   async openChat(friendId: string) {
-    if (!this.loggedInUser) return;
+    if (!this.loggedInUser || !this.friendsLoaded) return;
 
     // Try to find an existing chat between the two users
     let existingChat: Chat | null = null;
@@ -81,7 +144,6 @@ export class FriendsComponent implements OnInit, OnDestroy {
       // Chat exists, set selectedFriend and chatId
       this.selectedFriend = this.friends.find(f => f.uid === friendId) || null;
       this.selectedFriendChatId = existingChat.id;
-      this.loadMessages(existingChat.id);
     } else {
       // Chat does not exist, create it and use the generated ID
       const chatData = {
@@ -93,28 +155,37 @@ export class FriendsComponent implements OnInit, OnDestroy {
       const chatDocRef = await this.chatService.create(chatData);
       this.selectedFriend = this.friends.find(f => f.uid === friendId) || null;
       this.selectedFriendChatId = chatDocRef.id;
-      this.loadMessages(chatDocRef.id);
     }
 
-    // When opening a chat:
+    // Show spinner while loading messages
+    this.messagesLoading = true;
+    this.loadMessages(this.selectedFriendChatId);
+
+    // Set up real-time listener
     if (this.unsubscribeMessages) this.unsubscribeMessages();
     this.unsubscribeMessages = this.messageService.listenToMessages(this.selectedFriendChatId, (messages) => {
       this.chatMessages = messages;
+      this.shouldHideSpinnerAfterScroll = true; // Wait for scroll before hiding spinner
+      // Do NOT set messagesLoading = false here!
     });
   }
 
   async selectFriend(friend: Friend) {
+    if (!this.friendsLoaded) return;
     this.selectedFriend = friend;
     await this.openChat(friend.uid);
     // Do NOT call this.loadMessages here
   }
 
   loadMessages(chatId: string) {
+    this.messagesLoading = true;
     this.messageService.getMessagesByChatId(chatId).then(messagesSnapshot => {
       this.chatMessages = messagesSnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       })) as Message[];
+      // REMOVE this line:
+      // this.messagesLoading = false;
     });
   }
 
@@ -135,9 +206,6 @@ export class FriendsComponent implements OnInit, OnDestroy {
 
     // Use your messageService to add the message to the chat (should use addDoc)
     await this.messageService.create(message);
-
-    // Reload messages
-    this.loadMessages(this.selectedFriendChatId);
   }
 
   deleteMessageFromChat(messageId: string) {
@@ -154,5 +222,24 @@ export class FriendsComponent implements OnInit, OnDestroy {
 
   trackByMessage(index: number, message: Message) {
     return message.id;
+  }
+
+  // Call this after chatMessages update (e.g. in your message listener)
+  scrollToBottomIfNeeded() {
+    if (this.wasScrolledToBottom && this.messagesContainer) {
+      setTimeout(() => {
+        const el = this.messagesContainer.nativeElement;
+        el.scrollTop = el.scrollHeight;
+      }, 0);
+    }
+  }
+
+  // Example: in your message listener
+  setupMessageListener(chatId: string) {
+    if (this.unsubscribeMessages) this.unsubscribeMessages();
+    this.unsubscribeMessages = this.messageService.listenToMessages(chatId, (messages) => {
+      this.chatMessages = messages;
+      this.scrollToBottomIfNeeded();
+    });
   }
 }
