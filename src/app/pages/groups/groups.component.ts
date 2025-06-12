@@ -1,6 +1,6 @@
 import { Component, DoCheck, IterableDiffer, IterableDiffers, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from "@angular/forms";
-import { MessageService } from "../../shared/services/message.service";
+import { GroupService } from "../../shared/services/group.service";
 import { Message } from "../../shared/models/Message";
 import { ChatService } from "../../shared/services/chat.service";
 import { Chat } from "../../shared/models/Chat";
@@ -11,12 +11,12 @@ import { AuthService } from "../../shared/services/auth.service";
 import { User, authState } from '@angular/fire/auth';
 
 @Component({
-  selector: 'app-messages',
-  templateUrl: './messages.component.html',
-  styleUrl: './messages.component.css',
+  selector: 'app-groups',
+  templateUrl: './groups.component.html',
+  styleUrl: './groups.component.css',
   standalone: false
 })
-export class MessagesComponent implements OnInit, DoCheck {
+export class GroupsComponent implements OnInit, DoCheck {
   @ViewChild('drawer') drawer: MatDrawer | undefined;
   @ViewChild('openButton') openButton: any;
   @ViewChild('modBox') modBox: any;
@@ -49,7 +49,7 @@ export class MessagesComponent implements OnInit, DoCheck {
 
   constructor(
     private differs: IterableDiffers,
-    private messageService: MessageService,
+    private groupService: GroupService,
     private chatService: ChatService,
     private userService: UserService,
     private location: Location,
@@ -60,53 +60,21 @@ export class MessagesComponent implements OnInit, DoCheck {
   }
 
   async ngOnInit(): Promise<void> {
-    await this.loadChats();
+    await this.loadPosts();
   }
 
-  async loadChats() {
+  async loadPosts() {
     if(!this.loggedInUser) return;
-    this.ownChats = await this.userService.getPrivateChats();
-    this.friendChats = [];
-    for (let chat of this.ownChats) {
-      const users = [chat.uid1, chat.uid2];
-      const myUser = users.find(u => u === this.loggedInUser!.uid);
-      const others = users.filter(u => u !== this.loggedInUser!.uid);
-      //Use it for making highlight your own text or idk
-    }
-    // Restore chat state from memory if needed
-    if (this.currentChatSaved.chatId) {
-      this.openChatWindow(this.currentChatSaved.chatId, this.currentChatSaved.name, '');
-      this.chosenAction.setValue(this.currentChatSaved.what);
-      this.addToGroupOpen(this.currentChatSaved.chatId);
-    }
+    
   }
 
   onSend(chatId: string) {
     if (!this.loggedInUser) return;
-    const text = this.messageToSend.value;
-    if (!text || text.trim() === "") return;
-
-    // Find the chat
-    const chat = this.ownChats.find(c => c.id === chatId);
-    if (!chat) return;
-
-    // Check if the user is a member of the chat
-    /*const isMember = chat.users.some(u => u.id === this.loggedInUser!.uid);
-    if (!isMember) return; // Not a member, do not send*/
-
-    const message: Message = {
-      id: '',
-      chatId: chatId,
-      owner: this.loggedInUser.displayName || this.loggedInUser.uid,
-      ownerId: this.loggedInUser.uid,
-      text: text,
-      time: new Date().toISOString()
-    };
-    this.messageToSend.reset();
-    this.messageService.create(message);
+    
   }
 
-  openChatWindow(chatId: string, chatName: string, id: string) {
+  // Do I want groupchat? There are posts you know...
+  /*openChatWindow(chatId: string, chatName: string, id: string) {
     if(!this.loggedInUser) return;
     this.chatMessages = [];
     this.usersOfChat = [];
@@ -139,10 +107,10 @@ export class MessagesComponent implements OnInit, DoCheck {
         const user = chat.users.find(u => u.id === msg.owner);
         return { ...msg, owner: user ? user.name : msg.owner };
       });
-    });*/
+    });
 
     this.currentChatName = chatName;
-  }
+  }*/
 
   addToGroupOpen(chatId: string) {
     if(!this.loggedInUser) return;
@@ -231,17 +199,8 @@ export class MessagesComponent implements OnInit, DoCheck {
   }
 
   //group chat
-  removeUserFromChat(currentChatId: string) {
-    if (this.chosActionAndExists(currentChatId)) {
-      const chat = this.ownChats.find(c => c.id === currentChatId);
-      if (!chat) return;
-      //chat.users = chat.users.filter(u => u.id !== this.chosenToAction.value);
-      this.chatService.update(chat).then(() => {
-        this.chosenToAction.reset();
-        this.loadChats();
-      });
-      this.addToChatHider = false;
-    }
+  removeUserFromGroup(currentChatId: string) {
+    
   }
 
   //group chat

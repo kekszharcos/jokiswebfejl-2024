@@ -10,14 +10,14 @@ const routes: Routes = [
     canActivate: [authGuard]
   },
   {
-    path: 'messages',
-    loadChildren: () => import('./pages/messages/messages.module').then(m => m.MessagesModule),
+    path: 'groups',
+    loadChildren: () => import('./pages/groups/groups.module').then(m => m.GroupsModule),
     canActivate: [authGuard]
   },
   {
     path: 'profile',
     loadChildren: () => import('./pages/profile/profile.module').then(m => m.ProfileModule),
-    canActivate: []
+    canActivate: [authGuard]
   },
   {
     path: 'main',
@@ -27,7 +27,7 @@ const routes: Routes = [
   {
     path: 'people',
     loadChildren: () => import('./pages/people/people.module').then(m => m.PeopleModule),
-    canActivate: []
+    canActivate: [authGuard]
   },
   {path: 'signup', loadChildren: () => import('./pages/signup/signup.module').then(m => m.SignupModule)},
   {path: '', redirectTo: '/signup', pathMatch: 'full'},

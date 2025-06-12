@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MessagesRoutingModule } from './messages-routing.module';
-import { MessagesComponent } from './messages.component';
+import { GroupsRoutingModule } from './groups-routing.module';
+import { GroupsComponent } from './groups.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -14,11 +14,11 @@ import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/materi
 import { MatCheckbox } from '@angular/material/checkbox';
 
 @NgModule({
-  declarations: [ MessagesComponent ],
+  declarations: [ GroupsComponent ],
   exports: [],
   imports: [
     CommonModule,
-    MessagesRoutingModule,
+    GroupsRoutingModule,
     MatInputModule,
     MatFormFieldModule,
     ReactiveFormsModule,
@@ -33,4 +33,4 @@ import { MatCheckbox } from '@angular/material/checkbox';
     MatDrawerContent
   ]
 })
-export class MessagesModule { }
+export class GroupsModule { }
