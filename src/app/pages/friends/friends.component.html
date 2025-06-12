@@ -12,7 +12,9 @@
         <div #messagesContainer class="flex-grow-1 overflow-auto px-3 py-3">
           <ng-container *ngIf="messagesLoading; else messagesLoadedBlock">
             <div class="d-flex justify-content-center align-items-center h-100">
-              <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+              <div class="typing-indicator">
+                <span></span><span></span><span></span>
+              </div>
             </div>
           </ng-container>
           <ng-template #messagesLoadedBlock>

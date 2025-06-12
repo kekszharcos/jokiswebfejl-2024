@@ -114,7 +114,9 @@ export class FriendsComponent implements OnInit, OnDestroy, AfterViewInit, After
       setTimeout(() => {
         this.messagesLoading = false;
         this.shouldHideSpinnerAfterScroll = false;
-      }, 0);
+        this.scrollToBottomIfNeeded();
+        
+      }, 500);
     }
   }
 
@@ -229,7 +231,7 @@ export class FriendsComponent implements OnInit, OnDestroy, AfterViewInit, After
     if (this.wasScrolledToBottom && this.messagesContainer) {
       setTimeout(() => {
         const el = this.messagesContainer.nativeElement;
-        el.scrollTop = el.scrollHeight;
+        el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
       }, 0);
     }
   }

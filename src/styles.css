@@ -210,3 +210,29 @@ mat-toolbar {
   stroke-dasharray: 100, 200 !important; /* More visible arc */
   stroke-dashoffset: 0 !important;
 }
+
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  gap: 4px;
+}
+.typing-indicator span {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  background: var(--bs-primary-light);
+  border-radius: 50%;
+  opacity: 0.7;
+  animation: typing-bounce 1s infinite both;
+}
+.typing-indicator span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.typing-indicator span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+@keyframes typing-bounce {
+  0%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-8px); }
+}
