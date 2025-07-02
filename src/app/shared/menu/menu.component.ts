@@ -1,6 +1,7 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output, OnInit} from '@angular/core';
 import {AuthService} from "../services/auth.service";
 import { User } from '@angular/fire/auth';
+import { authState } from '@angular/fire/auth';
 
 @Component({
     selector: 'app-menu',
@@ -8,25 +9,37 @@ import { User } from '@angular/fire/auth';
     styleUrl: './menu.component.css',
     standalone: false
 })
-export class MenuComponent {
+export class MenuComponent implements OnInit {
   @Output() selectedPage: EventEmitter<string> = new EventEmitter();
   @Input() currentPage!: string;
-  @Output() onCloseSidenav = new EventEmitter<unknown>();
-  loggedInUser: User | null;
-  @Output() onLogout = new EventEmitter<unknown>();
-  constructor(private authService : AuthService) {
-    this.loggedInUser = authService.auth.currentUser;
+  @Output() onCloseSidenav = new EventEmitter<boolean>(); // More specific type
+  @Output() onLogout = new EventEmitter<void>(); // More specific type
+  loggedInUser: User | null = null;
+
+  constructor(private authService: AuthService) {}
+
+  ngOnInit() {
+    // Use authState for reactive updates
+    authState(this.authService.auth).subscribe(user => {
+      this.loggedInUser = user;
+    });
   }
 
   menuSwitch() {
-    this.selectedPage.emit(this.currentPage)
+    this.selectedPage.emit(this.currentPage);
   }
 
-  logout() {
-    this.authService.logout()
+  async logout() {
+    try {
+      await this.authService.logout();
+      this.onLogout.emit(); // Emit after successful logout
+      this.close(); // Close menu after logout
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
   }
 
-  close(){
+  close() {
     this.onCloseSidenav.emit(true);
   }
 }

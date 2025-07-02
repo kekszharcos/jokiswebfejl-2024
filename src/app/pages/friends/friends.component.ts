@@ -130,7 +130,7 @@ export class FriendsComponent implements OnInit, OnDestroy, AfterViewInit, After
 
     // Try to find an existing chat between the two users
     let existingChat: Chat | null = null;
-    const chats = await this.userService.getPrivateChats();
+    const chats = await this.userService.getPrivateChats(this.loggedInUser.uid);
     for (const chat of chats) {
       // Assuming your Chat model has uid1 and uid2
       if (

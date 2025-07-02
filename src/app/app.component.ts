@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild, ElementRef, AfterViewInit, OnDestroy} from '@angular/core';
 import {NavigationEnd, Router} from "@angular/router";
 import {filter} from "rxjs";
 import {AuthService} from "./shared/services/auth.service";
@@ -11,13 +11,15 @@ import {User, authState} from '@angular/fire/auth';
     styleUrl: './app.component.css',
     standalone: false
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   title = 'jokiswebfelj-2024';
   page = '';
   routes: Array<string> = [];
   showNavbar = true;
   private lastScrollTop = 0;
   loggedInUser: User | null = null;
+  
+  @ViewChild('scrollContainer', { static: false }) scrollContainer!: ElementRef;
 
   constructor(private router: Router, private authService: AuthService) {
     authState(this.authService.auth).subscribe(user => this.loggedInUser = user);
@@ -37,8 +39,17 @@ export class AppComponent implements OnInit {
         this.page = currentPage;
       }
     })
+  }
+  ngAfterViewInit(): void {
+    // Listen to scroll on the mat-sidenav-content instead of window
+    this.scrollContainer.nativeElement.addEventListener('scroll', this.onScrollContainerScroll, true);
+  }
 
-    window.addEventListener('scroll', this.onWindowScroll, true);
+  ngOnDestroy(): void {
+    // Clean up the event listener
+    if (this.scrollContainer) {
+      this.scrollContainer.nativeElement.removeEventListener('scroll', this.onScrollContainerScroll, true);
+    }
   }
 
   logout($event: unknown) {
@@ -56,20 +67,23 @@ export class AppComponent implements OnInit {
   }
 
   onClose($event: unknown, sidenav: MatSidenav) {
-  if ($event === true) {
-    sidenav.close();
-  }
-}
-
-  onWindowScroll = (): void => {
-    const st = window.pageYOffset || document.documentElement.scrollTop;
-    if (st > this.lastScrollTop) {
-      this.showNavbar = false; // Scrolling down
-    } else {
-      this.showNavbar = true; // Scrolling up
+    if ($event === true) {
+      sidenav.close();
     }
-    this.lastScrollTop = st <= 0 ? 0 : st;
+  }
+  onScrollContainerScroll = (): void => {
+    const st = this.scrollContainer.nativeElement.scrollTop;
+    const threshold = 10; // Only trigger after scrolling 10px
+    
+    if (Math.abs(st - this.lastScrollTop) > threshold) {
+      if (st > this.lastScrollTop && st > 64) {
+        this.showNavbar = false; // Scrolling down and past navbar height
+      } else {
+        this.showNavbar = true; // Scrolling up
+      }
+      this.lastScrollTop = st;
+    }
   };
 
-    protected readonly location = location;
+  protected readonly location = location;
 }

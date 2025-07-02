@@ -1,0 +1,21 @@
+/* Navbar hide/show animation */
+.navbar-hidden {
+  transform: translateY(-100%) !important;
+  transition: transform 0.3s ease-in-out !important;
+}
+
+/* Ensure smooth transitions for the navbar */
+mat-toolbar {
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Fix content spacing to account for fixed navbar */
+.content-container {
+  min-height: calc(100vh - 64px);
+  padding-top: calc(64px + 1rem); /* 64px navbar + 1rem spacing */
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 1rem;
+  overflow-y: auto;
+  height: 100vh;
+}

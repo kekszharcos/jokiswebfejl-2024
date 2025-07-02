@@ -1,13 +1,4 @@
 <ul class="list-group list-group-flush shadow-sm rounded-4 border border-primary-light bg-primary animate__animated animate__fadeInLeft">
-  @if (!loggedInUser) {
-    <li class="list-group-item bg-primary border-0">
-      <a [routerLink]="'signup'" (click)="close()"
-         class="d-flex align-items-center gap-2 text-decoration-none text-white fw-semibold hover-border-primary-pale ">
-        <mat-icon class="text-primary-pale">app_registration</mat-icon>
-        <span class="ps-1">Login</span>
-      </a>
-    </li>
-  }
   @if (loggedInUser) {
     <li class="list-group-item bg-primary border-0">
       <a [routerLink]="'signup'" (click)="logout(); close()"
@@ -49,6 +40,15 @@
          class="d-flex align-items-center gap-2 text-decoration-none text-white fw-semibold hover-border-primary-pale">
         <mat-icon class="text-primary-pale">face</mat-icon>
         <span class="ps-1">Profile</span>
+      </a>
+    </li>
+  }
+  @else {
+    <li class="list-group-item bg-primary border-0">
+      <a [routerLink]="'signup'" (click)="close()"
+         class="d-flex align-items-center gap-2 text-decoration-none text-white fw-semibold hover-border-primary-pale ">
+        <mat-icon class="text-primary-pale">app_registration</mat-icon>
+        <span class="ps-1">Login</span>
       </a>
     </li>
   }

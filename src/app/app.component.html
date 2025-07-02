@@ -12,7 +12,7 @@
       </app-menu>
     }
   </mat-sidenav>
-  <mat-sidenav-content>
+  <mat-sidenav-content #scrollContainer>
     <!-- FIXED NAVBAR OVERLAY -->
     <mat-toolbar [ngClass]="{'navbar-hidden': !showNavbar}"
       class="bg-primary d-flex align-items-center justify-content-between shadow-sm px-3 animate__animated"
@@ -58,7 +58,7 @@
       </nav>
     </mat-toolbar>
     <!-- Add top padding so content is not hidden under the fixed navbar -->
-    <div class="p-3 bg-primary-pale animate__animated animate__fadeIn" style="min-height: calc(100vh - 64px); padding-top: 64px;">
+    <div class="content-container bg-primary-pale animate__animated animate__fadeIn">
       <router-outlet></router-outlet>
     </div>
   </mat-sidenav-content>

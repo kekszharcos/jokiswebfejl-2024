@@ -34,14 +34,35 @@ export class ProfileComponent {
   deleteError: string | null = null;
   saveError: string | null = null;
 
-  successMessage: string | null = null;
+  successMessage: string | null = null;  constructor(private userService: UserService, private router: Router, public authService: AuthService, private dialog: MatDialog) {
+    authState(this.authService.auth).subscribe(user => {
+      this.loggedInUser = user;
+      if (user) {
+        this.username.setValue(user.displayName);
+        this.email.setValue(user.email);
+        
+        // Update form validators based on login method
+        this.updateFormValidators();
+      }
+    });
+  }
 
-  constructor(private userService: UserService, private router: Router, private authService: AuthService, private dialog: MatDialog) {
-    authState(this.authService.auth).subscribe(user => this.loggedInUser = user);
-    if (!this.loggedInUser) return;
+  private updateFormValidators() {
+    if (this.authService.isGoogleUser() && !this.authService.hasMultipleProviders()) {
+      // Google-only user: remove password requirements
+      this.password.clearValidators();
+      this.re_password.clearValidators();
+      this.password.setValue('');
+      this.re_password.setValue('');
+    } else {
+      // Email/password or linked account: keep password requirements
+      this.password.setValidators([Validators.minLength(6), Validators.required]);
+      this.re_password.setValidators([Validators.minLength(6), Validators.required]);
+    }
     
-    this.username.setValue(this.loggedInUser.displayName);
-    this.email.setValue(this.loggedInUser.email);
+    this.password.updateValueAndValidity();
+    this.re_password.updateValueAndValidity();
+    this.profileForm.updateValueAndValidity();
   }
 
   async deleteProfile() {
@@ -62,7 +83,6 @@ export class ProfileComponent {
       }
     }
   }
-
   async updateProfile() {
     this.saveError = null;
     if (this.profileForm.invalid) {
@@ -78,15 +98,16 @@ export class ProfileComponent {
     let upPass = false;
     let upUsername = false;
 
-    // 1. Update Auth profile first (if needed)
-    
     if (this.loggedInUser) {
       if (newEmail && newEmail !== this.loggedInUser.email) {
         upEmail = true;
       }
-      if (newPassword) {
+      
+      // Only update password for email/password users or linked accounts
+      if (newPassword && (this.authService.isEmailPasswordUser() || this.authService.hasMultipleProviders())) {
         upPass = true;
       }
+      
       if(newUsername && newUsername !== this.loggedInUser.displayName) {
         upUsername = true;
       }
@@ -95,35 +116,31 @@ export class ProfileComponent {
       return;
     }
 
-    /*
-    const promises: Promise<any>[] = [];
-    Promise.all(promises)
-      .then(() => {
-        // 2. Only update Firestore/DB if Auth update succeeded
-        this.userService.update(newEmail, newPassword, false).subscribe({
-          next: () => {
-            // Optionally show success
-          },
-          error: () => {
-            this.saveError = 'Failed to save changes in the database. Please try again or contact support.';
-          }
-        });
-      })
-      .catch((err) => {
-        if (err.code === 'auth/requires-recent-login') {
-          this.saveError = 'Please log out and log in again before saving changes for security reasons.';
-        } else {
-          this.saveError = 'Failed to save changes. Please try again or contact support.';
-        }
-      });*/
-
-      this.userService.updateData(newEmail, newPassword, newUsername, upEmail, upPass, upUsername).then(() => {
-      // Optionally show success
-       this.successMessage = 'Profile updated successfully.';
-      }).catch((smth) => {
-        this.saveError = smth;
-      });
-     
+    try {
+      await this.userService.updateData(newEmail, newPassword, newUsername, upEmail, upPass, upUsername);
+      this.successMessage = 'Profile updated successfully.';
+      
+      // Clear password fields after successful update
+      if (upPass) {
+        this.password.setValue('');
+        this.re_password.setValue('');
+      }
+    } catch (error: any) {
+      this.saveError = error.message || 'Failed to update profile. Please try again.';
+    }
+  }
+  async linkGoogleAccount() {
+    try {
+      await this.authService.linkGoogleAccount();
+      this.successMessage = 'Google account linked successfully! You can now sign in with either method.';
+      this.saveError = null;
+      
+      // Update form validators since user now has multiple providers
+      this.updateFormValidators();
+    } catch (error: any) {
+      this.saveError = error.message || 'Failed to link Google account. Please try again.';
+      this.successMessage = null;
+    }
   }
 
   confirmDeleteProfile() {
@@ -143,20 +160,4 @@ export const passwordMatchValidator: ValidatorFn = (group: AbstractControl): Val
   const password = group.get('password')?.value;
   const re_password = group.get('re_password')?.value;
   return password === re_password ? null : { passwordsMismatch: true };
-};
-
-export const authGuard: CanActivateFn = (route, state) => {
-  const auth = inject(Auth);
-  const router = inject(Router);
-
-  return new Promise<boolean>((resolve) => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        resolve(true);
-      } else {
-        router.navigateByUrl('/signup');
-        resolve(false);
-      }
-    });
-  });
 };

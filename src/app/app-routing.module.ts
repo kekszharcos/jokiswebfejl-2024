@@ -1,6 +1,7 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {authGuard} from "./shared/services/auth.guard";
+import {guestGuard} from "./shared/services/guest.guard";
 
 const routes: Routes = [
   {path: 'not-found', loadChildren: () => import('./pages/not-found/not-found.module').then(m => m.NotFoundModule)},
@@ -29,7 +30,11 @@ const routes: Routes = [
     loadChildren: () => import('./pages/people/people.module').then(m => m.PeopleModule),
     canActivate: [authGuard]
   },
-  {path: 'signup', loadChildren: () => import('./pages/signup/signup.module').then(m => m.SignupModule)},
+  {
+    path: 'signup',
+    loadChildren: () => import('./pages/signup/signup.module').then(m => m.SignupModule),
+    canActivate: [guestGuard]
+  },
   {path: '', redirectTo: '/signup', pathMatch: 'full'},
   {path: '**', redirectTo: '/not-found'}
 ];

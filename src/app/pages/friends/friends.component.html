@@ -1,8 +1,8 @@
-<div class="container-fluid min-vh-100 bg-primary-pale d-flex align-items-center justify-content-center">
+<div class="container-fluid bg-primary-pale d-flex align-items-center justify-content-center">
   <div class="row w-100 flex-md-nowrap" style="max-width: 1200px; height: 80vh;">
     <!-- Chat Window (Left) -->
     <div class="col-12 col-md-8 d-flex flex-column bg-white rounded-4 shadow-lg p-0 animate__animated animate__fadeIn h-100 me-4">
-      <ng-container *ngIf="selectedFriend; else noChat">
+      @if (selectedFriend) {
         <!-- Chat Header -->
         <div class="d-flex align-items-center px-4 py-3 bg-primary-light rounded-top-4 border-bottom border-primary">
           <mat-icon class="me-2 text-white">person</mat-icon>
@@ -10,15 +10,14 @@
         </div>
         <!-- Messages List -->
         <div #messagesContainer class="flex-grow-1 overflow-auto px-3 py-3">
-          <ng-container *ngIf="messagesLoading; else messagesLoadedBlock">
+          @if (messagesLoading) {
             <div class="d-flex justify-content-center align-items-center h-100">
               <div class="typing-indicator">
                 <span></span><span></span><span></span>
               </div>
             </div>
-          </ng-container>
-          <ng-template #messagesLoadedBlock>
-            <ng-container *ngFor="let message of chatMessages; let i = index; trackBy: trackByMessage">
+          } @else {
+            @for (message of chatMessages; track message.id; let i = $index) {
               <div class="d-flex mb-3"
                    [ngClass]="{'justify-content-end': message.owner === loggedInUser?.displayName}">
                 <div class="p-3 rounded-4 shadow-sm"
@@ -30,15 +29,12 @@
                      }">
                   <div class="fw-semibold small mb-1">{{ message.owner }}</div>
                   <div class="break-word">{{ message.text }}</div>
-                  <ng-container *ngIf="loggedInOwnerInGroup || loggedInModInGroup">
-                    <button mat-icon-button color="warn" class="ms-2" (click)="deleteMessageFromChat(message.id)">
-                      <mat-icon>delete_forever</mat-icon>
-                    </button>
-                  </ng-container>
                 </div>
               </div>
-            </ng-container>
-          </ng-template>
+            }
+          }
+          
+          
         </div>
         <!-- Message Input -->
         <div class="border-top rounded-bottom-4 border-primary bg-primary-lighter px-3 py-3 d-flex align-items-center gap-2">
@@ -49,13 +45,12 @@
             <mat-icon>send</mat-icon>
           </button>
         </div>
-      </ng-container>
-      <ng-template #noChat>
+      } @else {
         <div class="h-100 d-flex flex-column align-items-center justify-content-center">
           <mat-icon class="mb-3" style="font-size: 2rem; height: 30px; width: 30px; color: var(--bs-primary-light);">chat</mat-icon>
           <h2 class="text-primary">Select a friend to start chatting!</h2>
         </div>
-      </ng-template>
+      }
     </div>
 
     <!-- Friends List (Right) -->
@@ -65,39 +60,38 @@
         <span class="fw-bold fs-5">Friends</span>
       </div>
       <div class="flex-grow-1 overflow-auto px-2 py-2">
-        <ng-container *ngIf="loadingService.loading$ | async; else friendsLoadedBlock">
+        @if (loadingService.loading$ | async) {
           <div class="d-flex justify-content-center align-items-center h-100">
              <!-- Waiting till friends fully loaded -->
           </div>
-        </ng-container>
-        <ng-template #friendsLoadedBlock>
-          <ng-container *ngIf="friends.length === 0">
+        } @else {
+          @if (friends.length === 0) {
             <div class="text-center mt-5">
               <h4 class="fw-bold text-primary">You don't have friends yet</h4>
             </div>
-          </ng-container>
-          <ng-container *ngFor="let friend of friends; trackBy: trackByFriend">
-            <mat-card
-              class="mb-2 cursor-pointer shadow-sm animate__animated animate__fadeIn"
-              [ngClass]="{
-                'bg-primary-light text-white': selectedFriend?.uid === friend.uid,
-                'bg-white text-primary-light': selectedFriend?.uid !== friend.uid
-              }"
-            >
-              <div class="d-flex align-items-center justify-content-between">
-                <span class="px-3 fw-semibold fs-5">{{ friend.username }}</span>
-                <button
-                  mat-raised-button
-                  color="primary"
-                  class="btn bg-primary-light text-white fw-semibold shadow-sm"
-                  (click)="selectFriend(friend)">
-                  <mat-icon class="icon">chat</mat-icon>
-                  Open
-                </button>
-              </div>
-            </mat-card>
-          </ng-container>
-        </ng-template>
+          } @else {
+            @for (friend of friends; track friend.uid) {
+              <mat-card
+                class="mb-2 cursor-pointer shadow-sm animate__animated animate__fadeIn"
+                [ngClass]="{
+                  'bg-primary-light text-white': selectedFriend?.uid === friend.uid,
+                  'bg-white text-primary-light': selectedFriend?.uid !== friend.uid
+                }">
+                <div class="d-flex align-items-center justify-content-between">
+                  <span class="px-3 fw-semibold fs-5">{{ friend.username }}</span>
+                  <button
+                    mat-raised-button
+                    color="primary"
+                    class="btn bg-primary-light text-white fw-semibold shadow-sm"
+                    (click)="selectFriend(friend)">
+                    <mat-icon class="icon">chat</mat-icon>
+                    Open
+                  </button>
+                </div>
+              </mat-card>
+            }
+          }
+        }
       </div>
     </div>
   </div>
