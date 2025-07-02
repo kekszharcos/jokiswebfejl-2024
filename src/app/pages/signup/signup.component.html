@@ -4,26 +4,33 @@
       <div class="card-body p-4">
         <!-- Toggle Buttons -->
         <div class="d-flex justify-content-center mb-4">
-          <button mat-raised-button
-                  class="btn btn-outline-pale border-primary fw-semibold me-2 text-white fw-semibold px-4 shadow-sm"
-                  [class.bg-primary]="showLogin"
-                  [class.text-white]="showLogin"
-                  (click)="switchToLogin()">
-            Login
-          </button>
-          <button mat-raised-button
-                  class="btn btn-outline-pale border-primary fw-semibold me-2 text-white fw-semibold px-4 shadow-sm"
-                  [class.bg-primary]="!showLogin"
-                  [class.text-white]="!showLogin"
-                  (click)="switchToSignup()">
-            Signup
-          </button>
+          <div class="btn-group shadow-sm" role="group">
+            <button mat-raised-button
+                    class="btn fw-semibold px-4 transition-all"
+                    [class.bg-primary-pale]="showLogin"
+                    [class.text-primary]="showLogin"
+                    [class.bg-primary-lighter]="!showLogin"
+                    [class.text-white]="!showLogin"
+                    (click)="switchToLogin()">
+              Login
+            </button>
+            <button mat-raised-button
+                    class="btn fw-semibold px-4 transition-all"
+                    [class.bg-primary-pale]="!showLogin"
+                    [class.text-primary]="!showLogin"
+                    [class.bg-primary-lighter]="showLogin"
+                    [class.text-white]="showLogin"
+                    (click)="switchToSignup()">
+              Sign Up
+            </button>
+          </div>
         </div>
 
-        <div class="form-anim-wrapper" [ngClass]="showLogin ? 'login-height' : 'signup-height'">          <!-- Login Form -->
+        <div class="form-anim-wrapper" [ngClass]="currentHeightClass">
+          <!-- Login Form -->
           @if (showLogin) {
             <form autocomplete="off" [ngClass]="['animate__animated', formAnimation]" class="d-flex flex-column h-100">
-              <div class="flex-grow-1">
+              <div class="form-content">
                 <h2 class="text-center mb-4 text-primary-pale fw-bold">Login</h2>
                 <mat-form-field appearance="fill" class="w-100 mb-3">
                   <mat-label>Email</mat-label>
@@ -39,24 +46,37 @@
                   </div>
                 }
               </div>
-              <div class="d-flex justify-content-center gap-2 mt-auto">
+              <div class="button-container">
                 <button mat-raised-button type="button"
-                  class="btn bg-primary-light text-white fw-semibold px-4 shadow-sm"
+                  class="btn bg-primary-light text-white fw-semibold px-4 shadow-sm w-100 hover-lift"
                   (click)="loggingIn();cluck()">
                   Login
+                </button>
+                <button mat-raised-button (click)="loginWithGoogle()" 
+                  class="btn bg-primary-lighter text-primary fw-semibold px-4 shadow-sm w-100 hover-lift"
+                  [disabled]="isGoogleLoginLoading">
+                  @if (isGoogleLoginLoading) {
+                    <ng-container>
+                      <mat-icon class="me-2 align-middle">hourglass_empty</mat-icon>Logging in...
+                    </ng-container>
+                  } @else {
+                    <ng-container>
+                      <mat-icon class="me-2 align-middle">mail_outline</mat-icon>Login with Google
+                    </ng-container>
+                  }
                 </button>
               </div>
             </form>
           }          <!-- Signup Form -->
           @if (!showLogin) {
             <form [formGroup]="signUpFrom" (ngSubmit)="onSubmit()" autocomplete="off" [ngClass]="['animate__animated', formAnimation]" class="d-flex flex-column h-100">
-              <div class="flex-grow-1">
+              <div class="form-content">
                 <h2 class="text-center mb-4 text-primary-pale fw-bold">Signup</h2>
                 <mat-form-field appearance="fill" class="w-100 mb-3">
                   <mat-label>Email</mat-label>
                   <input matInput type="email" formControlName="email" placeholder="Email" class="border-primary-light text-primary-pale">
                 </mat-form-field>
-                <mat-form-field appearance="fill" class="w-100 mb-3">
+                <mat-form-field appearance="fill" class="w-100">
                   <mat-label>Password</mat-label>
                   <input matInput type="password" formControlName="password" placeholder="Password" class="border-primary-light text-primary-pale">
                   @if (signUpFrom.get('password')?.hasError('required')) {
@@ -82,25 +102,35 @@
                     <mat-error>
                       Password must be at least 6 characters.
                     </mat-error>
-                  }                  @if (signUpFrom.get('password')?.value !== signUpFrom.get('password_re')?.value && signUpFrom.get('password_re')?.value) {
+                  }
+                  @if (signUpFrom.get('password')?.value !== signUpFrom.get('password_re')?.value && signUpFrom.get('password_re')?.value) {
                     <mat-error>
                       Passwords do not match.
                     </mat-error>
                   }
                 </mat-form-field>
               </div>
-              <div class="d-flex justify-content-center gap-2 mt-auto">
-                <button mat-raised-button type="submit" class="btn bg-primary-light text-white fw-semibold px-4 shadow-sm">SignUp</button>
+              <div class="button-container">
+                <button mat-raised-button type="submit" 
+                  class="btn bg-primary-light text-white fw-semibold px-4 shadow-sm w-100 hover-lift">
+                  Sign Up
+                </button>
+                <button mat-raised-button (click)="loginWithGoogle()" 
+                  class="btn bg-primary-lighter text-primary fw-semibold px-4 shadow-sm w-100 hover-lift"
+                  [disabled]="isGoogleLoginLoading">
+                  @if (isGoogleLoginLoading) {
+                    <ng-container>
+                      <mat-icon class="me-2 align-middle">hourglass_empty</mat-icon>Signing up...
+                    </ng-container>
+                  } @else {
+                    <ng-container>
+                      <mat-icon class="me-2 align-middle">mail_outline</mat-icon>Sign up with Google
+                    </ng-container>
+                  }
+                </button>
               </div>
             </form>
           }
-        </div>
-
-        <!-- Social login buttons -->
-        <div class="d-flex flex-column gap-2 mb-3">
-          <button mat-raised-button (click)="loginWithGoogle()" class="btn bg-primary-light text-white fw-semibold px-4 shadow-sm">
-            <mat-icon color="primary">mail_outline</mat-icon> Login with Google
-          </button>
         </div>
       </div>
     </div>

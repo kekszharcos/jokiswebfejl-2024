@@ -1,4 +1,18 @@
 <mat-sidenav-container class="min-vh-50 bg-primary-pale" style="color: #fff;">
+  <!-- Global Loading Overlay -->
+  @if ((loadingService.loading$ | async)) {
+    <div class="loading-overlay d-flex justify-content-center align-items-center position-fixed w-100 h-100" 
+         style="top: 0; left: 0; background: rgba(0, 0, 0, 0.8); z-index: 9999;">
+      <div class="text-center text-white">
+        <div class="spinner-border text-light mb-3" role="status" style="width: 4rem; height: 4rem;">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <h4 class="fw-light">Loading...</h4>
+        <p class="text-muted">Setting up your experience</p>
+      </div>
+    </div>
+  }
+  
   <mat-sidenav
     #sidenav
     mode="over"
@@ -12,7 +26,7 @@
       </app-menu>
     }
   </mat-sidenav>
-  <mat-sidenav-content #scrollContainer>
+  <mat-sidenav-content>
     <!-- FIXED NAVBAR OVERLAY -->
     <mat-toolbar [ngClass]="{'navbar-hidden': !showNavbar}"
       class="bg-primary d-flex align-items-center justify-content-between shadow-sm px-3 animate__animated"
@@ -58,7 +72,7 @@
       </nav>
     </mat-toolbar>
     <!-- Add top padding so content is not hidden under the fixed navbar -->
-    <div class="content-container bg-primary-pale animate__animated animate__fadeIn">
+    <div #scrollContainer class="content-container bg-primary-pale animate__animated animate__fadeIn">
       <router-outlet></router-outlet>
     </div>
   </mat-sidenav-content>

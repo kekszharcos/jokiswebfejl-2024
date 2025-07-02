@@ -74,7 +74,7 @@ export class ProfileComponent {
       // Only if Firebase Auth deletion succeeded, delete from Firestore
       await this.userService.delete(this.loggedInUser.uid);
       await this.authService.logout();
-      this.router.navigate(['/login']);
+      this.router.navigate(['/signup']);
     } catch (error: any) {
       if (error.code === 'auth/requires-recent-login') {
         this.deleteError = 'Please log out and log in again before deleting your account for security reasons.';

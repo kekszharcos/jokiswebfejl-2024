@@ -1,18 +1,174 @@
 .form-anim-wrapper {
-  min-height: 380px;
+  min-height: 430px; /* Changed from min-height to height for smooth animation */
   width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: stretch;
-  transition: min-height 0.4s cubic-bezier(.4,0,.2,1);
+  transition: height 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+  overflow: hidden;
+}
+
+/* Height animation classes for form switching */
+.form-anim-wrapper.login-height {
+  height: 400px; /* Increased to accommodate errors */
+}
+
+.form-anim-wrapper.signup-height {
+  height: 520px; /* Increased to accommodate errors and more fields */
+}
+
+/* Custom fade animations for forms */
+.form-fade {
+  transition: opacity 0.3s ease-in-out;
+}
+
+.form-fade.fade-in {
+  opacity: 1;
+}
+
+.form-fade.fade-out {
+  opacity: 0;
 }
 
 form.d-flex {
   min-height: 100%;
 }
 
+/* Form content styling - no flex-grow to prevent excessive stretching */
+.form-content {
+  flex: 0 0 auto;
+  margin-bottom: 8px; /* Reduced from 20px to 8px */
+}
+
+/* Consistent button spacing */
+.button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: auto; /* This will push buttons to bottom but within the fixed height */
+}
+
+/* Button hover effects */
+.hover-lift {
+  transition: all 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.hover-lift:active {
+  transform: translateY(0px);
+}
+
+/* Toggle button group styling */
+.btn-group button {
+  border: none !important;
+  transition: all 0.3s ease;
+}
+
+.btn-group button:first-child {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+.btn-group button:last-child {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+
+/* Enhanced transition effects */
+.transition-all {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Form field focus animations */
+.mat-form-field {
+  transition: all 0.3s ease;
+}
+
+.mat-form-field:focus-within {
+  transform: translateY(-2px);
+}
+
+/* Enhanced button animations */
+.button-container button {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.button-container button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  transition: left 0.6s ease;
+}
+
+.button-container button:hover::before {
+  left: 100%;
+}
+
+/* Improved card entrance animation */
+.card {
+  animation: cardSlideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes cardSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Loading state for buttons */
+.btn:disabled {
+  opacity: 0.7;
+  transform: scale(0.98);
+}
+
+/* Error message styling */
+mat-error {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Card styling - removed animate.css dependencies */
+.card {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (max-width: 600px) {
-  .form-anim-wrapper {
-    min-height: 320px;
+  .form-anim-wrapper.login-height {
+    height: 360px;
+  }
+  
+  .form-anim-wrapper.signup-height {
+    height: 480px;
+  }
+  
+  .button-container {
+    gap: 14px; /* Slightly smaller gap on mobile */
+    padding-top: 16px;
   }
 }

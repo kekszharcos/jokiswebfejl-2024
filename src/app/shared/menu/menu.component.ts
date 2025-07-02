@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, Output, OnInit} from '@angular/core';
 import {AuthService} from "../services/auth.service";
 import { User } from '@angular/fire/auth';
 import { authState } from '@angular/fire/auth';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-menu',
@@ -16,7 +17,7 @@ export class MenuComponent implements OnInit {
   @Output() onLogout = new EventEmitter<void>(); // More specific type
   loggedInUser: User | null = null;
 
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit() {
     // Use authState for reactive updates
@@ -34,6 +35,7 @@ export class MenuComponent implements OnInit {
       await this.authService.logout();
       this.onLogout.emit(); // Emit after successful logout
       this.close(); // Close menu after logout
+      this.router.navigate(['/signup']); // Redirect to signup page after logout
     } catch (error) {
       console.error('Logout failed:', error);
     }

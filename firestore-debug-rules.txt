@@ -1,0 +1,37 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ===== TEMPORARY DEBUG RULES =====
+    // These are more permissive rules to test Google login
+    // Replace with secure rules once login works
+    
+    // ===== USERS COLLECTION =====
+    match /Users/{userId} {
+      // Allow all authenticated users to read/write any user document
+      // This is temporary to debug the Google login issue
+      allow read, write: if request.auth != null;
+    }
+    
+    // ===== MESSAGES COLLECTION =====
+    match /Messages/{messageId} {
+      allow read, write: if request.auth != null;
+    }
+    
+    // ===== CHATS COLLECTION =====
+    match /Chats/{chatId} {
+      allow read, write: if request.auth != null;
+    }
+    
+    // ===== GROUPS COLLECTION =====
+    match /Groups/{groupId} {
+      allow read, write: if request.auth != null;
+    }
+    
+    // ===== FALLBACK RULE =====
+    // Allow everything for authenticated users (TEMPORARY)
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}
