@@ -79,12 +79,6 @@ export class AuthService {
     } catch (error: any) {
       this.isGoogleLoginInProgress = false; // Reset flag on error
       
-      console.error('=== GOOGLE LOGIN ERROR DETAILS ===');
-      console.error('Error code:', error.code);
-      console.error('Error message:', error.message);
-      console.error('Full error object:', error);
-      console.error('================================');
-      
       // Handle specific Google Auth errors
       if (error.code === 'auth/popup-closed-by-user') {
         console.log('User closed the popup - immediate reset');

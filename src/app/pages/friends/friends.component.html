@@ -31,8 +31,12 @@
                   <div class="break-word">{{ message.text }}</div>
                 </div>
               </div>
+            } @empty {
+              <div class="text-center mt-5">
+                  <h4 class="fw-bold text-primary">No messages yet...</h4>
+                </div>
             }
-          }
+          } 
           
           
         </div>
