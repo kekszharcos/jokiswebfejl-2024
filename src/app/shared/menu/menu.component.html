@@ -4,28 +4,28 @@
       <a [routerLink]="'signup'" (click)="logout(); close()"
          class="d-flex align-items-center gap-2 text-decoration-none text-white fw-semibold hover-border-primary-pale">
         <mat-icon class="text-primary-pale">exit_to_app</mat-icon>
-        <span class="ps-1">Logout</span>
+        <span class="ps-1">{{ 'menu.logout' | translate }}</span>
       </a>
     </li>
     <li class="list-group-item bg-primary border-0">
       <a [routerLink]="'main'" (click)="close()"
          class="d-flex align-items-center gap-2 text-decoration-none text-white fw-semibold hover-border-primary-pale">
         <mat-icon class="text-primary-pale">home</mat-icon>
-        <span class="ps-1">Main</span>
+        <span class="ps-1">{{ 'menu.main' | translate }}</span>
       </a>
     </li>
     <li class="list-group-item bg-primary border-0">
       <a [routerLink]="'people'" (click)="close()"
          class="d-flex align-items-center gap-2 text-decoration-none text-white fw-semibold hover-border-primary-pale">
         <mat-icon class="text-primary-pale">people</mat-icon>
-        <span class="ps-1">People</span>
+        <span class="ps-1">{{ 'menu.people' | translate }}</span>
       </a>
     </li>
     <li class="list-group-item bg-primary border-0">
       <a [routerLink]="'friends'" (click)="close()"
          class="d-flex align-items-center gap-2 text-decoration-none text-white fw-semibold hover-border-primary-pale">
         <mat-icon class="text-primary-pale">contacts</mat-icon>
-        <span class="ps-1">Friends</span>
+        <span class="ps-1">{{ 'menu.friends' | translate }}</span>
       </a>
     </li>
      <!--
@@ -33,7 +33,7 @@
       <a [routerLink]="'groups'" (click)="close()"
          class="d-flex align-items-center gap-2 text-decoration-none text-white fw-semibold hover-border-primary-pale">
         <mat-icon class="text-primary-pale">message</mat-icon>
-        <span class="ps-1">Groups</span>
+        <span class="ps-1">{{ 'menu.groups' | translate }}</span>
       </a>
     </li>
     -->
@@ -41,7 +41,7 @@
       <a [routerLink]="'profile'" (click)="close()"
          class="d-flex align-items-center gap-2 text-decoration-none text-white fw-semibold hover-border-primary-pale">
         <mat-icon class="text-primary-pale">face</mat-icon>
-        <span class="ps-1">Profile</span>
+        <span class="ps-1">{{ 'menu.profile' | translate }}</span>
       </a>
     </li>
   }
@@ -50,8 +50,16 @@
       <a [routerLink]="'signup'" (click)="close()"
          class="d-flex align-items-center gap-2 text-decoration-none text-white fw-semibold hover-border-primary-pale ">
         <mat-icon class="text-primary-pale">app_registration</mat-icon>
-        <span class="ps-1">Login</span>
+        <span class="ps-1">{{ 'auth.login' | translate }}</span>
       </a>
     </li>
   }
+  
+  <!-- Language selector - always visible in mobile menu -->
+  <li class="list-group-item bg-primary border-0">
+    <div class="d-flex align-items-center gap-2 text-decoration-none text-white fw-semibold px-2 py-1">
+      <mat-icon class="text-primary-pale">language</mat-icon>
+      <app-language-selector></app-language-selector>
+    </div>
+  </li>
 </ul>

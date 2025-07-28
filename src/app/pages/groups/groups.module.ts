@@ -12,6 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
 import { MatCheckbox } from '@angular/material/checkbox';
+import { SharedModule } from '../../shared/shared.module';
 
 @NgModule({
   declarations: [ GroupsComponent ],
@@ -30,7 +31,8 @@ import { MatCheckbox } from '@angular/material/checkbox';
     MatOptionModule,
     MatCheckbox,
     MatListModule,
-    MatDrawerContent
+    MatDrawerContent,
+    SharedModule
   ]
 })
 export class GroupsModule { }

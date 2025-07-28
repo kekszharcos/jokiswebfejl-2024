@@ -33,7 +33,7 @@
               </div>
             } @empty {
               <div class="text-center mt-5">
-                  <h4 class="fw-bold text-primary">No messages yet...</h4>
+                  <h4 class="fw-bold text-primary">{{ 'friends.noMessages' | translate }}</h4>
                 </div>
             }
           } 
@@ -43,7 +43,7 @@
         <!-- Message Input -->
         <div class="border-top rounded-bottom-4 border-primary bg-primary-lighter px-3 py-3 d-flex align-items-center gap-2">
           <mat-form-field class="flex-grow-1 m-0">
-            <textarea matInput cdkTextareaAutosize style="max-height: 30vh" [formControl]="messageToSend" placeholder="Type your message..."></textarea>
+            <textarea matInput cdkTextareaAutosize style="max-height: 30vh" [formControl]="messageToSend" placeholder="{{ 'friends.sendMessage' | translate }}"></textarea>
           </mat-form-field>
           <button mat-fab color="primary" class="btn btn-primary-light text-white d-flex align-items-center justify-content-center shadow" (click)="onSend()">
             <mat-icon>send</mat-icon>
@@ -52,7 +52,7 @@
       } @else {
         <div class="h-100 d-flex flex-column align-items-center justify-content-center">
           <mat-icon class="mb-3" style="font-size: 2rem; height: 30px; width: 30px; color: var(--bs-primary-light);">chat</mat-icon>
-          <h2 class="text-primary">Select a friend to start chatting!</h2>
+          <h2 class="text-primary">{{ 'friends.selectFriend' | translate }}</h2>
         </div>
       }
     </div>
@@ -61,7 +61,7 @@
     <div class="col-12 col-md-4 bg-white rounded-4 shadow-lg h-100 d-flex flex-column p-0 animate__animated animate__fadeInRight">
       <div class="bg-primary-light text-white rounded-top-4 px-4 py-3 d-flex align-items-center">
         <mat-icon class="me-2">group</mat-icon>
-        <span class="fw-bold fs-5">Friends</span>
+        <span class="fw-bold fs-5">{{ 'friends.title' | translate }}</span>
       </div>
       <div class="flex-grow-1 overflow-auto px-2 py-2">
         @if (loadingService.loading$ | async) {
@@ -71,7 +71,7 @@
         } @else {
           @if (friends.length === 0) {
             <div class="text-center mt-5">
-              <h4 class="fw-bold text-primary">You don't have friends yet</h4>
+              <h4 class="fw-bold text-primary">{{ 'friends.noFriends' | translate }}</h4>
             </div>
           } @else {
             @for (friend of friends; track friend.uid) {
@@ -89,7 +89,7 @@
                     class="btn bg-primary-light text-white fw-semibold shadow-sm"
                     (click)="selectFriend(friend)">
                     <mat-icon class="icon">chat</mat-icon>
-                    Open
+                    {{ 'friends.open' | translate }}
                   </button>
                 </div>
               </mat-card>

@@ -5,6 +5,7 @@ import { MainRoutingModule } from './main-routing.module';
 import {MainComponent} from "./main.component";
 import {MatHint} from "@angular/material/form-field";
 import { MatIconModule } from '@angular/material/icon';
+import { SharedModule } from '../../shared/shared.module';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { MatIconModule } from '@angular/material/icon';
         CommonModule,
         MainRoutingModule,
         MatHint,
-        MatIconModule
+        MatIconModule,
+        SharedModule
     ]
 })
 export class MainModule { }

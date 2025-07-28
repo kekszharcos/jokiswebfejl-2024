@@ -1,0 +1,25 @@
+<div class="language-selector position-relative">
+  <button 
+    class="btn btn-outline-light d-flex align-items-center gap-2" 
+    type="button" 
+    (click)="toggleDropdown()"
+    [attr.aria-expanded]="isDropdownOpen">
+    <span class="flag">{{ getCurrentLanguageFlag() }}</span>
+    <span class="d-none d-md-inline">{{ getCurrentLanguageName() }}</span>
+    <mat-icon class="ms-1" [class.rotate-180]="isDropdownOpen">keyboard_arrow_down</mat-icon>
+  </button>
+  
+  @if (isDropdownOpen) {
+    <div class="dropdown-menu-custom position-absolute top-100 start-0 mt-1 bg-white border rounded shadow-sm">
+      @for (language of languages; track language.code) {
+        <button 
+          class="dropdown-item-custom w-100 text-start border-0 bg-transparent p-2 d-flex align-items-center gap-2" 
+          (click)="onLanguageChange(language.code)"
+          [class.active-language]="currentLanguage === language.code">
+          <span class="flag">{{ language.flag }}</span>
+          <span>{{ language.name }}</span>
+        </button>
+      }
+    </div>
+  }
+</div>

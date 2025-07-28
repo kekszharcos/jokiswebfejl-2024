@@ -12,7 +12,7 @@
                     [class.bg-primary-lighter]="!showLogin"
                     [class.text-white]="!showLogin"
                     (click)="switchToLogin()">
-              Login
+              {{ 'auth.login' | translate }}
             </button>
             <button mat-raised-button
                     class="btn fw-semibold px-4 transition-all"
@@ -21,7 +21,7 @@
                     [class.bg-primary-lighter]="showLogin"
                     [class.text-white]="showLogin"
                     (click)="switchToSignup()">
-              Sign Up
+              {{ 'auth.signup' | translate }}
             </button>
           </div>
         </div>
@@ -31,14 +31,14 @@
           @if (showLogin) {
             <form autocomplete="off" [ngClass]="['animate__animated', formAnimation]" class="d-flex flex-column h-100">
               <div class="form-content">
-                <h2 class="text-center mb-4 text-primary-pale fw-bold">Login</h2>
+                <h2 class="text-center mb-4 text-primary-pale fw-bold">{{ 'auth.login' | translate }}</h2>
                 <mat-form-field appearance="fill" class="w-100 mb-3">
-                  <mat-label>Email</mat-label>
-                  <input matInput type="email" [formControl]="loginEmail" placeholder="Email" class="border-primary-light text-primary-pale">
+                  <mat-label>{{ 'auth.email' | translate }}</mat-label>
+                  <input matInput type="email" [formControl]="loginEmail" placeholder="{{ 'auth.email' | translate }}" class="border-primary-light text-primary-pale">
                 </mat-form-field>
                 <mat-form-field appearance="fill" class="w-100 mb-4">
-                  <mat-label>Password</mat-label>
-                  <input matInput type="password" [formControl]="loginPassword" placeholder="Password" class="border-primary-light text-primary-pale">
+                  <mat-label>{{ 'auth.password' | translate }}</mat-label>
+                  <input matInput type="password" [formControl]="loginPassword" placeholder="{{ 'auth.password' | translate }}" class="border-primary-light text-primary-pale">
                 </mat-form-field>
                 @if (loginError) {
                   <div class="alert alert-danger py-2 mb-3 rounded-3 text-center animate__animated animate__shakeX">
@@ -50,18 +50,18 @@
                 <button mat-raised-button type="button"
                   class="btn bg-primary-light text-white fw-semibold px-4 shadow-sm w-100 hover-lift"
                   (click)="loggingIn();cluck()">
-                  Login
+                  {{ 'auth.login' | translate }}
                 </button>
                 <button mat-raised-button (click)="loginWithGoogle()" 
                   class="btn bg-primary-lighter text-primary fw-semibold px-4 shadow-sm w-100 hover-lift"
                   [disabled]="isGoogleLoginLoading">
                   @if (isGoogleLoginLoading) {
                     <ng-container>
-                      <mat-icon class="me-2 align-middle">hourglass_empty</mat-icon>Logging in...
+                      <mat-icon class="me-2 align-middle">hourglass_empty</mat-icon>{{ 'auth.logging_in' | translate }}
                     </ng-container>
                   } @else {
                     <ng-container>
-                      <mat-icon class="me-2 align-middle">mail_outline</mat-icon>Login with Google
+                      <mat-icon class="me-2 align-middle">mail_outline</mat-icon>{{ 'auth.login_with_google' | translate }}
                     </ng-container>
                   }
                 </button>
@@ -71,41 +71,41 @@
           @if (!showLogin) {
             <form [formGroup]="signUpFrom" (ngSubmit)="onSubmit()" autocomplete="off" [ngClass]="['animate__animated', formAnimation]" class="d-flex flex-column h-100">
               <div class="form-content">
-                <h2 class="text-center mb-4 text-primary-pale fw-bold">Signup</h2>
+                <h2 class="text-center mb-4 text-primary-pale fw-bold">{{ 'auth.signup' | translate }}</h2>
                 <mat-form-field appearance="fill" class="w-100 mb-3">
-                  <mat-label>Email</mat-label>
-                  <input matInput type="email" formControlName="email" placeholder="Email" class="border-primary-light text-primary-pale">
+                  <mat-label>{{ 'auth.email' | translate }}</mat-label>
+                  <input matInput type="email" formControlName="email" placeholder="{{ 'auth.email' | translate }}" class="border-primary-light text-primary-pale">
                 </mat-form-field>
                 <mat-form-field appearance="fill" class="w-100">
-                  <mat-label>Password</mat-label>
-                  <input matInput type="password" formControlName="password" placeholder="Password" class="border-primary-light text-primary-pale">
+                  <mat-label>{{ 'auth.password' | translate }}</mat-label>
+                  <input matInput type="password" formControlName="password" placeholder="{{ 'auth.password' | translate }}" class="border-primary-light text-primary-pale">
                   @if (signUpFrom.get('password')?.hasError('required')) {
                     <mat-error>
-                      Password is required.
+                      {{ 'auth.password_required' | translate }}
                     </mat-error>
                   }
                   @if (signUpFrom.get('password')?.hasError('minlength')) {
                     <mat-error>
-                      Password must be at least 6 characters.
+                      {{ 'auth.password_min_length' | translate }}
                     </mat-error>
                   }
                 </mat-form-field>
                 <mat-form-field appearance="fill" class="w-100 mb-4">
-                  <mat-label>Password again</mat-label>
-                  <input matInput type="password" formControlName="password_re" placeholder="Password again" class="border-primary-light text-primary-pale">
+                  <mat-label>{{ 'auth.password_again' | translate }}</mat-label>
+                  <input matInput type="password" formControlName="password_re" placeholder="{{ 'auth.password_again' | translate }}" class="border-primary-light text-primary-pale">
                   @if (signUpFrom.get('password_re')?.hasError('required')) {
                     <mat-error>
-                      Please confirm your password.
+                      {{ 'auth.confirm_password_required' | translate }}
                     </mat-error>
                   }
                   @if (signUpFrom.get('password_re')?.hasError('minlength')) {
                     <mat-error>
-                      Password must be at least 6 characters.
+                      {{ 'auth.password_min_length' | translate }}
                     </mat-error>
                   }
                   @if (signUpFrom.get('password')?.value !== signUpFrom.get('password_re')?.value && signUpFrom.get('password_re')?.value) {
                     <mat-error>
-                      Passwords do not match.
+                      {{ 'auth.passwords_not_match' | translate }}
                     </mat-error>
                   }
                 </mat-form-field>
@@ -113,18 +113,18 @@
               <div class="button-container">
                 <button mat-raised-button type="submit" 
                   class="btn bg-primary-light text-white fw-semibold px-4 shadow-sm w-100 hover-lift">
-                  Sign Up
+                  {{ 'auth.signup' | translate }}
                 </button>
                 <button mat-raised-button (click)="loginWithGoogle()" 
                   class="btn bg-primary-lighter text-primary fw-semibold px-4 shadow-sm w-100 hover-lift"
                   [disabled]="isGoogleLoginLoading">
                   @if (isGoogleLoginLoading) {
                     <ng-container>
-                      <mat-icon class="me-2 align-middle">hourglass_empty</mat-icon>Signing up...
+                      <mat-icon class="me-2 align-middle">hourglass_empty</mat-icon>{{ 'auth.signing_up' | translate }}
                     </ng-container>
                   } @else {
                     <ng-container>
-                      <mat-icon class="me-2 align-middle">mail_outline</mat-icon>Sign up with Google
+                      <mat-icon class="me-2 align-middle">mail_outline</mat-icon>{{ 'auth.signup_with_google' | translate }}
                     </ng-container>
                   }
                 </button>

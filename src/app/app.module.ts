@@ -24,6 +24,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MenuComponent } from './shared/menu/menu.component';
 import { MainModule } from './pages/main/main.module';
 import { PeopleComponent } from './pages/people/people.component';
+import { SharedModule } from './shared/shared.module';
 
 import { environment } from '../environments/environment';
 import { ConfirmDialogComponent } from './shared/components/confirm-dialog/confirm-dialog.component';
@@ -41,6 +42,7 @@ import { ConfirmDialogComponent } from './shared/components/confirm-dialog/confi
     FormsModule,
     ReactiveFormsModule,
     ConfirmDialogComponent,
+    SharedModule,
     //FirebaseApp,
     // Angular Material modules
     MatSidenavModule,

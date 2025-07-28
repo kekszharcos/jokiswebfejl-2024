@@ -9,6 +9,7 @@ import { deleteUser } from '@angular/fire/auth';
 import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
 import { Auth, onAuthStateChanged, authState } from '@angular/fire/auth';
+import { TranslationService } from '../../shared/services/translation.service';
 
 @Component({
     selector: 'app-profile',
@@ -34,7 +35,7 @@ export class ProfileComponent {
   deleteError: string | null = null;
   saveError: string | null = null;
 
-  successMessage: string | null = null;  constructor(private userService: UserService, private router: Router, public authService: AuthService, private dialog: MatDialog) {
+  successMessage: string | null = null;  constructor(private userService: UserService, private router: Router, public authService: AuthService, private dialog: MatDialog, private translationService: TranslationService) {
     authState(this.authService.auth).subscribe(user => {
       this.loggedInUser = user;
       if (user) {
@@ -77,16 +78,16 @@ export class ProfileComponent {
       this.router.navigate(['/signup']);
     } catch (error: any) {
       if (error.code === 'auth/requires-recent-login') {
-        this.deleteError = 'Please log out and log in again before deleting your account for security reasons.';
+        this.deleteError = this.translationService.instant('profile.deleteErrorRecentLogin');
       } else {
-        this.deleteError = 'Account deletion failed. Please try again or contact support.';
+        this.deleteError = this.translationService.instant('profile.deleteErrorGeneral');
       }
     }
   }
   async updateProfile() {
     this.saveError = null;
     if (this.profileForm.invalid) {
-      this.saveError = 'Please fix the errors in the form before saving.';
+      this.saveError = this.translationService.instant('profile.updateErrorFormInvalid');
       this.profileForm.markAllAsTouched();
       return;
     }
@@ -112,13 +113,13 @@ export class ProfileComponent {
         upUsername = true;
       }
     } else {
-      this.saveError = 'No authenticated user found. Please log in again.';
+      this.saveError = this.translationService.instant('profile.updateErrorNoUser');
       return;
     }
 
     try {
       await this.userService.updateData(newEmail, newPassword, newUsername, upEmail, upPass, upUsername);
-      this.successMessage = 'Profile updated successfully.';
+      this.successMessage = this.translationService.instant('profile.updateSuccess');
       
       // Clear password fields after successful update
       if (upPass) {
@@ -126,26 +127,29 @@ export class ProfileComponent {
         this.re_password.setValue('');
       }
     } catch (error: any) {
-      this.saveError = error.message || 'Failed to update profile. Please try again.';
+      this.saveError = error.message || this.translationService.instant('profile.updateErrorGeneral');
     }
   }
   async linkGoogleAccount() {
     try {
       await this.authService.linkGoogleAccount();
-      this.successMessage = 'Google account linked successfully! You can now sign in with either method.';
+      this.successMessage = this.translationService.instant('profile.linkGoogleSuccess');
       this.saveError = null;
       
       // Update form validators since user now has multiple providers
       this.updateFormValidators();
     } catch (error: any) {
-      this.saveError = error.message || 'Failed to link Google account. Please try again.';
+      this.saveError = error.message || this.translationService.instant('profile.linkGoogleError');
       this.successMessage = null;
     }
   }
 
   confirmDeleteProfile() {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      data: { message: 'Are you sure you want to delete your account? This action cannot be undone.' }
+      data: { 
+        message: 'Are you sure you want to delete your account? This action cannot be undone.',
+        translationKey: 'dialog.deleteAccountMessage'
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {

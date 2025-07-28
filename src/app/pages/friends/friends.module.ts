@@ -17,6 +17,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatDrawer, MatDrawerContainer, MatDrawerContent } from '@angular/material/sidenav';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { SharedModule } from '../../shared/shared.module';
 
 
 @NgModule({
@@ -48,6 +49,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
         MatListModule,
         MatDrawerContent,
         MatProgressSpinnerModule,
+        SharedModule
     ]
 })
 export class FriendsModule { }
